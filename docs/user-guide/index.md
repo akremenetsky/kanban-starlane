@@ -4,17 +4,19 @@ Kanban Starlane turns markdown notes into Kanban boards inside [Obsidian](https:
 Lists are headings, cards are task-list items — a board stays a plain markdown file that you
 can read and edit without the plugin.
 
-![A Kanban board in Obsidian](assets/home-board-overview-1.png)
+![A Kanban board in Obsidian](assets/home-board-overview-3.png)
 
-Kanban Starlane is a maintained continuation of the
-[Kanban plugin](https://github.com/mgmeyers/obsidian-kanban) by Matthew Meyers, whose
-development has stopped. It can be installed next to the original plugin and converts its
-boards on demand — see [Coming from the Kanban plugin](getting-started/migrating-from-kanban-plugin.md).
+Kanban Starlane is an independent Kanban plugin, developed further on its own roadmap. It
+started as a fork of the [Kanban plugin](https://github.com/mgmeyers/obsidian-kanban) by
+Matthew Meyers. It can be installed next to the original plugin and converts its boards on
+demand — see [Coming from the Kanban plugin](getting-started/migrating-from-kanban-plugin.md).
 
 ## What it does
 
 - Boards, lists and tables backed by a single markdown note.
-- Drag and drop cards between lists, and between boards with [linked lists](guide/linked-lists.md).
+- Drag and drop cards between lists and between boards.
+- **Linked lanes**: a list can also show the cards of lists on other boards — keep one board
+  per area and still see everything together ([how it works](guide/linked-lists.md)).
 - Dates, times, tags, [WIP limits](guide/cards-and-lists.md#wip-limits) and an
   [archive](guide/archive.md) for finished cards.
 - [Card history](guide/card-history.md): see when a card was created, moved or checked, even
@@ -30,10 +32,3 @@ boards on demand — see [Coming from the Kanban plugin](getting-started/migrati
 - New to Kanban Starlane? Start with [Getting started](getting-started/installation.md).
 - Looking for a specific setting? Go to [Settings](settings/index.md).
 - Something not working as expected? Check the [FAQ](faq.md).
-
-## Support
-
-Kanban Starlane is free and open source. If you'd like to support the original Kanban plugin
-that it continues, you can sponsor [Matthew Meyers](https://github.com/sponsors/mgmeyers) or
-buy him a coffee — see the [main repository](https://github.com/mgmeyers/obsidian-kanban) for
-links.

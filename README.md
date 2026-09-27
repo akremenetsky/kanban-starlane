@@ -6,10 +6,10 @@
 
 Markdown-backed Kanban boards for [Obsidian](https://obsidian.md).
 
-Kanban Starlane is a maintained continuation of the
-[Kanban plugin](https://github.com/mgmeyers/obsidian-kanban) by Matthew Meyers, whose
-development has stopped. Boards stay plain markdown notes: lanes are headings, cards are
-task-list items, so your data is readable and editable without the plugin.
+Kanban Starlane is an independent Kanban plugin, developed further on its own roadmap. It
+started as a fork of the [Kanban plugin](https://github.com/mgmeyers/obsidian-kanban) by
+Matthew Meyers. Boards stay plain markdown notes: lanes are headings, cards are task-list
+items, so your data is readable and editable without the plugin.
 
 ![A Kanban board in Obsidian](docs/user-guide/assets/home-board-overview-3.png)
 

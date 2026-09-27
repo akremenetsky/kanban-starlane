@@ -1,9 +1,9 @@
 {
-	"id": "kanban-starlane",
-	"name": "Kanban Starlane",
-	"version": "0.1.0",
-	"minAppVersion": "1.6.2",
-	"description": "Markdown-backed Kanban boards. A maintained continuation of the Kanban plugin by mgmeyers.",
-	"author": "Anton Kremenetsky",
-	"isDesktopOnly": false
+  "id": "kanban-starlane",
+  "name": "Kanban Starlane",
+  "version": "0.1.0",
+  "minAppVersion": "1.6.2",
+  "description": "Markdown-backed Kanban boards. Started as a fork of the Kanban plugin by mgmeyers, now developed independently.",
+  "author": "Anton Kremenetsky",
+  "isDesktopOnly": false
 }
