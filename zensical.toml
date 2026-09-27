@@ -1,7 +1,7 @@
 [project]
 site_name = "Kanban Starlane"
 site_description = "Markdown-backed Kanban boards for Obsidian"
-site_url = "https://community-archive.github.io/obsidian-kanban/"
+site_url = "https://akremenetsky.github.io/kanban-starlane/"
 docs_dir = "docs/user-guide"
 site_dir = "site"
 
@@ -36,8 +36,8 @@ nav = [
   { "FAQ" = "faq.md" },
 ]
 
-repo_url = "https://github.com/community-archive/obsidian-kanban"
-repo_name = "community-archive/obsidian-kanban"
+repo_url = "https://github.com/akremenetsky/kanban-starlane"
+repo_name = "akremenetsky/kanban-starlane"
 edit_uri = "edit/main/docs/user-guide/"
 
 [project.theme]

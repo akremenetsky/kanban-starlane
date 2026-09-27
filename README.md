@@ -51,7 +51,7 @@ disable the original plugin.
 
 ## Documentation
 
-- User guide: [community-archive.github.io/obsidian-kanban](https://community-archive.github.io/obsidian-kanban/)
+- User guide: [akremenetsky.github.io/kanban-starlane](https://akremenetsky.github.io/kanban-starlane/)
   (source: [docs/user-guide](docs/user-guide/index.md))
 - Changes: [CHANGELOG.md](CHANGELOG.md)
 
