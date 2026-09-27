@@ -1,0 +1,40 @@
+# IDE
+*.iml
+.idea
+.DS_Store
+
+# dependencies
+node_modules
+
+# build output
+dist
+main.js
+styles.css
+*.js.map
+.env
+
+# test vault: notes, enabled-plugin list and the Hot Reload plugin are tracked;
+# Obsidian runtime state and the built plugin are not
+test-vault/.obsidian/*
+!test-vault/.obsidian/community-plugins.json
+!test-vault/.obsidian/plugins/
+test-vault/.obsidian/plugins/*
+!test-vault/.obsidian/plugins/hot-reload/
+test-vault/.obsidian/plugins/hot-reload/data.json
+test-vault/.trash/
+
+# e2e / unit test artifacts
+.obsidian-cache/
+coverage/
+tests/e2e/.artifacts/
+
+# vendored dev helper in the test vault (the global main.js rule would hide it)
+!test-vault/.obsidian/plugins/hot-reload/main.js
+
+# Obsidian state when the repository root is opened as a vault
+/.obsidian/
+
+# docs site (Zensical): built output and its Python virtualenv
+/site/
+/.venv-docs/
+/.cache/

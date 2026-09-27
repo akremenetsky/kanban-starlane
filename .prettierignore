@@ -1,0 +1,6 @@
+coverage/
+dist/
+src/components/Editor/flatpickr/
+tests/e2e/vaults/
+tests/fixtures/
+test-vault/
