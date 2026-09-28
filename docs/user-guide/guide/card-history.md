@@ -8,6 +8,8 @@ shown through [linked lists](linked-lists.md) — their history stays with the c
 
 Right-click a card, or open its `⋮` menu, and choose **History**.
 
+![The card history window](../assets/card-history-modal.png)
+
 The window opens with a summary — how long the card has been in its current list — followed by
 every recorded event, newest first:
 

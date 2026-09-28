@@ -7,6 +7,10 @@ board header, or the command palette:
 - **View as table** — one row per card, with columns you can sort and filter.
 - **View as list** — a flat, vertical list of every list and its cards.
 
+![The view switcher menu](../assets/view-switcher-menu.png)
+![Table view](../assets/view-table.png)
+![List view](../assets/view-list.png)
+
 Every board also has its underlying **markdown** — the plain note behind the board. Toggle
 between them with the command palette command `Toggle between Kanban and markdown mode`.
 Switching to markdown is also how you view a board's [archive](archive.md).

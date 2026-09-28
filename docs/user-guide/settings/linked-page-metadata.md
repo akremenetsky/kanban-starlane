@@ -15,3 +15,5 @@ Add a row per metadata key you want shown. Each row has:
   (for example, an image embed or bold text) instead of shown as plain text.
 
 Rows can be reordered by dragging.
+
+![The linked page metadata settings table](../assets/linked-page-metadata-settings-rows.png)

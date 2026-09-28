@@ -13,6 +13,12 @@ Where Dataview's inline fields are shown on the card:
 - **Merge with linked page metadata** — alongside fields from [Linked page
   metadata](linked-page-metadata.md), in the same block.
 
+![The inline metadata position setting](../assets/inline-metadata-position-setting.png)
+
+Set to **Card footer**:
+
+![A Tasks/Dataview field shown in the card footer](../assets/inline-metadata-footer-result.png)
+
 ## Move task data to card footer
 
 When on, data added by the Tasks plugin (due dates, recurrence, priority, …) is shown in the
