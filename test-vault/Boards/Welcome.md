@@ -9,7 +9,7 @@ kanban-starlane: board
 - [ ] Drag me to another list
 - [ ] Double-click a card to edit it
 - [ ] Cards can have
-    several lines
+	several lines
 - [ ] Right-click a card for its menu
 
 
@@ -17,6 +17,7 @@ kanban-starlane: board
 
 - [ ] This list has a WIP limit of 2 — see the counter in the header
 - [ ] Add a third card here and watch the counter
+- [ ] Third card over the limit ^pnle1p
 
 
 ## Done
@@ -31,6 +32,14 @@ kanban-starlane: board
 ## Archive
 
 - [x] An archived card (visible in markdown mode)
+
+%% kanban-starlane:history
+```
+{
+"pnle1p":[{"at":"2026-09-28T18:27:26+03:00","type":"created","lane":"In progress"}]
+}
+```
+%%
 
 %% kanban-starlane:settings
 ```
