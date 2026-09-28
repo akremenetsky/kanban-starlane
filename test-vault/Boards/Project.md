@@ -1,7 +1,5 @@
 ---
-
 kanban-starlane: board
-
 ---
 
 ## Backlog
@@ -36,6 +34,6 @@ kanban-starlane: board
 
 %% kanban-starlane:settings
 ```
-{"kanban-starlane":"board","show-checkboxes":true,"move-tags":true,"move-dates":true,"show-relative-date":true,"metadata-keys":[{"metadataKey":"status","label":"Status","shouldHideLabel":false,"containsMarkdown":false},{"metadataKey":"owner","label":"Owner","shouldHideLabel":false,"containsMarkdown":false},{"metadataKey":"demo-field","label":"","shouldHideLabel":true,"containsMarkdown":false},{"metadataKey":"inline-field","label":"","shouldHideLabel":true,"containsMarkdown":false},{"metadataKey":"photo","label":"","shouldHideLabel":true,"containsMarkdown":true}],"tag-colors":[{"tagKey":"#bug","color":"rgba(255, 255, 255, 1)","backgroundColor":"rgba(220, 38, 38, 1)"},{"tagKey":"#marketing","color":"rgba(255, 255, 255, 1)","backgroundColor":"rgba(247, 107, 21, 1)"},{"tagKey":"#sales","color":"rgba(255, 255, 255, 1)","backgroundColor":"rgba(18, 165, 148, 1)"}]}
+{"kanban-starlane":"board","show-checkboxes":true,"move-tags":true,"move-dates":true,"show-relative-date":true,"metadata-keys":[{"metadataKey":"status","label":"Status","shouldHideLabel":false,"containsMarkdown":false},{"metadataKey":"owner","label":"Owner","shouldHideLabel":false,"containsMarkdown":false},{"metadataKey":"demo-field","label":"","shouldHideLabel":true,"containsMarkdown":false},{"metadataKey":"inline-field","label":"","shouldHideLabel":true,"containsMarkdown":true},{"metadataKey":"photo","label":"","shouldHideLabel":true,"containsMarkdown":true}],"tag-colors":[{"tagKey":"#bug","color":"rgba(255, 255, 255, 1)","backgroundColor":"rgba(220, 38, 38, 1)"},{"tagKey":"#marketing","color":"rgba(255, 255, 255, 1)","backgroundColor":"rgba(247, 107, 21, 1)"},{"tagKey":"#sales","color":"rgba(255, 255, 255, 1)","backgroundColor":"rgba(18, 165, 148, 1)"}]}
 ```
 %%
