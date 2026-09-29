@@ -1,6 +1,5 @@
 import { PluginSettingTab } from 'obsidian';
 import { c } from 'src/components/helpers';
-import { t } from 'src/lang/helpers';
 import type KanbanPlugin from 'src/plugin/KanbanPlugin';
 
 import { SettingsManager, SettingsManagerConfig } from './SettingsManager';
@@ -22,6 +21,7 @@ export class KanbanSettingsTab extends PluginSettingTab {
     containerEl.empty();
     containerEl.addClass(c('board-settings-modal'));
 
-    this.settingsManager.constructUI(containerEl, t('Kanban Plugin'), false);
+    // The product name, not a translatable string.
+    this.settingsManager.constructUI(containerEl, this.plugin.manifest.name, false);
   }
 }

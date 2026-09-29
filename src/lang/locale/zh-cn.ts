@@ -98,7 +98,6 @@ const lang: Partial<Lang> = {
   'This will be used to separate the archived date/time from the title':
     '用于分隔标题与归档卡片的日期或时间',
   'Archive date/time format': '归档日期或时间格式',
-  'Kanban Plugin': '看板插件',
   'Linked Page Metadata': '连接的页面元数据',
   'Display metadata for the first note linked within a card. Specify which metadata keys to display below. An optional label can be provided, and labels can be hidden altogether.':
     '展示卡片中第一个连接所对应的笔记元数据。请在下方指定哪些元数据可以展示。你可以选择展示哪些标志，所有标志都可以被隐藏。',

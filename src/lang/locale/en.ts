@@ -160,7 +160,6 @@ const en = {
   'This will be used to separate the archived date/time from the title':
     'This will be used to separate the archived date/time from the title',
   'Archive date/time format': 'Archive date/time format',
-  'Kanban Plugin': 'Kanban Plugin',
   'Tag click action': 'Tag click action',
   'Search Kanban Board': 'Search Kanban Board',
   'Search Obsidian Vault': 'Search Obsidian Vault',

@@ -76,7 +76,6 @@ const lang: Partial<Lang> = {
   'This will be used to separate the archived date/time from the title':
     "Verrà usato per separare data e ora dell'archiviazione dal titolo",
   'Archive date/time format': "Formato data/ora dell'archivio",
-  'Kanban Plugin': 'Plugin Kanban',
 
   // components/Item/Item.tsx
   'More options': 'Altre opzioni',

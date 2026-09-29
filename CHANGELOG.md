@@ -50,3 +50,4 @@ First version of the fork.
   named after the card's text only, and the date, time and tags stay on the card.
 - The board icon was blank everywhere (tab, ribbon, *New kanban board* in the folder menu,
   *View as board*): the Lucide icon it used no longer exists in Obsidian.
+- The global settings page was titled "Kanban Plugin" instead of "Kanban Starlane".

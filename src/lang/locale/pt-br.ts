@@ -76,7 +76,6 @@ const lang: Partial<Lang> = {
   'This will be used to separate the archived date/time from the title':
     'Isso será usado para separar a data/hora arquivada do título.',
   'Archive date/time format': 'Formato de data/hora do arquivo',
-  'Kanban Plugin': 'Plugin Kanban',
   'Linked Page Metadata': "Metadados de páginas 'lincadas'",
   'Display metadata for the first note linked within a card. Specify which metadata keys to display below. An optional label can be provided, and labels can be hidden altogether.':
     "Exibe metadados para a primeira nota 'lincada' em um cartão. Especifique abaixo quais metadados serão exibidos. Um rótulo opcional pode ser fornecido e os rótulos podem ser ocultados completamente.",

@@ -88,7 +88,6 @@ const lang: Partial<Lang> = {
   'This will be used to separate the archived date/time from the title':
     'Dies wird verwendet, um das Datum und die Uhrzeit archivierter Karten vom Titel zu trennen',
   'Archive date/time format': 'Format des Datums und der Uhrzeit für das Archiv',
-  'Kanban Plugin': 'Kanban Erweiterung',
   'New line trigger': 'Taste für neue Zeile', //No exact translation, but makes sense in App
   'Shift + Enter': 'Umschalttaste + Enter',
   Enter: 'Enter',

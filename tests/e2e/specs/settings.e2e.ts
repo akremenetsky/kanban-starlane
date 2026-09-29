@@ -64,3 +64,22 @@ describe('board settings modal', function () {
     await addListButton.waitForExist({ reverse: true, timeout: 5000 });
   });
 });
+
+describe('global settings tab', function () {
+  afterEach(async function () {
+    await browser.executeObsidian(({ app }) => (app as any).setting.close());
+  });
+
+  it('is titled with the plugin name', async function () {
+    await browser.executeObsidian(({ app }) => {
+      (app as any).setting.open();
+      (app as any).setting.openTabById('kanban-starlane');
+    });
+
+    // Newer Obsidian opens settings in a separate window, so read the tab's DOM directly.
+    const title = await browser.executeObsidian(
+      ({ app }) => (app as any).setting.activeTab?.containerEl.querySelector('h3')?.textContent
+    );
+    expect(title).toBe('Kanban Starlane');
+  });
+});

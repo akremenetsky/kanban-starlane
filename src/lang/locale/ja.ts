@@ -96,7 +96,6 @@ const lang: Partial<Lang> = {
   'This will be used to separate the archived date/time from the title':
     'これはアーカイブされた日付・時間をタイトルから分離するのに使用されます。',
   'Archive date/time format': '日付・時間フォーマットをアーカイブ',
-  'Kanban Plugin': 'カンバンプラグイン',
   'Linked Page Metadata': 'リンクされたページのメタデータ',
   'Display metadata for the first note linked within a card. Specify which metadata keys to display below. An optional label can be provided, and labels can be hidden altogether.':
     'カード内でリンクされている最初のノートのメタデータを表示します。下に表示するメタデータのキーを指定してください。オプションとしてラベルの付与が可能であり、ラベルは完全に非表示にすることができます。',

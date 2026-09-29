@@ -105,7 +105,6 @@ const lang: Partial<Lang> = {
   'This will be used to separate the archived date/time from the title':
     '이 구분자는 카드 제목과 보관된 날짜/시간을 구분하는데 사용됩니다.',
   'Archive date/time format': '보관된 카드의 날짜/시간 형식',
-  'Kanban Plugin': '칸반 플러그인',
   'Tag colors': '태그 색상 표시',
   'Set colors for tags displayed in cards.': '카드 제목 아래에 표시되는 태그의 색상을 설정합니다.',
   'Linked Page Metadata': '링크된 페이지 메타데이터',
