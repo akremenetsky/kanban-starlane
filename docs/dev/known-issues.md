@@ -20,6 +20,7 @@ what users expect. Each item is a candidate task; fixing one means updating its 
 | Card history | Only changes made in the plugin are recorded; editing the markdown directly is not. Moving a card by cutting/pasting its line to another board loses its history. | `cardHistory.test.ts` › does not record changes read from the file |
 | Card history | A history block that cannot be read (bad JSON, wrong shape) is kept as is, and that board records nothing new until it is fixed; a card dragged onto such a board loses its history. | `parse.test.ts` › keeps an unreadable history block |
 | Card history | Splitting a card records the parts as new cards; the original's history is dropped. | — |
+| Card menu | *New note from card* turns the whole text of the first line into one link; dates, times and tags from the middle of the line are moved after the link. Other links in that line are replaced by their text. | `noteFromCard.test.ts` |
 
 Fixed during the fork setup (see `CHANGELOG.md`): lost settings edits within one second,
 stale inline metadata after editing an open board, reset buttons showing the wrong state,

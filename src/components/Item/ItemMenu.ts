@@ -11,6 +11,7 @@ import { generateInstanceId } from 'src/shared/ids';
 import { escapeRegExpStr } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 import { BoardModifiers } from 'src/state/boardModifiers';
+import { linkCardTitleToNote, noteNameFromCardTitle } from 'src/state/noteFromCard';
 
 import { CardHistoryModal } from './CardHistoryModal';
 import {
@@ -19,13 +20,6 @@ import {
   constructMenuTimePickerOnChange,
   constructTimePicker,
 } from './pickers';
-
-const illegalCharsRegEx = /[\\/:"*?<>|]+/g;
-const embedRegEx = /!?\[\[([^\]]*)\.[^\]]+\]\]/g;
-const wikilinkRegEx = /!?\[\[([^\]]*)\]\]/g;
-const mdLinkRegEx = /!?\[([^\]]*)\]\([^)]*\)/g;
-const tagRegEx = /#([^\u2000-\u206F\u2E00-\u2E7F'!"#$%&()*+,.:;<=>?@^`{|}~[\]\\\s\n\r]+)/g;
-const condenceWhiteSpaceRE = /\s+/g;
 
 interface UseItemMenuParams {
   setEditState: Dispatch<StateUpdater<EditState>>;
@@ -86,15 +80,11 @@ export function useItemMenu({
           i.setIcon('lucide-file-plus-2')
             .setTitle(t('New note from card'))
             .onClick(async () => {
-              const prevTitle = item.data.titleRaw.split('\n')[0].trim();
-              const sanitizedTitle = prevTitle
-                .replace(embedRegEx, '$1')
-                .replace(wikilinkRegEx, '$1')
-                .replace(mdLinkRegEx, '$1')
-                .replace(tagRegEx, '$1')
-                .replace(illegalCharsRegEx, ' ')
-                .trim()
-                .replace(condenceWhiteSpaceRE, ' ');
+              const triggers = {
+                dateTrigger: stateManager.getSetting('date-trigger'),
+                timeTrigger: stateManager.getSetting('time-trigger'),
+              };
+              const sanitizedTitle = noteNameFromCardTitle(item.data.titleRaw, triggers);
 
               const newNoteFolder = stateManager.getSetting('new-note-folder');
               const newNoteTemplatePath = stateManager.getSetting('new-note-template');
@@ -116,9 +106,10 @@ export function useItemMenu({
 
               await applyTemplate(stateManager, newNoteTemplatePath as string | undefined);
 
-              const newTitleRaw = item.data.titleRaw.replace(
-                prevTitle,
-                stateManager.app.fileManager.generateMarkdownLink(newFile, stateManager.file.path)
+              const newTitleRaw = linkCardTitleToNote(
+                item.data.titleRaw,
+                stateManager.app.fileManager.generateMarkdownLink(newFile, stateManager.file.path),
+                triggers
               );
 
               boardModifiers.updateItem(path, stateManager.updateItemContent(item, newTitleRaw));
