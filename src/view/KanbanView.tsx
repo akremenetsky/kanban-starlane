@@ -422,7 +422,7 @@ export class KanbanView extends TextFileView implements HoverParent {
       .addItem((item) =>
         item
           .setTitle(t('View as board'))
-          .setIcon('lucide-trello')
+          .setIcon(VIEW_ICON)
           .setChecked(view === 'basic' || view === 'board')
           .onClick(() => this.setView('board'))
       )

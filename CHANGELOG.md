@@ -45,3 +45,5 @@ First version of the fork.
 - A board failed to open when a card embedded a missing note with `![alt](Note.md)`.
 - The mobile board menu listed "Archive completed cards" twice.
 - A second copy of moment.js and Luxon is no longer bundled (smaller `main.js`).
+- The board icon was blank everywhere (tab, ribbon, *New kanban board* in the folder menu,
+  *View as board*): the Lucide icon it used no longer exists in Obsidian.

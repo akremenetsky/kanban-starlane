@@ -9,8 +9,11 @@ export const PLUGIN_ID = 'kanban-starlane';
 /** Workspace view type registered for boards. Stored in workspace.json. */
 export const VIEW_TYPE = 'kanban-starlane';
 
-/** Lucide icon used for the view, ribbon and menus. */
-export const VIEW_ICON = 'lucide-trello';
+/**
+ * Lucide icon used for the view, ribbon and menus. Must exist in the Lucide set bundled with
+ * both minAppVersion and the latest Obsidian: a missing name renders as an empty space.
+ */
+export const VIEW_ICON = 'lucide-square-kanban';
 
 /**
  * Frontmatter key that marks a note as a board. Its value is the default view

@@ -1,4 +1,5 @@
 import { browser, expect } from '@wdio/globals';
+import { VIEW_ICON } from 'src/constants';
 import { obsidianPage } from 'wdio-obsidian-service';
 
 import {
@@ -70,5 +71,14 @@ describe('board view', function () {
 
     await browser.executeObsidianCommand('kanban-starlane:toggle-kanban-view');
     await browser.waitUntil(async () => (await activeViewType()) === 'kanban-starlane');
+  });
+
+  it('uses a board icon that exists in this Obsidian version', async function () {
+    // An unknown Lucide name renders as an empty space in menus (e.g. "New kanban board").
+    const iconExists = await browser.executeObsidian(
+      ({ obsidian }, name) => !!obsidian.getIcon(name),
+      VIEW_ICON
+    );
+    expect(iconExists).toBe(true);
   });
 });

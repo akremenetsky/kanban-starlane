@@ -125,7 +125,7 @@ export function registerFileMenu(plugin: KanbanPlugin) {
               item
                 .setTitle(t('View as board'))
                 .setSection('pane')
-                .setIcon('lucide-trello')
+                .setIcon(VIEW_ICON)
                 .setChecked(boardView === 'basic' || boardView === 'board')
                 .onClick(() => kanbanView.setView('board'))
             )
