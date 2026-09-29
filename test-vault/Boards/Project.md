@@ -1,11 +1,13 @@
 ---
+
 kanban-starlane: board
+
 ---
 
 ## Backlog
 
 - [ ] Write the landing page [[Website]] #marketing
-- [ ] [[Prepare the demo @{2026-10-15} sales]] ^fmq6x3
+- [ ] Prepare the demo @{2026-10-15} #sales
 - [ ] Call the supplier @{2026-09-30} @@{14:30}
 - [ ] Preview the new product mockup ![[product-mockup.png]]
 
@@ -23,14 +25,6 @@ kanban-starlane: board
 
 
 
-
-%% kanban-starlane:history
-```
-{
-"fmq6x3":[{"at":"2026-09-28T18:13:09+03:00","type":"edited"}]
-}
-```
-%%
 
 %% kanban-starlane:settings
 ```

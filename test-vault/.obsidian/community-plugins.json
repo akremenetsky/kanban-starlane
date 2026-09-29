@@ -1,4 +1,6 @@
 [
   "hot-reload",
-  "kanban-starlane"
+  "kanban-starlane",
+  "dataview",
+  "obsidian-tasks-plugin"
 ]
