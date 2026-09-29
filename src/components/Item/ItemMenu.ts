@@ -121,7 +121,7 @@ export function useItemMenu({
             .onClick(() => {
               if (item.data.blockId) {
                 navigator.clipboard.writeText(
-                  `${this.app.fileManager.generateMarkdownLink(
+                  `${stateManager.app.fileManager.generateMarkdownLink(
                     stateManager.file,
                     '',
                     '#^' + item.data.blockId
@@ -131,7 +131,7 @@ export function useItemMenu({
                 const id = generateInstanceId(6);
 
                 navigator.clipboard.writeText(
-                  `${this.app.fileManager.generateMarkdownLink(stateManager.file, '', '#^' + id)}`
+                  `${stateManager.app.fileManager.generateMarkdownLink(stateManager.file, '', '#^' + id)}`
                 );
 
                 boardModifiers.updateItem(

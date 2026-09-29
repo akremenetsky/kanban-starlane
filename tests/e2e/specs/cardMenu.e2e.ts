@@ -32,6 +32,21 @@ async function clickFirstCardMenuItem(menuItem: string) {
   await item.click();
 }
 
+// Record what the plugin copies instead of reading the OS clipboard, which is shared with
+// the other test windows and needs focus.
+async function captureClipboard() {
+  await browser.execute(() => {
+    (window as any).__copied = undefined;
+    navigator.clipboard.writeText = async (text: string) => {
+      (window as any).__copied = text;
+    };
+  });
+}
+
+async function clipboardText(): Promise<string> {
+  return browser.execute(() => (window as any).__copied);
+}
+
 describe('card menu', function () {
   beforeEach(async function () {
     await resetWorkspace();
@@ -55,5 +70,31 @@ describe('card menu', function () {
       await browser.executeObsidian(({ app }) => !!app.vault.getFileByPath('Prepare the demo.md'))
     ).toBe(true);
     expect(await readFile(BOARD)).not.toContain('<span');
+  });
+
+  it('copies a link to the card, adding a block id when it has none', async function () {
+    await createBoard('---\n\nkanban-starlane: board\n\n---\n\n## Todo\n\n- [ ] Plain card\n\n');
+    await openBoard(BOARD);
+    await expectEventually(async () => (await cardTitles(0)).length, 1);
+
+    await captureClipboard();
+    await clickFirstCardMenuItem('Copy link to card');
+
+    const md = await waitForFile(BOARD, (md) => /- \[ \] Plain card \^\w{6}\n/.test(md));
+    const id = md.match(/Plain card \^(\w{6})/)[1];
+    await expectEventually(clipboardText, `[[Note from card#^${id}]]`);
+  });
+
+  it('copies a link to a card that already has a block id', async function () {
+    await createBoard(
+      '---\n\nkanban-starlane: board\n\n---\n\n## Todo\n\n- [ ] Card with id ^abc123\n\n'
+    );
+    await openBoard(BOARD);
+    await expectEventually(async () => (await cardTitles(0)).length, 1);
+
+    await captureClipboard();
+    await clickFirstCardMenuItem('Copy link to card');
+
+    await expectEventually(clipboardText, '[[Note from card#^abc123]]');
   });
 });

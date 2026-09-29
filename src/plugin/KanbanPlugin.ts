@@ -24,7 +24,7 @@ interface WindowRegistry {
 }
 
 function getEditorClass(app: any) {
-  const md = this.app.embedRegistry.embedByExtension.md(
+  const md = app.embedRegistry.embedByExtension.md(
     { app: app, containerEl: createDiv(), state: {} },
     null,
     ''

@@ -63,8 +63,7 @@ export function getTemplatePlugins(app: App) {
   const templaterPlugin = (app as any).plugins.plugins['templater-obsidian'];
   const templaterEnabled = (app as any).plugins.enabledPlugins.has('templater-obsidian');
   const templaterEmptyFileTemplate =
-    templaterPlugin &&
-    (this.app as any).plugins.plugins['templater-obsidian'].settings?.empty_file_template;
+    templaterPlugin && templaterPlugin.settings?.empty_file_template;
 
   const templateFolder = templatesEnabled
     ? templatesPlugin.instance.options.folder
