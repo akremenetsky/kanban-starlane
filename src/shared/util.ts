@@ -86,3 +86,13 @@ const reHasRegExChar = RegExp(reRegExChar.source);
 export function escapeRegExpStr(str: string) {
   return str && reHasRegExChar.test(str) ? str.replace(reRegExChar, '\\$&') : str || '';
 }
+
+/** True for plain objects (`{}`, `Object.create(null)`), also those made in another window. */
+export function isPlainObject(value: unknown): value is Record<string, any> {
+  if (Object.prototype.toString.call(value) !== '[object Object]') return false;
+  const ctor = (value as any).constructor;
+  if (ctor === undefined) return true;
+  const proto = ctor.prototype;
+  if (Object.prototype.toString.call(proto) !== '[object Object]') return false;
+  return Object.prototype.hasOwnProperty.call(proto, 'isPrototypeOf');
+}

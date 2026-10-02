@@ -1,9 +1,9 @@
-import { isPlainObject } from 'is-plain-object';
 import { TFile } from 'obsidian';
 import { getDataviewApi } from 'src/integrations/dataview';
 import { shouldUseTabs } from 'src/integrations/vaultConfig';
 import { Board, Item } from 'src/model/types';
 import { diff, diffApply } from 'src/shared/patch';
+import { isPlainObject } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 
 import { boardToMd } from './boardToMarkdown';

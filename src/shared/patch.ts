@@ -1,5 +1,6 @@
-import { isPlainObject } from 'is-plain-object';
 import { moment } from 'obsidian';
+
+import { isPlainObject } from './util';
 
 type Key = string | number;
 type Diffable = Record<Key, any> | any[];

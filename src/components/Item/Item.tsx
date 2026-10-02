@@ -115,7 +115,6 @@ const ItemInner = memo(function ItemInner({
 
   return (
     <div
-      // eslint-disable-next-line react/no-unknown-property
       onDblClick={onDoubleClick}
       onContextMenu={onContextMenu}
       className={c('item-content-wrapper')}

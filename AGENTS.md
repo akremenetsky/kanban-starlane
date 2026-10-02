@@ -95,6 +95,11 @@ zensical.toml        Zensical config for docs/user-guide (site_url, nav, theme)
 - TypeScript, Preact (`react` imports are aliased to `preact/compat`), functional components + hooks.
 - Imports: relative inside the same directory tree, `src/...` otherwise. Prettier sorts them.
 - Never use the global `app` (ESLint enforces). Use `plugin.app`, `view.app`, `stateManager.app`.
+- `npm run lint` also runs the Obsidian community review rules (`eslint-plugin-obsidianmd`), over
+  `src/` including the vendored flatpickr. Errors block the commit. In short: no `el.style.x = …`
+  (use a CSS class or `setCssStyles`), no `innerHTML`/`insertAdjacentHTML` (use DOM helpers or
+  `sanitizeHTMLToDom`), no `navigator.userAgent` (use `Platform`), every `eslint-disable` needs
+  a `-- reason` and block disables need a matching `eslint-enable`.
 - Pop-out windows: use `activeWindow` / `win.setTimeout` / `getParentWindow(el)`, not global
   `window`/`document`, for timers and DOM that belongs to a board.
 - Board data is immutable: build new objects (`immutability-helper`, `src/dnd/util/data.ts`).
