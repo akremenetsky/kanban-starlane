@@ -3,7 +3,7 @@
 All notable changes to Kanban Starlane. Kanban Starlane is a modified version of the
 [Kanban plugin](https://github.com/mgmeyers/obsidian-kanban) by Matthew Meyers (2.0.51).
 
-## Unreleased — 0.1.0
+## 0.1.0 — 2026-10-02
 
 First version of the fork.
 
