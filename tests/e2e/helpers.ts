@@ -7,8 +7,14 @@ export const cls = (name: string) => `.kanban-starlane__${name}`;
 
 /** Open a vault file in the active leaf and wait for the board to render. */
 export async function openBoard(path: string) {
+  // Open by file, not by link text: a file created a moment ago may not be in the metadata
+  // cache yet, and openLinkText then silently opens nothing.
+  await browser.waitUntil(
+    () => browser.executeObsidian(({ app }, p) => !!app.vault.getFileByPath(p), path),
+    { timeoutMsg: `${path} is not in the vault` }
+  );
   await browser.executeObsidian(async ({ app }, p) => {
-    await app.workspace.openLinkText(p, '', false);
+    await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath(p));
   }, path);
   await browser.$(cls('board')).waitForExist({ timeout: 10000 });
 }
@@ -87,11 +93,19 @@ export async function expectEventually<T>(read: () => Promise<T>, expected: T, t
   );
 }
 
-/** The card of a lane with this title. */
-export function card(laneIndex: number, title: string) {
-  return lane(laneIndex)
-    .$$(cls('item'))
-    .find(async (el) => (await el.$(cls('item-title')).getText()).trim() === title);
+/** The card of a lane with this title; waits for it, as titles render asynchronously. */
+export async function card(laneIndex: number, title: string) {
+  let found: WebdriverIO.Element | undefined;
+  await browser.waitUntil(
+    async () => {
+      found = await lane(laneIndex)
+        .$$(cls('item'))
+        .find(async (el) => (await el.$(cls('item-title')).getText()).trim() === title);
+      return !!found;
+    },
+    { timeoutMsg: `no card "${title}" in lane ${laneIndex}` }
+  );
+  return found!;
 }
 
 /** Drag a card with real pointer events and drop it on `target` (above or below its middle). */
