@@ -1,6 +1,6 @@
-import { isPlainObject } from 'is-plain-object';
 import { App, TFile, moment } from 'obsidian';
 import { getDataviewApi } from 'src/integrations/dataview';
+import { isPlainObject } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 
 import { PageData } from './types';

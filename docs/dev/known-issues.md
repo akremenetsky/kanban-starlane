@@ -20,6 +20,7 @@ what users expect. Each item is a candidate task; fixing one means updating its 
 | Card history | Only changes made in the plugin are recorded; editing the markdown directly is not. Moving a card by cutting/pasting its line to another board loses its history. | `cardHistory.test.ts` › does not record changes read from the file |
 | Card history | A history block that cannot be read (bad JSON, wrong shape) is kept as is, and that board records nothing new until it is fixed; a card dragged onto such a board loses its history. | `parse.test.ts` › keeps an unreadable history block |
 | Card history | Splitting a card records the parts as new cards; the original's history is dropped. | — |
+| Code review | The Obsidian review warns about loose typing (`any`, unsafe member access/return; ~400 places inherited from obsidian-kanban), `fs` (copying files pasted from the OS clipboard in `dropAndPaste.ts`), `localStorage.getItem('language')` (`getLanguage()` needs Obsidian 1.8.7, `minAppVersion` is 1.6.2), vault enumeration (needed to find boards for linked lanes and migration) and `new Function` (from a bundled dependency). The typed-unsafe rules are off in `eslint.config.mjs`; the rest are warnings. | `npm run lint` |
 | Card menu | *New note from card* turns the whole text of the first line into one link; dates, times and tags from the middle of the line are moved after the link. Other links in that line are replaced by their text. | `noteFromCard.test.ts` |
 
 Fixed during the fork setup (see `CHANGELOG.md`): lost settings edits within one second,

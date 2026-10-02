@@ -1,5 +1,4 @@
 /* eslint-disable prefer-rest-params -- vendored flatpickr code */
-/* eslint-disable @typescript-eslint/ban-types -- vendored flatpickr code */
 export const pad = (number: string | number, length = 2) => `000${number}`.slice(length * -1);
 export const int = (bool: boolean) => (bool === true ? 1 : 0);
 
@@ -16,3 +15,4 @@ export function debounce<F extends Function>(fn: F, wait: number, win: Window) {
 export const arrayify = <T>(obj: T | T[]): T[] => (Array.isArray(obj) ? obj : [obj]);
 
 export type IncrementEvent = MouseEvent & { delta: number; type: 'increment' };
+/* eslint-enable prefer-rest-params -- end of the vendored code block */

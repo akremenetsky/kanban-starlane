@@ -155,11 +155,9 @@ export class BasicMarkdownRenderer extends Component {
     const { lastRefHeight, lastRefWidth, containerEl } = this;
     this.wrapperEl = el;
     if (lastRefHeight > 0) {
-      el.style.width = `${lastRefWidth}px`;
-      el.style.height = `${lastRefHeight}px`;
+      el.setCssStyles({ width: `${lastRefWidth}px`, height: `${lastRefHeight}px` });
       el.win.setTimeout(() => {
-        el.style.width = '';
-        el.style.height = '';
+        el.setCssStyles({ width: '', height: '' });
       }, 50);
     }
     if (containerEl.parentElement !== el) {
@@ -173,14 +171,14 @@ export class BasicMarkdownRenderer extends Component {
     const { wrapperEl, containerEl } = this;
     if (!wrapperEl) return;
     wrapperEl.append(containerEl);
-    if (wrapperEl.style.minHeight) wrapperEl.style.minHeight = '';
+    if (wrapperEl.style.minHeight) wrapperEl.setCssStyles({ minHeight: '' });
     this.isVisible = true;
   }
 
   hide() {
     const { containerEl, wrapperEl } = this;
     if (!wrapperEl) return;
-    wrapperEl.style.minHeight = this.lastRefHeight + 'px';
+    wrapperEl.setCssStyles({ minHeight: this.lastRefHeight + 'px' });
     containerEl.detach();
     this.isVisible = false;
   }

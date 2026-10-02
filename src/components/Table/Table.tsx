@@ -101,8 +101,7 @@ export function TableView({
     getColumnCanGlobalFilter: () => true,
     enableColumnResizing: true,
     columnResizeMode: 'onChange',
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- vault.getConfig is not in the public Obsidian typings
-    // @ts-ignore
+    // @ts-ignore -- vault.getConfig is not in the public Obsidian typings
     columnResizeDirection: stateManager.app.vault.getConfig('rightToLeft') ? 'rtl' : 'ltr',
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),

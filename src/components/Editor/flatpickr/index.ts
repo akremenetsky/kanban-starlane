@@ -1,11 +1,10 @@
+import { Platform, sanitizeHTMLToDom } from 'obsidian';
+
 import English from './l10n/default';
 import { FPDate, FPHTMLCollection, FPHTMLElement, FPNodeList } from './types/globals';
 
-/* eslint-disable @typescript-eslint/no-non-null-assertion -- vendored flatpickr code */
 
-/* eslint-disable no-empty -- vendored flatpickr code */
 
-/* eslint-disable @typescript-eslint/ban-types -- vendored flatpickr code */
 import { DayElement, FlatpickrFn, Instance } from './types/instance';
 import { CustomLocale, Locale, key as LocaleKey } from './types/locale';
 import {
@@ -111,7 +110,7 @@ function FlatpickrInstance(element: HTMLElement, instanceConfig?: Options): Inst
 
     setCalendarWidth();
 
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    const isSafari = Platform.isSafari;
 
     /* TODO: investigate this further
 
@@ -135,7 +134,6 @@ function FlatpickrInstance(element: HTMLElement, instanceConfig?: Options): Inst
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-types -- vendored flatpickr code
   function bindToInstance<F extends Function>(fn: F): F {
     return fn.bind(self);
   }
@@ -148,8 +146,7 @@ function FlatpickrInstance(element: HTMLElement, instanceConfig?: Options): Inst
     } else if (config.noCalendar !== true) {
       win.requestAnimationFrame(function () {
         if (self.calendarContainer !== undefined) {
-          self.calendarContainer.style.visibility = 'hidden';
-          self.calendarContainer.style.display = 'block';
+          self.calendarContainer.setCssStyles({ visibility: 'hidden', display: 'block' });
         }
         if (self.daysContainer !== undefined) {
           const daysWidth = (self.days.offsetWidth + 1) * config.showMonths;
@@ -391,7 +388,7 @@ function FlatpickrInstance(element: HTMLElement, instanceConfig?: Options): Inst
     const debouncedResize = debounce(onResize, 50, win);
     self._debouncedChange = debounce(triggerChange, DEBOUNCED_CHANGE_MS, win);
 
-    if (self.daysContainer && !/iPhone|iPad|iPod/i.test(navigator.userAgent))
+    if (self.daysContainer && !Platform.isIosApp)
       bind(self.daysContainer, 'mouseover', (e: MouseEvent) => {
         if (self.config.mode === 'range') onMouseOver(getEventTarget(e) as DayElement);
       });
@@ -655,10 +652,10 @@ function FlatpickrInstance(element: HTMLElement, instanceConfig?: Options): Inst
       className !== 'prevMonthDay' &&
       i % 7 === 6
     ) {
-      self.weekNumbers.insertAdjacentHTML(
-        'beforeend',
-        "<span class='flatpickr-day'>" + self.config.getWeek(date) + '</span>'
-      );
+      self.weekNumbers.createSpan({
+        cls: 'flatpickr-day',
+        text: String(self.config.getWeek(date)),
+      });
     }
 
     triggerEvent('onDayCreate', dayElement);
@@ -973,10 +970,10 @@ function FlatpickrInstance(element: HTMLElement, instanceConfig?: Options): Inst
       'span',
       'flatpickr-prev-month'
     );
-    self.prevMonthNav.innerHTML = self.config.prevArrow;
+    self.prevMonthNav.append(sanitizeHTMLToDom(self.config.prevArrow));
 
     self.nextMonthNav = createElement(win.document, 'span', 'flatpickr-next-month');
-    self.nextMonthNav.innerHTML = self.config.nextArrow;
+    self.nextMonthNav.append(sanitizeHTMLToDom(self.config.nextArrow));
 
     buildMonths();
 
@@ -1142,11 +1139,11 @@ function FlatpickrInstance(element: HTMLElement, instanceConfig?: Options): Inst
     }
 
     for (let i = self.config.showMonths; i--;) {
-      self.weekdayContainer.children[i].innerHTML = `
-      <span class='flatpickr-weekday'>
-        ${weekdays.join("</span><span class='flatpickr-weekday'>")}
-      </span>
-      `;
+      const weekdayRow = self.weekdayContainer.children[i];
+      weekdayRow.replaceChildren();
+      for (const weekday of weekdays) {
+        weekdayRow.createSpan({ cls: 'flatpickr-weekday', text: weekday });
+      }
     }
   }
 
@@ -1901,7 +1898,7 @@ function FlatpickrInstance(element: HTMLElement, instanceConfig?: Options): Inst
       !self.config.disable.length &&
       !self.config.enable &&
       !self.config.weekNumbers &&
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      Platform.isMobile;
 
     for (let i = 0; i < self.config.plugins.length; i++) {
       const pluginConf = self.config.plugins[i](self) || ({} as Options);
@@ -2029,9 +2026,9 @@ function FlatpickrInstance(element: HTMLElement, instanceConfig?: Options): Inst
 
     if (!rightMost) {
       self.calendarContainer.style.left = `${left}px`;
-      self.calendarContainer.style.right = 'auto';
+      self.calendarContainer.setCssStyles({ right: 'auto' });
     } else if (!centerMost) {
-      self.calendarContainer.style.left = 'auto';
+      self.calendarContainer.setCssStyles({ left: 'auto' });
       self.calendarContainer.style.right = `${right}px`;
     } else {
       const doc = getDocumentStyleSheet() as CSSStyleSheet;
@@ -2047,7 +2044,7 @@ function FlatpickrInstance(element: HTMLElement, instanceConfig?: Options): Inst
       toggleClass(self.calendarContainer, 'centerMost', true);
       doc.insertRule(`${centerBefore},${centerAfter}${centerStyle}`, centerIndex);
       self.calendarContainer.style.left = `${centerLeft}px`;
-      self.calendarContainer.style.right = 'auto';
+      self.calendarContainer.setCssStyles({ right: 'auto' });
     }
   }
 

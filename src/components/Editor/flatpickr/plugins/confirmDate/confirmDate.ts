@@ -1,3 +1,5 @@
+import { sanitizeHTMLToDom } from 'obsidian';
+
 import { Instance } from '../../types/instance';
 import { Plugin } from '../../types/options';
 import { getEventTarget } from '../../utils/dom';
@@ -47,7 +49,7 @@ function confirmDatePlugin(pluginConfig: Config): Plugin {
         );
 
         confirmContainer.tabIndex = -1;
-        confirmContainer.innerHTML += config.confirmIcon;
+        confirmContainer.append(sanitizeHTMLToDom(config.confirmIcon));
 
         confirmContainer.addEventListener('click', fp.close);
         fp.calendarContainer.appendChild(confirmContainer);

@@ -39,8 +39,7 @@ export function registerWorkspacePatches(plugin: KanbanPlugin) {
 
   plugin.register(
     around(plugin.app.workspace, {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- patches an Obsidian method the public typings do not cover
-      // @ts-ignore
+      // @ts-ignore -- patches an Obsidian method the public typings do not cover
       setActiveLeaf(next) {
         return function (...args) {
           next.apply(this, args);

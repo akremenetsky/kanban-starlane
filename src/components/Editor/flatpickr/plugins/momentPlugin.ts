@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types -- vendored flatpickr code */
 import { Plugin } from '../types/options';
 import { IncrementEvent } from '../utils';
 import { getEventTarget } from '../utils/dom';

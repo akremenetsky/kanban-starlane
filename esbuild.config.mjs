@@ -8,10 +8,10 @@
  * output is also copied into the plugin folder of the in-repo test vault and, if set,
  * into $OBSIDIAN_PLUGIN_DIR (e.g. a plugin folder in your real vault).
  */
-import builtins from 'builtin-modules';
 import esbuild from 'esbuild';
 import { lessLoader } from 'esbuild-plugin-less';
 import fs from 'fs';
+import { builtinModules as builtins } from 'node:module';
 import path from 'path';
 import process from 'process';
 

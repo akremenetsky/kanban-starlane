@@ -5,17 +5,17 @@
  * that modules which `extends` them can be imported. Behaviour that matters for the
  * board format (moment, YAML) uses the same libraries Obsidian bundles.
  */
-import * as jsYaml from 'js-yaml';
 import momentLib from 'moment';
+import YAML from 'yaml';
 
 export const moment = momentLib;
 
 export function parseYaml(text: string): any {
-  return jsYaml.load(text);
+  return YAML.parse(text);
 }
 
 export function stringifyYaml(obj: any): string {
-  return jsYaml.dump(obj);
+  return YAML.stringify(obj);
 }
 
 export function debounce<T extends (...args: any[]) => any>(

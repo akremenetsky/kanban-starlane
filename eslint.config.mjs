@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import obsidianmd from 'eslint-plugin-obsidianmd';
 import react from 'eslint-plugin-react';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -17,8 +18,6 @@ export default tseslint.config(
       'site/**',
       '.venv-docs/**',
       '.cache/**',
-      // Vendored third-party code, kept close to upstream.
-      'src/components/Editor/flatpickr/**',
     ],
   },
   js.configs.recommended,
@@ -66,5 +65,61 @@ export default tseslint.config(
   {
     files: ['*.mjs', '*.cjs', '*.mts', 'scripts/**/*.mjs'],
     languageOptions: { globals: { ...globals.node } },
+  },
+  // Rules of the Obsidian community plugin review (the same set its automated check runs).
+  // Applied to plugin code only; it needs type information for the typed rules.
+  ...obsidianmd.configs.recommended.map((config) => {
+    if (config.files?.includes('package.json')) return config;
+    // Narrow every file pattern to `src/` (nested arrays are AND-ed by ESLint).
+    const files = (config.files ?? ['**/*']).map((pattern) => [
+      'src/**/*.{ts,tsx}',
+      ...[pattern].flat(),
+    ]);
+    return { ...config, files };
+  }),
+  {
+    files: ['package.json'],
+    rules: {
+      // moment backs the fake Obsidian API in unit tests (the app provides its own), and the React
+      // plugin is lint tooling: neither ships in main.js.
+      'depend/ban-dependencies': ['error', { allowed: ['moment', 'eslint-plugin-react'] }],
+    },
+  },
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    languageOptions: {
+      parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname },
+    },
+  },
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      // Inherited code is loosely typed (Obsidian internals, mdast, flatpickr); the review only
+      // warns about it. Tracked in docs/dev/known-issues.md, not enforced here.
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-this-alias': 'off',
+      // TypeScript itself reports undefined names.
+      'no-undef': 'off',
+      // Type-aware rules that find real bugs, but not ones the review blocks on: warn only.
+      '@typescript-eslint/no-floating-promises': 'warn',
+      '@typescript-eslint/no-misused-promises': 'warn',
+      '@typescript-eslint/unbound-method': 'warn',
+      '@typescript-eslint/no-base-to-string': 'warn',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
+      '@typescript-eslint/no-unsafe-function-type': 'warn',
+      '@typescript-eslint/restrict-template-expressions': 'warn',
+      '@typescript-eslint/restrict-plus-operands': 'warn',
+      '@typescript-eslint/await-thenable': 'warn',
+      '@typescript-eslint/prefer-promise-reject-errors': 'warn',
+      '@typescript-eslint/no-for-in-array': 'warn',
+      '@typescript-eslint/no-redundant-type-constituents': 'warn',
+      // `@ts-ignore` needs a reason, as the review asks for every directive comment.
+      '@typescript-eslint/ban-ts-comment': ['error', { 'ts-ignore': 'allow-with-description' }],
+    },
   }
 );
