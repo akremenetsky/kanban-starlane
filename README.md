@@ -1,6 +1,6 @@
 # Kanban Starlane
 
-[![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE.md)
+[![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 [![Obsidian](https://img.shields.io/badge/Obsidian-%E2%89%A51.6.2-7C3AED)](https://obsidian.md)
 [![BRAT](https://img.shields.io/badge/install%20with-BRAT-8b5cf6)](https://github.com/TfTHacker/obsidian42-brat)
 
@@ -73,6 +73,6 @@ Copyright (C) 2021–2024 Matthew Meyers — original Kanban plugin
 ([his note on the project's history](docs/history/original-maintainers-note.md)).
 Copyright (C) 2026 Anton Kremenetsky — Kanban Starlane modifications (see [CHANGELOG.md](CHANGELOG.md)).
 
-Licensed under the [GNU General Public License v3.0](LICENSE.md). Bundled third-party code
+Licensed under the [GNU General Public License v3.0](LICENSE). Bundled third-party code
 keeps its own license: flatpickr (MIT), parts of Dataview and Tasks (MIT),
 Hot Reload in the test vault (ISC).
