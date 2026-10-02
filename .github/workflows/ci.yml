@@ -19,6 +19,24 @@ jobs:
       - run: npm run check
       - run: npm run build
 
+  # Obsidian's own validation of manifest, versions.json, README, license and the scanner
+  # lint rules that the community directory runs on every release.
+  obsidian-review:
+    name: Obsidian community review checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: obsidianmd/obsidian-workflows@v1
+        with:
+          scanner-lint: true
+
   e2e:
     name: E2E (minimum and latest Obsidian)
     runs-on: ubuntu-latest
