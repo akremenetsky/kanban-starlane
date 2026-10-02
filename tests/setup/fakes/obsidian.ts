@@ -3,7 +3,7 @@
  *
  * Only what the code under test touches is implemented. UI classes are inert stubs so
  * that modules which `extends` them can be imported. Behaviour that matters for the
- * board format (moment, YAML) uses the same libraries Obsidian bundles.
+ * board format (moment, YAML) uses libraries that behave like the ones Obsidian bundles.
  */
 import momentLib from 'moment';
 import YAML from 'yaml';
@@ -15,7 +15,7 @@ export function parseYaml(text: string): any {
 }
 
 export function stringifyYaml(obj: any): string {
-  return YAML.stringify(obj);
+  return YAML.stringify(obj, { lineWidth: 0 });
 }
 
 export function debounce<T extends (...args: any[]) => any>(
