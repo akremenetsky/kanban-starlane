@@ -3,7 +3,8 @@
   "name": "Kanban Starlane",
   "version": "0.1.0",
   "minAppVersion": "1.6.2",
-  "description": "Markdown-backed Kanban boards. Started as a fork of the Kanban plugin by mgmeyers, now developed independently.",
+  "description": "Organize notes as Kanban boards backed by plain markdown, with linked boards across files, dates, tags and WIP limits.",
   "author": "Anton Kremenetsky",
+  "authorUrl": "https://github.com/akremenetsky",
   "isDesktopOnly": false
 }
