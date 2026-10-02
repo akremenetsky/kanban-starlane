@@ -118,7 +118,7 @@ export class DateSuggest extends EditorSuggest<[]> {
       suggestEl.addClasses([c('date-picker'), c('ignore-click-outside')]);
       constructDatePicker(context, stateManager, suggestEl, (picker) => {
         this.datepicker = picker;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- updatePosition is internal to Obsidian and not in the public typings
         // @ts-ignore
         this.updatePosition(true);
       });

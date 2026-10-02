@@ -1,11 +1,11 @@
 import English from './l10n/default';
 import { FPDate, FPHTMLCollection, FPHTMLElement, FPNodeList } from './types/globals';
 
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-non-null-assertion -- vendored flatpickr code */
 
-/* eslint-disable no-empty */
+/* eslint-disable no-empty -- vendored flatpickr code */
 
-/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/ban-types -- vendored flatpickr code */
 import { DayElement, FlatpickrFn, Instance } from './types/instance';
 import { CustomLocale, Locale, key as LocaleKey } from './types/locale';
 import {
@@ -135,7 +135,7 @@ function FlatpickrInstance(element: HTMLElement, instanceConfig?: Options): Inst
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/ban-types -- vendored flatpickr code
   function bindToInstance<F extends Function>(fn: F): F {
     return fn.bind(self);
   }

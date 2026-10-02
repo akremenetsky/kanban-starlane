@@ -161,7 +161,7 @@ export class KanbanView extends TextFileView implements HoverParent {
 
   async loadFile(file: TFile) {
     this.plugin.removeView(this);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- overrides an Obsidian method the public typings do not cover
     // @ts-ignore
     return super.loadFile(file);
   }

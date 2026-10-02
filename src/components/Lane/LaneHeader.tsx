@@ -133,7 +133,7 @@ export const LaneHeader = memo(function LaneHeader({
   return (
     <>
       <div
-        // eslint-disable-next-line react/no-unknown-property
+        // eslint-disable-next-line react/no-unknown-property -- Preact handles onDblClick, which the React lint rules do not know
         onDblClick={onDoubleClick}
         className={c('lane-header-wrapper')}
       >
