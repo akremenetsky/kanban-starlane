@@ -36,6 +36,7 @@ jobs:
       - uses: obsidianmd/obsidian-workflows@v1
         with:
           scanner-lint: true
+          strict: true
 
   e2e:
     name: E2E (minimum and latest Obsidian)
