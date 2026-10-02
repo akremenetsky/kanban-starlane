@@ -3,6 +3,16 @@
 All notable changes to Kanban Starlane. Kanban Starlane is a modified version of the
 [Kanban plugin](https://github.com/mgmeyers/obsidian-kanban) by Matthew Meyers (2.0.51).
 
+## 0.1.1 — 2026-10-03
+
+Changes made for Obsidian's community plugin review. Nothing changes for boards or their files.
+
+### Changed
+- Date picker: built without `innerHTML`, uses Obsidian's `Platform` instead of browser sniffing.
+- Styles are set through Obsidian's `setCssStyles` or CSS classes instead of inline assignments.
+- Release assets (`main.js`, `manifest.json`, `styles.css`) carry GitHub build attestations.
+- Removed unused dependencies and the unused `preact-shim.js`.
+
 ## 0.1.0 — 2026-10-02
 
 First version of the fork.

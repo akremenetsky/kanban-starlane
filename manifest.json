@@ -1,10 +1,10 @@
 {
-  "id": "kanban-starlane",
-  "name": "Kanban Starlane",
-  "version": "0.1.0",
-  "minAppVersion": "1.6.2",
-  "description": "Organize notes as Kanban boards backed by plain markdown, with linked boards across files, dates, tags and WIP limits.",
-  "author": "Anton Kremenetsky",
-  "authorUrl": "https://github.com/akremenetsky",
-  "isDesktopOnly": false
+	"id": "kanban-starlane",
+	"name": "Kanban Starlane",
+	"version": "0.1.1",
+	"minAppVersion": "1.6.2",
+	"description": "Organize notes as Kanban boards backed by plain markdown, with linked boards across files, dates, tags and WIP limits.",
+	"author": "Anton Kremenetsky",
+	"authorUrl": "https://github.com/akremenetsky",
+	"isDesktopOnly": false
 }
