@@ -36,8 +36,9 @@ export default tseslint.config(
       'react/prop-types': 'off',
       'react/no-unescaped-entities': 'off',
       'react/display-name': 'off',
-      // Preact uses `class` fine, but keep JSX consistent with React naming.
-      'react/no-unknown-property': ['error', { ignore: ['class'] }],
+      // Preact takes `class` and `onDblClick`; the review's scanner does not know the react
+      // plugin, so these are configured here instead of with inline disable comments.
+      'react/no-unknown-property': ['error', { ignore: ['class', 'onDblClick'] }],
 
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-empty-function': 'off',
@@ -118,6 +119,13 @@ export default tseslint.config(
       '@typescript-eslint/prefer-promise-reject-errors': 'warn',
       '@typescript-eslint/no-for-in-array': 'warn',
       '@typescript-eslint/no-redundant-type-constituents': 'warn',
+      // Errors in the review scanner on top of the recommended set.
+      'no-eval': 'error',
+      'no-implied-eval': 'error',
+      'no-unsanitized/method': 'error',
+      'no-unsanitized/property': 'error',
+      'obsidianmd/regex-lookbehind': 'error',
+      'obsidianmd/no-forbidden-elements': 'error',
       // `@ts-ignore` needs a reason, as the review asks for every directive comment.
       '@typescript-eslint/ban-ts-comment': ['error', { 'ts-ignore': 'allow-with-description' }],
     },

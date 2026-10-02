@@ -86,7 +86,6 @@ export const ItemCell = memo(
       <ExplicitPathContext.Provider value={path}>
         <div
           onContextMenu={onContextMenu}
-          // eslint-disable-next-line react/no-unknown-property -- Preact handles onDblClick, which the React lint rules do not know
           onDblClick={onDoubleClick}
           className={c('item-content-wrapper')}
         >

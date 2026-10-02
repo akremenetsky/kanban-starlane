@@ -2433,7 +2433,9 @@ function FlatpickrInstance(element: HTMLElement, instanceConfig?: Options): Inst
     try {
       if (self.input.parentNode)
         self.input.parentNode.insertBefore(self.mobileInput, self.input.nextSibling);
-    } catch {}
+    } catch {
+      // The input may already be detached from the document; the mobile input is optional.
+    }
 
     bind(self.mobileInput, 'change', (e: KeyboardEvent) => {
       self.setDate((getEventTarget(e) as HTMLInputElement).value, false, self.mobileFormatStr);

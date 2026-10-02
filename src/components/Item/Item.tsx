@@ -115,7 +115,6 @@ const ItemInner = memo(function ItemInner({
 
   return (
     <div
-      // eslint-disable-next-line react/no-unknown-property -- Preact handles onDblClick, which the React lint rules do not know
       onDblClick={onDoubleClick}
       onContextMenu={onContextMenu}
       className={c('item-content-wrapper')}
