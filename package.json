@@ -20,7 +20,8 @@
     "test:e2e": "npm run build && node scripts/e2e.mjs",
     "docs:install": "python3 -m venv .venv-docs && .venv-docs/bin/pip install -q -r requirements-docs.txt",
     "docs:serve": ".venv-docs/bin/zensical serve",
-    "docs:build": ".venv-docs/bin/zensical build"
+    "docs:build": ".venv-docs/bin/zensical build",
+    "lint:scanner": "node scripts/scanner-lint.mjs"
   },
   "keywords": [],
   "author": "Anton Kremenetsky",
@@ -52,6 +53,8 @@
     "obsidian": "^1.5.7-1",
     "obsidian-dataview": "^0.5.68",
     "prettier": "^3.9.9",
+    "stylelint": "^17.6.0",
+    "stylelint-no-unsupported-browser-features": "^8.1.1",
     "tslib": "^2.6.2",
     "typescript": "~5.9",
     "typescript-eslint": "^8.70.1",
