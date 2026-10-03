@@ -1,5 +1,6 @@
 import { FileWithPath, fromEvent } from 'file-selector';
 import { Platform, TFile, TFolder, htmlToMarkdown, moment, parseLinktext } from 'obsidian';
+import { toError } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 
 export function linkTo(
@@ -22,21 +23,44 @@ export function fixLinks(text: string) {
   return text.replace(/^\[(.*)\]\(app:\/\/obsidian.md\/(.*)\)$/, '[$1]($2)');
 }
 
+/** The parts of Electron's clipboard used to paste files (desktop only). */
+interface ElectronClipboard {
+  has(format: string): boolean;
+  read(format: string): string;
+  readBuffer(format: string): Buffer;
+  readImage(type?: string): { isEmpty(): boolean; toPNG(): Buffer };
+  availableFormats(): string[];
+}
+
+/** The bytes of a Node Buffer as the ArrayBuffer `vault.createBinary` takes. */
+function toArrayBuffer(buffer: Buffer): ArrayBuffer {
+  return buffer.buffer.slice(
+    buffer.byteOffset,
+    buffer.byteOffset + buffer.byteLength
+  ) as ArrayBuffer;
+}
+
+function getElectronClipboard(win: Window & typeof window): ElectronClipboard {
+  const electron = win.require('electron') as { remote: { clipboard: ElectronClipboard } };
+  return electron.remote.clipboard;
+}
+
 export function getFileListFromClipboard(win: Window & typeof window) {
-  const clipboard = win.require('electron').remote.clipboard;
+  const clipboard = getElectronClipboard(win);
 
   if (process.platform === 'darwin') {
     // https://github.com/electron/electron/issues/9035#issuecomment-359554116
     if (clipboard.has('NSFilenamesPboardType')) {
       return (
-        (clipboard.read('NSFilenamesPboardType') as string)
+        clipboard
+          .read('NSFilenamesPboardType')
           .match(/<string>.*<\/string>/g)
           ?.map((item) => item.replace(/<string>|<\/string>/g, '')) || []
       );
     } else {
       const clipboardImage = clipboard.readImage('clipboard');
       if (!clipboardImage.isEmpty()) {
-        const png = clipboardImage.toPNG();
+        const png = toArrayBuffer(clipboardImage.toPNG());
         const fileInfo: FileData = {
           buffer: png,
           mimeType: 'image/png',
@@ -44,9 +68,7 @@ export function getFileListFromClipboard(win: Window & typeof window) {
         };
         return [fileInfo];
       } else {
-        return [(clipboard.read('public.file-url') as string).replace('file://', '')].filter(
-          (item) => item
-        );
+        return [clipboard.read('public.file-url').replace('file://', '')].filter((item) => item);
       }
     }
   } else {
@@ -70,12 +92,12 @@ export function getFileListFromClipboard(win: Window & typeof window) {
         return formatFilePathStr
           .split(drivePrefix[0])
           .filter((item) => item)
-          .map((item) => drivePrefix + item);
+          .map((item) => drivePrefix[0] + item);
       }
     } else {
       const clipboardImage = clipboard.readImage('clipboard');
       if (!clipboardImage.isEmpty()) {
-        const png = clipboardImage.toPNG();
+        const png = toArrayBuffer(clipboardImage.toPNG());
         const fileInfo: FileData = {
           buffer: png,
           mimeType: 'image/png',
@@ -84,10 +106,10 @@ export function getFileListFromClipboard(win: Window & typeof window) {
         return [fileInfo];
       } else {
         return [
-          (clipboard.readBuffer('FileNameW').toString('ucs2') as string).replace(
-            RegExp(String.fromCharCode(0), 'g'),
-            ''
-          ),
+          clipboard
+            .readBuffer('FileNameW')
+            .toString('ucs2')
+            .replace(RegExp(String.fromCharCode(0), 'g'), ''),
         ].filter((item) => item);
       }
     }
@@ -106,11 +128,11 @@ async function linkFromBuffer(
   ext: string,
   buffer: ArrayBuffer
 ) {
-  const path = (await stateManager.app.vault.getAvailablePathForAttachments(
+  const path = await stateManager.app.vault.getAvailablePathForAttachments(
     fileName,
     ext,
     stateManager.file
-  ));
+  );
 
   const newFile = await stateManager.app.vault.createBinary(path, buffer);
 
@@ -122,8 +144,8 @@ async function handleElectronPaste(stateManager: StateManager, win: Window & typ
 
   if (!list || list.length === 0) return null;
 
-  const fs = win.require('fs/promises');
-  const nPath = win.require('path');
+  const fs = win.require('fs/promises') as typeof import('fs/promises');
+  const nPath = win.require('path') as typeof import('path');
 
   return (
     await Promise.all(
@@ -135,11 +157,11 @@ async function handleElectronPaste(stateManager: StateManager, win: Window & typ
           const ext = splitFile.pop();
           const fileName = splitFile.join('.');
 
-          const path = (await stateManager.app.vault.getAvailablePathForAttachments(
+          const path = await stateManager.app.vault.getAvailablePathForAttachments(
             fileName,
             ext,
             stateManager.file
-          ));
+          );
 
           const basePath = stateManager.app.vault.adapter.basePath;
 
@@ -148,7 +170,8 @@ async function handleElectronPaste(stateManager: StateManager, win: Window & typ
           // Wait for Obsidian to update
           await new Promise((resolve) => win.setTimeout(resolve, 50));
 
-          const newFile = stateManager.app.vault.getAbstractFileByPath(path) as TFile;
+          const newFile = stateManager.app.vault.getAbstractFileByPath(path);
+          if (!(newFile instanceof TFile)) return null;
 
           return linkTo(stateManager, newFile, stateManager.file.path);
         } else {
@@ -191,11 +214,11 @@ function handleFiles(stateManager: StateManager, files: FileWithPath[], isPaste?
         const reader = new FileReader();
         reader.onload = async (e) => {
           try {
-            const path = (await stateManager.app.vault.getAvailablePathForAttachments(
+            const path = await stateManager.app.vault.getAvailablePathForAttachments(
               fileName,
               ext,
               stateManager.file
-            ));
+            );
             const newFile = await stateManager.app.vault.createBinary(
               path,
               e.target.result as ArrayBuffer
@@ -204,7 +227,7 @@ function handleFiles(stateManager: StateManager, files: FileWithPath[], isPaste?
             resolve(linkTo(stateManager, newFile, stateManager.file.path));
           } catch (e) {
             console.error(e);
-            reject(e);
+            reject(toError(e));
           }
         };
         reader.readAsArrayBuffer(file);
@@ -223,8 +246,7 @@ async function handleNullDraggable(
   const transfer = isClipboardEvent
     ? (e as ClipboardEvent).clipboardData
     : (e as DragEvent).dataTransfer;
-  const clipboard =
-    isClipboardEvent && Platform.isDesktopApp ? win.require('electron').remote.clipboard : null;
+  const clipboard = isClipboardEvent && Platform.isDesktopApp ? getElectronClipboard(win) : null;
   const formats = clipboard ? clipboard.availableFormats() : [];
 
   if (!isClipboardEvent) {
@@ -244,8 +266,7 @@ async function handleNullDraggable(
     const files: File[] = [];
     const items = (e as ClipboardEvent).clipboardData.items;
 
-    for (const index in items) {
-      const item = items[index];
+    for (const item of Array.from(items)) {
       if (item.kind === 'file') {
         files.push(item.getAsFile());
       }

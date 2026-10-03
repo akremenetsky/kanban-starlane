@@ -3,6 +3,7 @@ import { useContext } from 'preact/compat';
 import { SearchContext } from 'src/components/context';
 import { c, parseMetadataWithOptions } from 'src/components/helpers';
 import { getDataviewPlugin } from 'src/integrations/dataview';
+import { hasTimestamp } from 'src/model/metadataValues';
 import { Item } from 'src/model/types';
 import { lableToIcon, lableToName, taskFields } from 'src/parsers/helpers/inlineMetadata';
 import { StateManager } from 'src/state/StateManager';
@@ -39,7 +40,7 @@ export function InlineMetadata({ item, stateManager }: InlineMetadataProps) {
         const val = dataview?.api?.parse(value) ?? value;
         const isEmojiPriority = isEmoji && key === 'priority';
         // Dataview parses dates into Luxon DateTime objects.
-        const isDate = typeof val === 'object' && !!val && 'ts' in val && !!val.ts;
+        const isDate = hasTimestamp(val);
         const classNameSlug = key.replace(/[^a-zA-Z0-9_]/g, '-');
 
         let label = '';

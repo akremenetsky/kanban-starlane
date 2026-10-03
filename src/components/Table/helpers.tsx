@@ -15,9 +15,9 @@ import { SearchContext } from 'src/components/context';
 import { c } from 'src/components/helpers';
 import { getDataviewPlugin } from 'src/integrations/dataview';
 import { t } from 'src/lang/helpers';
-import { anyToString } from 'src/model/metadataValues';
-import { Board, Lane } from 'src/model/types';
-import { lableToName, taskFields } from 'src/parsers/helpers/inlineMetadata';
+import { anyToString, hasTimestamp } from 'src/model/metadataValues';
+import { Board, Lane, PageData, PageDataValue } from 'src/model/types';
+import { InlineField, lableToName, taskFields } from 'src/parsers/helpers/inlineMetadata';
 import { defaultSort } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 
@@ -26,13 +26,19 @@ import { TableData, TableItem } from './types';
 
 export const columnHelper = createColumnHelper<TableItem>();
 
-export const fuzzyAnyFilter: FilterFn<TableItem> = (row, columnId, search, addMeta) => {
-  const val = row.getValue(columnId) as any;
+/** The `value` of a metadata cell (PageData, InlineField), if it has one. */
+function cellValue(val: unknown): unknown {
+  return typeof val === 'object' && val !== null && 'value' in val ? val.value : undefined;
+}
+
+export const fuzzyAnyFilter: FilterFn<TableItem> = (row, columnId, search: string, addMeta) => {
+  const val = row.getValue<unknown>(columnId);
 
   if (val === null) return false;
 
   const stateManager = row.original.stateManager;
-  const str = val.value ? anyToString(val.value, stateManager) : anyToString(val, stateManager);
+  const inner = cellValue(val);
+  const str = inner ? anyToString(inner, stateManager) : anyToString(val, stateManager);
   const itemRank = rankItem(str, search, {
     threshold: rankings.CONTAINS,
   });
@@ -40,14 +46,21 @@ export const fuzzyAnyFilter: FilterFn<TableItem> = (row, columnId, search, addMe
   return itemRank.passed;
 };
 
-export const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
+/** Whether a `tags` file metadata cell (a list, or text) contains the tag. */
+function hasTag(data: PageData, tag: string): boolean {
+  const { value } = data;
+  if (Array.isArray(value) || typeof value === 'string') return value.includes(tag);
+  return false;
+}
+
+export const fuzzySort: SortingFn<TableItem> = (rowA, rowB, columnId) => {
   if (!rowA.columnFiltersMeta[columnId] && !rowB.columnFiltersMeta[columnId]) return null;
   if (!rowA.columnFiltersMeta[columnId]) return -1;
   if (!rowB.columnFiltersMeta[columnId]) return 1;
 
   return compareItems(
-    (rowA.columnFiltersMeta[columnId] as any)?.itemRank,
-    (rowB.columnFiltersMeta[columnId] as any)?.itemRank
+    rowA.columnFiltersMeta[columnId]?.itemRank,
+    rowB.columnFiltersMeta[columnId]?.itemRank
   );
 };
 
@@ -114,7 +127,7 @@ export function useTableData(board: Board, stateManager: StateManager): TableDat
   }, [board]);
 }
 
-export const baseColumns = (sizing: Record<string, number>): ColumnDef<TableItem, any>[] => [
+export const baseColumns = (sizing: Record<string, number>): ColumnDef<TableItem, unknown>[] => [
   columnHelper.accessor((row) => row.item.data.title, {
     id: 'card',
     cell: (info) => {
@@ -178,7 +191,7 @@ export function useTableColumns(boardData: Board, stateManager: StateManager) {
     stateManager
   );
 
-  const withMetadata: ColumnDef<TableItem, any>[] = useMemo(() => {
+  const withMetadata: ColumnDef<TableItem, unknown>[] = useMemo(() => {
     const columns = [...baseColumns(tableSizing)];
     for (const key of metadata) {
       switch (key) {
@@ -204,8 +217,8 @@ export function useTableColumns(boardData: Board, stateManager: StateManager) {
                 sortingFn: (a, b, id) => {
                   const sorted = fuzzySort(a, b, id);
                   if (sorted === null) {
-                    const dateA = a.getValue(id) as moment.Moment;
-                    const dateB = b.getValue(id) as moment.Moment;
+                    const dateA = a.getValue<moment.Moment>(id);
+                    const dateB = b.getValue<moment.Moment>(id);
 
                     if (!dateA && !dateB) return 0;
                     if (!dateA) return desc.current ? -1 : 1;
@@ -228,7 +241,7 @@ export function useTableColumns(boardData: Board, stateManager: StateManager) {
                 id: 'card-tags',
                 size: tableSizing['card-tags'],
                 cell: (info) => {
-                  const searchQuery = info.table.getState().globalFilter;
+                  const searchQuery = info.table.getState().globalFilter as string;
                   const tags = info.getValue();
                   if (!tags?.length) return null;
                   return <Tags tags={tags} searchQuery={searchQuery} />;
@@ -295,7 +308,7 @@ export function useTableColumns(boardData: Board, stateManager: StateManager) {
               const isEmoji = m.wrapping === 'emoji-shorthand';
               const val = getDataviewPlugin(stateManager.app)?.api?.parse(m.value) ?? m.value;
               const isEmojiPriority = isEmoji && m.key === 'priority';
-              const isDate = !!val?.ts;
+              const isDate = hasTimestamp(val);
 
               return (
                 <span
@@ -314,7 +327,7 @@ export function useTableColumns(boardData: Board, stateManager: StateManager) {
                       <MetadataValue
                         searchQuery={search?.query}
                         data={{
-                          value: val,
+                          value: val as PageDataValue,
                           label: '',
                           metadataKey: m.key,
                           shouldHideLabel: false,
@@ -328,8 +341,8 @@ export function useTableColumns(boardData: Board, stateManager: StateManager) {
             },
             sortDescFirst: false,
             sortingFn: (a, b, id) => {
-              const valA = a.getValue(id) as any;
-              const valB = b.getValue(id) as any;
+              const valA = a.getValue<InlineField | null>(id);
+              const valB = b.getValue<InlineField | null>(id);
 
               if (valA === null && valB === null) return 0;
               if (valA === null) return desc.current ? -1 : 1;
@@ -369,7 +382,7 @@ export function useTableColumns(boardData: Board, stateManager: StateManager) {
             cell: (info) => {
               const val = info.getValue();
               if (!val) return null;
-              const searchQuery = info.table.getState().globalFilter;
+              const searchQuery = info.table.getState().globalFilter as string;
               if (key === 'tags') {
                 return <Tags searchQuery={searchQuery} tags={val.value as string[]} alwaysShow />;
               }
@@ -377,8 +390,8 @@ export function useTableColumns(boardData: Board, stateManager: StateManager) {
             },
             sortDescFirst: false,
             sortingFn: (a, b, id) => {
-              const valA = a.getValue(id) as any;
-              const valB = b.getValue(id) as any;
+              const valA = a.getValue<PageData | null>(id);
+              const valB = b.getValue<PageData | null>(id);
 
               if (!valA?.value && !valB?.value) return 0;
               if (!valA?.value) return desc.current ? -1 : 1;
@@ -389,9 +402,9 @@ export function useTableColumns(boardData: Board, stateManager: StateManager) {
                 if (id === 'tags') {
                   const tagSortOrder = stateManager.getSetting('tag-sort');
                   const aSortOrder =
-                    tagSortOrder?.findIndex((sort) => valA.value.includes(sort.tag)) ?? -1;
+                    tagSortOrder?.findIndex((sort) => hasTag(valA, sort.tag)) ?? -1;
                   const bSortOrder =
-                    tagSortOrder?.findIndex((sort) => valB.value.includes(sort.tag)) ?? -1;
+                    tagSortOrder?.findIndex((sort) => hasTag(valB, sort.tag)) ?? -1;
 
                   if (aSortOrder > -1 && bSortOrder < 0) return -1;
                   if (bSortOrder > -1 && aSortOrder < 0) return 1;

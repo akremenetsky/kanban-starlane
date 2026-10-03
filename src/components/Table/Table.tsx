@@ -203,7 +203,7 @@ export function TableView({
                       className={classcat({
                         'mod-has-icon': cell.column.id === 'lane',
                         'mod-search-match': row.columnFiltersMeta[cell.column.id]
-                          ? (row.columnFiltersMeta[cell.column.id] as any).itemRank.passed
+                          ? row.columnFiltersMeta[cell.column.id].itemRank.passed
                           : false,
                       })}
                     >

@@ -6,7 +6,7 @@ import { StateManager } from 'src/state/StateManager';
 import { PageData } from './types';
 
 /** A Luxon DateTime from Dataview (or anything with a timestamp). */
-function hasTimestamp(v: unknown): v is { ts: number } {
+export function hasTimestamp(v: unknown): v is { ts: number } {
   return typeof v === 'object' && v !== null && 'ts' in v && !!v.ts;
 }
 
