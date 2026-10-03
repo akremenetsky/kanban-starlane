@@ -26,8 +26,9 @@ items, so your data is readable and editable without the plugin.
 
 ## Installation
 
-Kanban Starlane is not in the community plugin store yet.
-
+- **Community plugins** (recommended): in Obsidian open _Settings → Community plugins → Browse_,
+  search for _Kanban Starlane_, install and enable it
+  ([plugin page](https://community.obsidian.md/plugins/kanban-starlane)).
 - **BRAT**: install [Obsidian42 - BRAT](https://github.com/TfTHacker/obsidian42-brat) and add
   this repository as a beta plugin.
 - **Manually**: download `main.js`, `manifest.json` and `styles.css` from the latest release into

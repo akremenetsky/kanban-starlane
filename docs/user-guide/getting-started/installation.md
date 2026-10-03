@@ -1,8 +1,19 @@
 # Installation
 
-Kanban Starlane is not yet in Obsidian's community plugin store, so install it one of two ways.
+Kanban Starlane is in Obsidian's community plugin store. You can also install it with BRAT or by
+hand.
 
-## BRAT (recommended)
+## Community plugins (recommended)
+
+1. Open **Settings → Community plugins** and turn off *Restricted mode* if it is on.
+2. Click **Browse**, search for **Kanban Starlane**, then **Install** and **Enable**.
+
+Obsidian updates the plugin together with your other community plugins. The
+[plugin page](https://community.obsidian.md/plugins/kanban-starlane) lists the releases.
+
+## BRAT
+
+Use BRAT to try versions before they reach the store.
 
 1. Install [Obsidian42 - BRAT](https://github.com/TfTHacker/obsidian42-brat) from the community
    plugin store.
