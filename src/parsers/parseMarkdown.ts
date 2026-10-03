@@ -12,6 +12,7 @@ import { genericWrappedExtension, genericWrappedFromMarkdown } from './extension
 import { internalMarkdownLinks } from './extensions/internalMarkdownLink';
 import { tagExtension, tagFromMarkdown } from './extensions/tag';
 import { gfmTaskListItem, gfmTaskListItemFromMarkdown } from './extensions/taskList';
+import { DateNode, FileNode, TimeNode } from './extensions/types';
 import { FileAccessor } from './helpers/strings';
 import { withoutHistoryBlock } from './history';
 import { getLinkedPageMetadata } from './linkedMetadata';
@@ -33,7 +34,7 @@ function extractFrontmatter(md: string) {
     if (frontmatterStart < 0) frontmatterStart = i;
 
     if (md[i] === '-' && /[\r\n]/.test(md[i - 1]) && md[i + 1] === '-' && md[i + 2] === '-') {
-      return parseYaml(md.slice(frontmatterStart, i - 1).trim());
+      return parseYaml(md.slice(frontmatterStart, i - 1).trim()) as Record<string, unknown>;
     }
   }
 }
@@ -59,7 +60,7 @@ function extractSettingsFooter(md: string) {
     }
 
     if (md[i] === '`' && md[i - 1] === '`' && md[i - 2] === '`' && /[\r\n]/.test(md[i - 3])) {
-      return JSON.parse(md.slice(i + 1, settingsEnd).trim());
+      return JSON.parse(md.slice(i + 1, settingsEnd).trim()) as Record<string, unknown>;
     }
   }
 }
@@ -80,19 +81,19 @@ function getExtensions(stateManager: StateManager) {
 function getMdastExtensions(stateManager: StateManager) {
   return [
     gfmTaskListItemFromMarkdown,
-    genericWrappedFromMarkdown('date', (text, node) => {
+    genericWrappedFromMarkdown<DateNode>('date', (text, node) => {
       if (!text) return;
       node.date = text;
     }),
-    genericWrappedFromMarkdown('dateLink', (text, node) => {
+    genericWrappedFromMarkdown<DateNode>('dateLink', (text, node) => {
       if (!text) return;
       node.date = text;
     }),
-    genericWrappedFromMarkdown('time', (text, node) => {
+    genericWrappedFromMarkdown<TimeNode>('time', (text, node) => {
       if (!text) return;
       node.time = text;
     }),
-    genericWrappedFromMarkdown('embedWikilink', (text, node) => {
+    genericWrappedFromMarkdown<FileNode>('embedWikilink', (text, node) => {
       if (!text) return;
 
       const normalizedPath = getNormalizedPath(text);
@@ -108,7 +109,7 @@ function getMdastExtensions(stateManager: StateManager) {
         stats: file?.stat,
       } as FileAccessor;
     }),
-    genericWrappedFromMarkdown('wikilink', (text, node) => {
+    genericWrappedFromMarkdown<FileNode>('wikilink', (text, node) => {
       if (!text) return;
 
       const normalizedPath = getNormalizedPath(text);
@@ -141,13 +142,16 @@ function getMdastExtensions(stateManager: StateManager) {
       );
 
       if (isEmbed) {
-        node.type = 'embedLink';
-        node.fileAccessor = {
-          target: decodeURIComponent(node.url),
-          isEmbed: true,
-          stats: file?.stat,
-        } as FileAccessor;
-      } else {
+        // Becomes an EmbedLinkNode.
+        Object.assign(node, {
+          type: 'embedLink',
+          fileAccessor: {
+            target: decodeURIComponent(node.url),
+            isEmbed: true,
+            stats: file?.stat,
+          } as FileAccessor,
+        });
+      } else if (node.type === 'link') {
         node.fileAccessor = {
           target: decodeURIComponent(node.url),
           isEmbed: false,
@@ -169,8 +173,8 @@ function getMdastExtensions(stateManager: StateManager) {
 export function parseMarkdown(stateManager: StateManager, md: string) {
   const mdFrontmatter = extractFrontmatter(md);
   const mdSettings = extractSettingsFooter(withoutHistoryBlock(md));
-  const settings = { ...mdSettings };
-  const fileFrontmatter: Record<string, any> = {};
+  const settings: Record<string, unknown> = { ...mdSettings };
+  const fileFrontmatter: Record<string, unknown> = {};
 
   Object.keys(mdFrontmatter).forEach((key) => {
     if (key === FRONTMATTER_KEY) {
@@ -184,10 +188,10 @@ export function parseMarkdown(stateManager: StateManager, md: string) {
     }
   });
 
-  stateManager.compileSettings(settings);
+  stateManager.compileSettings(settings as KanbanSettings);
 
   return {
-    settings,
+    settings: settings as KanbanSettings,
     frontmatter: fileFrontmatter,
     ast: fromMarkdown(md, {
       extensions: [frontmatter(['yaml']), ...getExtensions(stateManager)],

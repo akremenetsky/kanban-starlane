@@ -1,31 +1,36 @@
-import { Extension as FromMarkdownExtension, Token } from 'mdast-util-from-markdown';
+import {
+  CompileContext,
+  Extension as FromMarkdownExtension,
+  Token,
+} from 'mdast-util-from-markdown';
 import { markdownLineEnding, markdownSpace } from 'micromark-util-character';
-import { Effects, Extension, State } from 'micromark-util-types';
+import { Code, Effects, Extension, State, TokenizeContext } from 'micromark-util-types';
 
 import { getSelf } from './helpers';
+import { BlockIdNode } from './types';
 
 export function blockidExtension(): Extension {
   const name = 'blockid';
   const startMarker = '^';
 
-  function tokenize(effects: Effects, ok: State, nok: State) {
+  function tokenize(this: TokenizeContext, effects: Effects, ok: State, nok: State): State {
     let data = false;
     let startMarkerCursor = 0;
 
     return start;
 
-    function start(code: number) {
+    function start(code: Code) {
       if (code !== startMarker.charCodeAt(startMarkerCursor)) return nok(code);
 
-      effects.enter(name as any);
-      effects.enter(`${name}Marker` as any);
+      effects.enter(name);
+      effects.enter(`${name}Marker`);
 
       return consumeStart(code);
     }
 
-    function consumeStart(code: number) {
+    function consumeStart(code: Code) {
       if (startMarkerCursor === startMarker.length) {
-        effects.exit(`${name}Marker` as any);
+        effects.exit(`${name}Marker`);
         return consumeData(code);
       }
 
@@ -39,22 +44,22 @@ export function blockidExtension(): Extension {
       return consumeStart;
     }
 
-    function consumeData(code: number) {
-      effects.enter(`${name}Data` as any);
-      effects.enter(`${name}Target` as any);
+    function consumeData(code: Code) {
+      effects.enter(`${name}Data`);
+      effects.enter(`${name}Target`);
       return consumeTarget(code);
     }
 
-    function consumeTarget(code: number) {
+    function consumeTarget(code: Code) {
       if (markdownSpace(code)) {
         return nok(code);
       }
 
       if (markdownLineEnding(code) || code === null) {
         if (!data) return nok(code);
-        effects.exit(`${name}Target` as any);
-        effects.exit(`${name}Data` as any);
-        effects.exit(name as any);
+        effects.exit(`${name}Target`);
+        effects.exit(`${name}Data`);
+        effects.exit(name);
 
         return ok(code);
       }
@@ -76,24 +81,18 @@ export function blockidExtension(): Extension {
 export function blockidFromMarkdown(): FromMarkdownExtension {
   const name = 'blockid';
 
-  function enter(token: Token) {
-    this.enter(
-      {
-        type: name,
-        value: null,
-      },
-      token
-    );
+  function enter(this: CompileContext, token: Token) {
+    this.enter({ type: name, value: null } as BlockIdNode, token);
   }
 
-  function exitTarget(token: Token) {
+  function exitTarget(this: CompileContext, token: Token) {
     const target = this.sliceSerialize(token);
-    const current = getSelf(this.stack);
+    const current = getSelf(this.stack) as BlockIdNode;
 
-    (current as any).value = target;
+    current.value = target;
   }
 
-  function exit(token: Token) {
+  function exit(this: CompileContext, token: Token) {
     this.exit(token);
   }
 
