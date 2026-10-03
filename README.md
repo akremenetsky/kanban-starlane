@@ -73,6 +73,7 @@ disable the original plugin.
 ```bash
 npm install
 npm run dev        # watch build, installs into test-vault/ — open that folder as a vault
+npm run install-plugin -- <path to vault>   # build and install or update the plugin in a vault
 npm run check      # typecheck, lint, format check, unit tests
 npm run test:e2e   # end-to-end tests in real Obsidian
 ```
