@@ -52,7 +52,7 @@ export async function applyTemplate(stateManager: StateManager, templatePath?: s
       );
     } catch (e) {
       console.error(e);
-      stateManager.setError(e instanceof Error ? e : new Error(String(e)));
+      stateManager.setError(e);
     }
   }
 }

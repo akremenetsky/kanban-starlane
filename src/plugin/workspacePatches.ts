@@ -21,7 +21,7 @@ export function registerWorkspacePatches(plugin: KanbanPlugin) {
 
   plugin.app.workspace.onLayoutReady(() => {
     plugin.register(
-      around((self.app as any).commands, {
+      around(self.app.commands, {
         executeCommand(next) {
           return function (command: any) {
             const view = self.app.workspace.getActiveViewOfType(KanbanView);

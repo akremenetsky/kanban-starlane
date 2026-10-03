@@ -157,7 +157,7 @@ export function Tags({
                 return;
               }
 
-              (stateManager.app as any).internalPlugins
+              stateManager.app.internalPlugins
                 .getPluginById('global-search')
                 .instance.openGlobalSearch(`tag:${tag}`);
             }}

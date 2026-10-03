@@ -96,3 +96,8 @@ export function isPlainObject(value: unknown): value is Record<string, any> {
   if (Object.prototype.toString.call(proto) !== '[object Object]') return false;
   return Object.prototype.hasOwnProperty.call(proto, 'isPrototypeOf');
 }
+
+/** Whatever was thrown, as an Error. */
+export function toError(thrown: unknown): Error {
+  return thrown instanceof Error ? thrown : new Error(String(thrown));
+}

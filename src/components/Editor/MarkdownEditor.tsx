@@ -2,7 +2,13 @@ import { insertBlankLine } from '@codemirror/commands';
 import { EditorSelection, Extension, Prec } from '@codemirror/state';
 import { EditorView, ViewUpdate, keymap, placeholder as placeholderExt } from '@codemirror/view';
 import classcat from 'classcat';
-import { EditorPosition, Editor as ObsidianEditor, Platform } from 'obsidian';
+import {
+  EditorPosition,
+  EmbeddableMarkdownEditor,
+  MarkdownFileInfo,
+  Editor as ObsidianEditor,
+  Platform,
+} from 'obsidian';
 import { MutableRefObject, useContext, useEffect, useRef } from 'preact/compat';
 import { KanbanContext } from 'src/components/context';
 import { c, noop } from 'src/components/helpers';
@@ -39,36 +45,48 @@ function getEditorAppProxy(view: KanbanView) {
         return new Proxy(view.app.vault, {
           get(target, prop, reveiver) {
             if (prop === 'config') {
-              return new Proxy((view.app.vault as any).config, {
+              return new Proxy(view.app.vault.config, {
                 get(target, prop, reveiver) {
                   if (['showLineNumber', 'foldHeading', 'foldIndent'].includes(prop as string)) {
                     return false;
                   }
-                  return Reflect.get(target, prop, reveiver);
+                  return Reflect.get(target, prop, reveiver) as unknown;
                 },
               });
             }
-            return Reflect.get(target, prop, reveiver);
+            return Reflect.get(target, prop, reveiver) as unknown;
           },
         });
       }
-      return Reflect.get(target, prop, reveiver);
+      return Reflect.get(target, prop, reveiver) as unknown;
     },
   });
+}
+
+/** The owner the embedded editor reports to Obsidian (as `workspace.activeEditor`). */
+export interface EditorController extends MarkdownFileInfo {
+  showSearch(): void;
+  toggleMode(): void;
+  onMarkdownScroll(): void;
+  getMode(): 'source';
+  scroll: number;
+  editMode: EmbeddableMarkdownEditor | null;
+  readonly path: string;
 }
 
 function getMarkdownController(
   view: KanbanView,
   getEditor: () => ObsidianEditor
-): Record<any, any> {
+): EditorController {
   return {
     app: view.app,
     showSearch: noop,
     toggleMode: noop,
     onMarkdownScroll: noop,
-    getMode: () => 'source',
+    getMode: () => 'source' as const,
     scroll: 0,
     editMode: null,
+    hoverPopover: null,
     get editor() {
       return getEditor();
     },
@@ -84,12 +102,15 @@ function getMarkdownController(
 function setInsertMode(cm: EditorView) {
   const vim = getVimPlugin(cm);
   if (vim) {
-    (window as any).CodeMirrorAdapter?.Vim?.enterInsertMode(vim);
+    window.CodeMirrorAdapter?.Vim?.enterInsertMode(vim);
   }
 }
 
-function getVimPlugin(cm: EditorView): string {
-  return (cm as any)?.plugins?.find((p: any) => {
+// CodeMirror keeps its view plugins in an internal `plugins` array; the Vim plugin's value
+// holds the Vim-mode CodeMirror adapter.
+function getVimPlugin(cm: EditorView): unknown {
+  const { plugins } = cm as unknown as { plugins?: Array<{ value?: { cm?: unknown } }> };
+  return plugins?.find((p) => {
     if (!p?.value) return false;
     return 'useNextTextInput' in p.value && 'waitForCopy' in p.value;
   })?.value?.cm;
@@ -113,6 +134,7 @@ export function MarkdownEditor({
 
   useEffect(() => {
     class Editor extends view.plugin.MarkdownEditor {
+      declare owner: EditorController;
       isKanbanEditor = true;
 
       showTasksPluginAutoSuggest(
@@ -219,7 +241,7 @@ export function MarkdownEditor({
 
     const controller = getMarkdownController(view, () => editor.editor);
     const app = getEditorAppProxy(view);
-    const editor = view.plugin.addChild(new (Editor as any)(app, elRef.current, controller));
+    const editor = view.plugin.addChild(new Editor(app, elRef.current, controller));
     const cm: EditorView = editor.cm;
 
     internalRef.current = cm;
@@ -256,7 +278,7 @@ export function MarkdownEditor({
 
         if (app.workspace.activeEditor === controller) {
           app.workspace.activeEditor = null;
-          (app as any).mobileToolbar.update();
+          app.mobileToolbar?.update();
           view.contentEl.removeClass('is-mobile-editing');
         }
       }

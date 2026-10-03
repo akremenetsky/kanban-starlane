@@ -4,6 +4,8 @@
  * typed as narrowly as its use here needs, and optional where older versions lack it.
  * Check these first when something breaks after an Obsidian update.
  */
+import type { Extension } from '@codemirror/state';
+import type { EditorView, ViewUpdate } from '@codemirror/view';
 import 'obsidian';
 
 declare module 'obsidian' {
@@ -33,7 +35,12 @@ declare module 'obsidian' {
     };
     /** Drag in progress from Obsidian's own UI (file explorer, links). */
     dragManager: {
-      draggable: { type?: string; file?: TFile; files?: TFile[]; linktext?: string } | null;
+      draggable: {
+        type?: string;
+        file?: TAbstractFile;
+        files?: TFile[];
+        linktext?: string;
+      } | null;
     };
     /** Mobile only. */
     mobileNavbar?: { containerEl: HTMLElement };
@@ -59,8 +66,29 @@ declare module 'obsidian' {
     unload(): void;
     showEditor(): void;
     editable: boolean;
-    editMode: object;
+    editMode: EmbeddableMarkdownEditor;
   }
+
+  /**
+   * The markdown editor of a note embed (`MarkdownEmbed.editMode`). Its class is taken from an
+   * embed at load time and subclassed for the inline card editor.
+   */
+  interface EmbeddableMarkdownEditor extends Component {
+    app: App;
+    /** The object passed as `owner` to the constructor. */
+    owner: MarkdownFileInfo;
+    editor: Editor;
+    cm: EditorView;
+    set(value: string, clear?: boolean): void;
+    onUpdate(update: ViewUpdate, changed: boolean): void;
+    buildLocalExtensions(): Extension[];
+  }
+
+  type EmbeddableMarkdownEditorClass = new (
+    app: App,
+    containerEl: HTMLElement,
+    owner: MarkdownFileInfo
+  ) => EmbeddableMarkdownEditor;
 
   interface Vault {
     getConfig(key: string): unknown;
@@ -84,6 +112,15 @@ declare module 'obsidian' {
     unregisterHoverLinkSource(id: string): void;
     handleExternalLinkContextMenu(menu: Menu, url: string): void;
     editorSuggest: { suggests: Array<EditorSuggest<unknown> & { settings?: unknown }> };
+  }
+
+  interface FileView {
+    /** Opens a file in the view; `onLoadFile` is the public hook it calls. */
+    loadFile(file: TFile): Promise<void>;
+  }
+
+  interface Editor {
+    newlineAndIndentContinueMarkdownList(): void;
   }
 
   interface WorkspaceLeaf {
@@ -115,5 +152,12 @@ declare module 'obsidian' {
   interface DataAdapter {
     /** Desktop only (FileSystemAdapter). */
     basePath?: string;
+  }
+}
+
+declare global {
+  interface Window {
+    /** Obsidian's CodeMirror Vim adapter, present while Vim key bindings are on. */
+    CodeMirrorAdapter?: { Vim?: { enterInsertMode(cm: unknown): void } };
   }
 }

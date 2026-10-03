@@ -93,7 +93,7 @@ export function useItemMenu({
                 ? (stateManager.app.vault.getAbstractFileByPath(newNoteFolder) as TFolder)
                 : stateManager.app.fileManager.getNewFileParent(stateManager.file.path);
 
-              const newFile = (await (stateManager.app.fileManager as any).createNewMarkdownFile(
+              const newFile = (await stateManager.app.fileManager.createNewMarkdownFile(
                 targetFolder,
                 sanitizedTitle
               )) as TFile;
@@ -306,7 +306,7 @@ export function useItemMenu({
         addMoveToOptions(menu);
       } else {
         menu.addItem((item) => {
-          const submenu = (item as any)
+          const submenu = item
             .setTitle(t('Move to list'))
             .setIcon('lucide-square-kanban')
             .setSubmenu();

@@ -11,6 +11,7 @@ import {
   WorkspaceLeaf,
   debounce,
 } from 'obsidian';
+import type { EditorController } from 'src/components/Editor/MarkdownEditor';
 import { Kanban } from 'src/components/Kanban';
 import { BasicMarkdownRenderer } from 'src/components/MarkdownRenderer/MarkdownRenderer';
 import { c } from 'src/components/helpers';
@@ -44,7 +45,7 @@ export class KanbanView extends TextFileView implements HoverParent {
   previewCache: Map<string, BasicMarkdownRenderer>;
   previewQueue: PromiseQueue;
 
-  activeEditor: any;
+  activeEditor: EditorController | null;
   viewSettings: KanbanViewSettings = {};
   /** Boards whose cards this view shows in linked lanes (their previews live in our cache). */
   linkedBoards: Board[] = [];
@@ -54,7 +55,7 @@ export class KanbanView extends TextFileView implements HoverParent {
   }
 
   get id(): string {
-    return `${(this.leaf as any).id}:::${this.file?.path}`;
+    return `${this.leaf.id}:::${this.file?.path}`;
   }
 
   get isShiftPressed(): boolean {
@@ -128,9 +129,12 @@ export class KanbanView extends TextFileView implements HoverParent {
 
   setView(view: KanbanFormat) {
     this.setViewState(FRONTMATTER_KEY, view);
-    this.app.fileManager.processFrontMatter(this.file, (frontmatter) => {
-      frontmatter[FRONTMATTER_KEY] = view;
-    });
+    void this.app.fileManager.processFrontMatter(
+      this.file,
+      (frontmatter: Record<string, unknown>) => {
+        frontmatter[FRONTMATTER_KEY] = view;
+      }
+    );
   }
 
   setBoard(board: Board, shouldSave: boolean = true) {
@@ -161,7 +165,6 @@ export class KanbanView extends TextFileView implements HoverParent {
 
   async loadFile(file: TFile) {
     this.plugin.removeView(this);
-    // @ts-ignore -- overrides an Obsidian method the public typings do not cover
     return super.loadFile(file);
   }
 
@@ -179,7 +182,7 @@ export class KanbanView extends TextFileView implements HoverParent {
     super.onload();
     if (Platform.isMobile) {
       this.containerEl.setCssProps({
-        '--mobile-navbar-height': (this.app as any).mobileNavbar.containerEl.clientHeight + 'px',
+        '--mobile-navbar-height': this.app.mobileNavbar?.containerEl.clientHeight + 'px',
       });
     }
 
@@ -230,9 +233,9 @@ export class KanbanView extends TextFileView implements HoverParent {
 
   setViewData(data: string, clear?: boolean) {
     if (!hasFrontmatterKeyRaw(data)) {
-      this.plugin.kanbanFileModes[(this.leaf as any).id || this.file.path] = 'markdown';
+      this.plugin.kanbanFileModes[this.leaf.id || this.file.path] = 'markdown';
       this.plugin.removeView(this);
-      this.plugin.setMarkdownView(this.leaf, false);
+      void this.plugin.setMarkdownView(this.leaf, false);
 
       return;
     }
@@ -249,7 +252,10 @@ export class KanbanView extends TextFileView implements HoverParent {
     this.plugin.addView(this, data, !clear && this.isPrimary);
   }
 
-  async setState(state: any, result: ViewStateResult): Promise<void> {
+  async setState(
+    state: { kanbanViewState?: KanbanViewSettings },
+    result: ViewStateResult
+  ): Promise<void> {
     this.viewSettings = { ...state.kanbanViewState };
     await super.setState(state, result);
   }
@@ -336,8 +342,8 @@ export class KanbanView extends TextFileView implements HoverParent {
           .setIcon('lucide-file-text')
           .setSection('pane')
           .onClick(() => {
-            this.plugin.kanbanFileModes[(this.leaf as any).id || this.file.path] = 'markdown';
-            this.plugin.setMarkdownView(this.leaf);
+            this.plugin.kanbanFileModes[this.leaf.id || this.file.path] = 'markdown';
+            void this.plugin.setMarkdownView(this.leaf);
           });
       })
       .addItem((item) => {
@@ -356,7 +362,7 @@ export class KanbanView extends TextFileView implements HoverParent {
           .setSection('pane')
           .onClick(() => {
             const stateManager = this.plugin.stateManagers.get(this.file);
-            stateManager.archiveCompletedCards();
+            void stateManager.archiveCompletedCards();
           });
       });
 
@@ -393,15 +399,15 @@ export class KanbanView extends TextFileView implements HoverParent {
         icon: 'lucide-file-text',
         label: t('Open as markdown'),
         onClick: () => {
-          this.plugin.kanbanFileModes[(this.leaf as any).id || this.file.path] = 'markdown';
-          this.plugin.setMarkdownView(this.leaf);
+          this.plugin.kanbanFileModes[this.leaf.id || this.file.path] = 'markdown';
+          void this.plugin.setMarkdownView(this.leaf);
         },
       },
       {
         setting: 'show-archive-all',
         icon: 'lucide-archive',
         label: t('Archive completed cards'),
-        onClick: () => this.plugin.stateManagers.get(this.file).archiveCompletedCards(),
+        onClick: () => void this.plugin.stateManagers.get(this.file).archiveCompletedCards(),
       },
       {
         setting: 'show-add-list',

@@ -106,7 +106,7 @@ async function linkFromBuffer(
   ext: string,
   buffer: ArrayBuffer
 ) {
-  const path = (await (stateManager.app.vault as any).getAvailablePathForAttachments(
+  const path = (await stateManager.app.vault.getAvailablePathForAttachments(
     fileName,
     ext,
     stateManager.file
@@ -135,13 +135,13 @@ async function handleElectronPaste(stateManager: StateManager, win: Window & typ
           const ext = splitFile.pop();
           const fileName = splitFile.join('.');
 
-          const path = (await (stateManager.app.vault as any).getAvailablePathForAttachments(
+          const path = (await stateManager.app.vault.getAvailablePathForAttachments(
             fileName,
             ext,
             stateManager.file
           )) as string;
 
-          const basePath = (stateManager.app.vault.adapter as any).basePath;
+          const basePath = stateManager.app.vault.adapter.basePath;
 
           await fs.copyFile(file, nPath.join(basePath, path));
 
@@ -191,7 +191,7 @@ function handleFiles(stateManager: StateManager, files: FileWithPath[], isPaste?
         const reader = new FileReader();
         reader.onload = async (e) => {
           try {
-            const path = (await (stateManager.app.vault as any).getAvailablePathForAttachments(
+            const path = (await stateManager.app.vault.getAvailablePathForAttachments(
               fileName,
               ext,
               stateManager.file
@@ -270,31 +270,28 @@ export async function handleDragOrPaste(
   e: DragEvent | ClipboardEvent,
   win: Window & typeof window
 ): Promise<string[]> {
-  const draggable = (stateManager.app as any).dragManager.draggable;
+  const draggable = stateManager.app.dragManager.draggable;
   const transfer = (e as DragEvent).view
     ? (e as DragEvent).dataTransfer
     : (e as ClipboardEvent).clipboardData;
 
   switch (draggable?.type) {
     case 'file':
+      if (!(draggable.file instanceof TFile)) return [];
       return [linkTo(stateManager, draggable.file, stateManager.file.path)];
     case 'files':
-      return draggable.files.map((f: TFile) => linkTo(stateManager, f, stateManager.file.path));
+      return draggable.files.map((f) => linkTo(stateManager, f, stateManager.file.path));
     case 'folder': {
+      if (!(draggable.file instanceof TFolder)) return [];
       return draggable.file.children
-        .map((f: TFile | TFolder) => {
-          if (f instanceof TFolder) {
-            return null;
-          }
-
-          return linkTo(stateManager, f, stateManager.file.path);
-        })
-        .filter((link: string | null) => link);
+        .filter((f): f is TFile => f instanceof TFile)
+        .map((f) => linkTo(stateManager, f, stateManager.file.path));
     }
     case 'link': {
-      let link = draggable.file
-        ? linkTo(stateManager, draggable.file, parseLinktext(draggable.linktext).subpath)
-        : `[[${draggable.linktext}]]`;
+      let link =
+        draggable.file instanceof TFile
+          ? linkTo(stateManager, draggable.file, parseLinktext(draggable.linktext).subpath)
+          : `[[${draggable.linktext}]]`;
       const alias = new DOMParser().parseFromString(transfer.getData('text/html'), 'text/html')
         .documentElement.textContent; // Get raw text
       link = link.replace(/]]$/, `|${alias}]]`).replace(/^\[[^\]].+]\(/, `[${alias}](`);
