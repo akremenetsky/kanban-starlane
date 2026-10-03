@@ -9,6 +9,7 @@ import {
   cardTitles,
   cls,
   dragCard,
+  dragCardUntil,
   expectEventually,
   lane,
   openBoard,
@@ -68,7 +69,12 @@ describe('linked lanes', function () {
     await openBoard(D1);
     await expectEventually(async () => (await cardTitles(0)).length, 4);
 
-    await dragCard(await card(0, 'D2_A_1'), await lane(1).$(cls('lane-items')), 'above');
+    await dragCardUntil(
+      () => card(0, 'D2_A_1'),
+      async () => lane(1).$(cls('lane-items')),
+      'above',
+      async () => /## B\n\n- \[ \] D2_A_1/.test(await readFile(D2))
+    );
 
     await waitForFile(D2, (md) => /## B\n\n- \[ \] D2_A_1/.test(md));
     await expectEventually(() => cardTitles(1), ['D2_A_1']);
@@ -95,13 +101,21 @@ describe('linked lanes', function () {
     const before = await readFile(D2);
 
     // Own cards only: D1_A_1, D1_A_0, D2_A_0, D2_A_1 — D2 stays as it is.
-    await dragCard(await card(0, 'D1_A_1'), await card(0, 'D1_A_0'), 'above');
-    await waitForFile(D1, (md) => md.includes('- [ ] D1_A_1\n- [ ] D1_A_0'));
+    await dragCardUntil(
+      () => card(0, 'D1_A_1'),
+      () => card(0, 'D1_A_0'),
+      'above',
+      async () => (await readFile(D1)).includes('- [ ] D1_A_1\n- [ ] D1_A_0')
+    );
     expect(await readFile(D2)).toBe(before);
 
     // D2_A_1 to the top: D2 now has D2_A_1 before D2_A_0.
-    await dragCard(await card(0, 'D2_A_1'), await card(0, 'D1_A_1'), 'above');
-    await waitForFile(D2, (md) => /- \[ \] D2_A_1 \^\w+\n- \[ \] D2_A_0/.test(md));
+    await dragCardUntil(
+      () => card(0, 'D2_A_1'),
+      () => card(0, 'D1_A_1'),
+      'above',
+      async () => /- \[ \] D2_A_1 \^\w+\n- \[ \] D2_A_0/.test(await readFile(D2))
+    );
     await expectEventually(() => cardTitles(0), ['D2_A_1', 'D1_A_1', 'D1_A_0', 'D2_A_0']);
 
     // The order survives reopening the board. Wait for the (debounced) save first: closing a
