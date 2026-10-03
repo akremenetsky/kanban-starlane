@@ -122,7 +122,7 @@ function getMdastExtensions(stateManager: StateManager) {
       node.fileAccessor = {
         target: normalizedPath.root,
         isEmbed: false,
-      } as FileAccessor;
+      };
 
       if (file) {
         const metadata = getLinkedPageMetadata(stateManager, file);
@@ -155,7 +155,7 @@ function getMdastExtensions(stateManager: StateManager) {
         node.fileAccessor = {
           target: decodeURIComponent(node.url),
           isEmbed: false,
-        } as FileAccessor;
+        };
 
         if (file) {
           const metadata = getLinkedPageMetadata(stateManager, file);
@@ -188,7 +188,7 @@ export function parseMarkdown(stateManager: StateManager, md: string) {
     }
   });
 
-  stateManager.compileSettings(settings as KanbanSettings);
+  stateManager.compileSettings(settings);
 
   return {
     settings: settings as KanbanSettings,

@@ -82,7 +82,7 @@ export function blockidFromMarkdown(): FromMarkdownExtension {
   const name = 'blockid';
 
   function enter(this: CompileContext, token: Token) {
-    this.enter({ type: name, value: null } as BlockIdNode, token);
+    this.enter({ type: name, value: null }, token);
   }
 
   function exitTarget(this: CompileContext, token: Token) {

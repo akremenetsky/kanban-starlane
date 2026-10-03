@@ -96,7 +96,7 @@ export function useItemMenu({
               const newFile = (await stateManager.app.fileManager.createNewMarkdownFile(
                 targetFolder,
                 sanitizedTitle
-              )) as TFile;
+              ));
 
               const newLeaf = stateManager.app.workspace.splitActiveLeaf();
 

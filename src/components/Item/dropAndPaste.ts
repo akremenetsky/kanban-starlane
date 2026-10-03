@@ -110,7 +110,7 @@ async function linkFromBuffer(
     fileName,
     ext,
     stateManager.file
-  )) as string;
+  ));
 
   const newFile = await stateManager.app.vault.createBinary(path, buffer);
 
@@ -139,7 +139,7 @@ async function handleElectronPaste(stateManager: StateManager, win: Window & typ
             fileName,
             ext,
             stateManager.file
-          )) as string;
+          ));
 
           const basePath = stateManager.app.vault.adapter.basePath;
 
@@ -195,7 +195,7 @@ function handleFiles(stateManager: StateManager, files: FileWithPath[], isPaste?
               fileName,
               ext,
               stateManager.file
-            )) as string;
+            ));
             const newFile = await stateManager.app.vault.createBinary(
               path,
               e.target.result as ArrayBuffer

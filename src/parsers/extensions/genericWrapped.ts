@@ -108,7 +108,7 @@ export function genericWrappedFromMarkdown<N extends ValueNode = ValueNode>(
   process?: (str: string, curr: N) => void
 ): FromMarkdownExtension {
   function enterWrapped(this: CompileContext, token: Token) {
-    this.enter({ type: name, value: null } as ValueNode, token);
+    this.enter({ type: name, value: null }, token);
   }
 
   function exitWrappedTarget(this: CompileContext, token: Token) {

@@ -90,7 +90,7 @@ export function tagFromMarkdown(): FromMarkdownExtension {
   const name = 'hashtag';
 
   function enterTag(this: CompileContext, token: Token) {
-    this.enter({ type: name, value: null } as TagNode, token);
+    this.enter({ type: name, value: null }, token);
   }
 
   function exitTagTarget(this: CompileContext, token: Token) {
