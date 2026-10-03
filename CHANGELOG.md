@@ -12,7 +12,7 @@ issues). Nothing changes for boards or their files.
 - Requires Obsidian 1.8.7 or newer (was 1.6.2).
 - The date picker no longer adds `flatpickr` to every element, list and date in Obsidian, nor
   CSS rules to Obsidian's stylesheet; keyboard navigation uses current browser APIs.
-- The UI language is read with Obsidian's `getLanguage()` (on Obsidian 1.8.7 and later).
+- The UI language is read with Obsidian's `getLanguage()`.
 - *New note from card* opens the note with current Obsidian APIs; if the configured note folder
   does not exist, the note is created in the default location.
 - An image pasted from the clipboard on desktop is saved through Obsidian's binary API with the
