@@ -138,50 +138,51 @@ export class EntityManager {
   }
 
   getEntity(rect: DOMRectReadOnly): Entity {
-    const manager = this;
-    return {
+    // Arrow functions: `this` is the manager, `entity` the object handed out.
+    const entity: Entity = {
       scopeId: this.scopeId,
       entityId: this.entityId,
       initial: calculateHitbox(
         rect,
-        manager.scrollParent?.scrollState || initialScrollState,
-        manager.scrollParent?.getScrollShift() || initialScrollShift,
+        this.scrollParent?.scrollState || initialScrollState,
+        this.scrollParent?.getScrollShift() || initialScrollShift,
         null
       ),
-      getParentScrollState() {
-        return manager.scrollParent?.scrollState || initialScrollState;
+      getParentScrollState: () => {
+        return this.scrollParent?.scrollState || initialScrollState;
       },
-      getParentScrollShift() {
-        return manager.scrollParent?.getScrollShift() || initialScrollShift;
+      getParentScrollShift: () => {
+        return this.scrollParent?.getScrollShift() || initialScrollShift;
       },
-      recalcInitial() {
-        this.initial = calculateHitbox(
-          manager.measureNode.getBoundingClientRect(),
-          manager.scrollParent?.scrollState || initialScrollState,
-          manager.scrollParent?.getScrollShift() || initialScrollShift,
+      recalcInitial: () => {
+        entity.initial = calculateHitbox(
+          this.measureNode.getBoundingClientRect(),
+          this.scrollParent?.scrollState || initialScrollState,
+          this.scrollParent?.getScrollShift() || initialScrollShift,
           null
         );
       },
-      getHitbox() {
+      getHitbox: () => {
         return adjustHitbox(
-          this.initial[0],
-          this.initial[1],
-          this.initial[2],
-          this.initial[3],
-          this.getParentScrollState(),
-          this.getParentScrollShift()
+          entity.initial[0],
+          entity.initial[1],
+          entity.initial[2],
+          entity.initial[3],
+          entity.getParentScrollState(),
+          entity.getParentScrollShift()
         );
       },
-      getPath() {
-        return manager.getPath();
+      getPath: () => {
+        return this.getPath();
       },
-      getData() {
+      getData: () => {
         return {
-          ...manager.getEntityData(),
-          sortAxis: manager.sortManager?.axis,
-          win: getParentWindow(manager.measureNode),
+          ...this.getEntityData(),
+          sortAxis: this.sortManager?.axis,
+          win: getParentWindow(this.measureNode),
         };
       },
     };
+    return entity;
   }
 }

@@ -2,7 +2,7 @@ import { Coordinates } from 'src/dnd/types';
 
 import { distanceBetween } from './hitbox';
 
-type ThrottledFn<T extends any[]> = {
+type ThrottledFn<T extends unknown[]> = {
   (...args: T): void;
   cancel: () => void;
 };
@@ -13,7 +13,7 @@ type ThrottledFn<T extends any[]> = {
  * @param fn The function to throttle
  * @returns a wrapped function trottled by requestAnimationFrame
  */
-export function rafThrottle<T extends any[]>(
+export function rafThrottle<T extends unknown[]>(
   win: Window,
   fn: (...args: T) => void
 ): ThrottledFn<T> {

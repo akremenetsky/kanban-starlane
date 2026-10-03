@@ -42,7 +42,12 @@ export interface EntityData {
   accepts: string[];
   acceptsSort?: string[];
   sortAxis?: Axis;
-  [k: string]: any;
+  /** Scroll entities: the edge of the scroll container they trigger. */
+  side?: Side;
+  scrollContainer?: HTMLElement;
+  /** Entities dragged in from outside (createHTMLDndEntity): the board view and the dropped text. */
+  viewId?: string;
+  content?: string[];
 }
 
 export interface ScopedEntityData extends EntityData {

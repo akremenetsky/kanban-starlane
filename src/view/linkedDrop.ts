@@ -171,7 +171,7 @@ export function getLinkedOverlaySource(
 }
 
 /** Entity data without the fields the DnD engine adds (sortAxis, win). */
-export function getEntityData(data: Record<string, any>): Item {
-  const { sortAxis, win, ...entity } = data;
+export function getEntityData(data: object): Item {
+  const { sortAxis, win, ...entity } = data as { sortAxis?: unknown; win?: unknown };
   return entity as Item;
 }
