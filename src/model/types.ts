@@ -166,7 +166,7 @@ export const DataTypes = {
 export const ItemTemplate = {
   accepts: [DataTypes.Item],
   type: DataTypes.Item,
-  children: [] as any[],
+  children: [] as never[],
 };
 
 export const LaneTemplate = {
@@ -182,27 +182,27 @@ export const BoardTemplate = {
 export const MetadataSettingTemplate = {
   accepts: [DataTypes.MetadataSetting],
   type: DataTypes.MetadataSetting,
-  children: [] as any[],
+  children: [] as never[],
 };
 
 export const TagSortSettingTemplate = {
   accepts: [DataTypes.TagSortSetting],
   type: DataTypes.TagSortSetting,
-  children: [] as any[],
+  children: [] as never[],
 };
 
 // TODO: all this is unecessary because these aren't sortable
 export const TagColorSettingTemplate = {
   accepts: [] as string[],
   type: DataTypes.TagColorSetting,
-  children: [] as any[],
+  children: [] as never[],
 };
 
 // TODO: all this is unecessary because these aren't sortable
 export const DateColorSettingTemplate = {
   accepts: [] as string[],
   type: DataTypes.DateColorSetting,
-  children: [] as any[],
+  children: [] as never[],
 };
 
 export interface EditCoordinates {

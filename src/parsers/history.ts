@@ -12,7 +12,7 @@ export function extractHistory(md: string): { history?: CardHistory; raw?: strin
   if (!match) return {};
 
   try {
-    const history = JSON.parse(match[1]);
+    const history: unknown = JSON.parse(match[1]);
     if (isCardHistory(history)) return { history };
   } catch {
     // fall through
@@ -28,11 +28,15 @@ export function withoutHistoryBlock(md: string) {
 
 function isCardHistory(value: unknown): value is CardHistory {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
-  return Object.values(value).every(
-    (events) =>
-      Array.isArray(events) &&
-      events.every((e) => e && typeof e.at === 'string' && typeof e.type === 'string')
+  return Object.values(value as Record<string, unknown>).every(
+    (events) => Array.isArray(events) && (events as unknown[]).every(isCardEvent)
   );
+}
+
+function isCardEvent(e: unknown): boolean {
+  if (!e || typeof e !== 'object') return false;
+  const { at, type } = e as { at?: unknown; type?: unknown };
+  return typeof at === 'string' && typeof type === 'string';
 }
 
 export function isHistoryBlockStart(text: string) {

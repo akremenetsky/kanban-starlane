@@ -6,6 +6,7 @@ import { getInlineFieldSources } from 'src/integrations/inlineFields';
 import { shouldUseTabs } from 'src/integrations/vaultConfig';
 import {
   Board,
+  BoardData,
   BoardTemplate,
   Item,
   ItemData,
@@ -26,7 +27,7 @@ import {
   getPrevSibling,
   getStringFromBoundary,
 } from './helpers/ast';
-import { extractInlineFields, taskFields } from './helpers/inlineMetadata';
+import { InlineField, extractInlineFields, taskFields } from './helpers/inlineMetadata';
 import {
   addBlockId,
   dedentNewLines,
@@ -209,12 +210,15 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
   );
 
   if (inlineFields?.length) {
-    const inlineMetadata = (itemData.metadata.inlineMetadata = inlineFields.reduce((acc, curr) => {
-      if (!taskFields.has(curr.key)) acc.push(curr);
-      else if (firstLineEnd <= 0 || curr.end < firstLineEnd) acc.push(curr);
+    const inlineMetadata = (itemData.metadata.inlineMetadata = inlineFields.reduce<InlineField[]>(
+      (acc, curr) => {
+        if (!taskFields.has(curr.key)) acc.push(curr);
+        else if (firstLineEnd <= 0 || curr.end < firstLineEnd) acc.push(curr);
 
-      return acc;
-    }, []));
+        return acc;
+      },
+      []
+    ));
 
     const moveTaskData = stateManager.getSetting('move-task-metadata');
     const moveMetadata = stateManager.getSetting('inline-metadata-position') !== 'body';
@@ -255,7 +259,7 @@ function isArchiveLane(child: Content, children: Content[], currentIndex: number
 export function astToUnhydratedBoard(
   stateManager: StateManager,
   settings: KanbanSettings,
-  frontmatter: Record<string, any>,
+  frontmatter: Record<string, unknown>,
   root: Root,
   md: string
 ): Board {
@@ -339,7 +343,8 @@ export function astToUnhydratedBoard(
     children: lanes,
     data: {
       settings,
-      frontmatter,
+      // YAML values are kept as they are; the board only writes them back.
+      frontmatter: frontmatter as BoardData['frontmatter'],
       archive,
       isSearching: false,
       errors: [],

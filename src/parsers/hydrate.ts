@@ -41,7 +41,7 @@ export function preprocessTitle(stateManager: StateManager, title: string) {
 
   title = title.replace(
     new RegExp(`(^|\\s)${escapeRegExpStr(dateTrigger)}\\[\\[([^\\]]+)\\]\\]`, 'g'),
-    (match, space, content) => {
+    (match: string, space: string, content: string) => {
       const parsed = moment(content, dateFormat);
       if (!parsed.isValid()) return match;
       date = parsed;
@@ -53,7 +53,7 @@ export function preprocessTitle(stateManager: StateManager, title: string) {
   );
   title = title.replace(
     new RegExp(`(^|\\s)${escapeRegExpStr(dateTrigger)}\\[([^\\]]+)\\]\\([^)]+\\)`, 'g'),
-    (match, space, content) => {
+    (match: string, space: string, content: string) => {
       const parsed = moment(content, dateFormat);
       if (!parsed.isValid()) return match;
       date = parsed;
@@ -65,7 +65,7 @@ export function preprocessTitle(stateManager: StateManager, title: string) {
   );
   title = title.replace(
     new RegExp(`(^|\\s)${escapeRegExpStr(dateTrigger)}{([^}]+)}`, 'g'),
-    (match, space, content) => {
+    (match: string, space: string, content: string) => {
       const parsed = moment(content, dateFormat);
       if (!parsed.isValid()) return match;
       date = parsed;
@@ -77,7 +77,7 @@ export function preprocessTitle(stateManager: StateManager, title: string) {
 
   title = title.replace(
     new RegExp(`(^|\\s)${escapeRegExpStr(timeTrigger)}{([^}]+)}`, 'g'),
-    (match, space, content) => {
+    (match: string, space: string, content: string) => {
       const parsed = moment(content, timeFormat);
       if (!parsed.isValid()) return match;
 

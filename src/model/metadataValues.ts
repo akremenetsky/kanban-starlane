@@ -5,10 +5,20 @@ import { StateManager } from 'src/state/StateManager';
 
 import { PageData } from './types';
 
-export function getDateFromObj(v: any, stateManager: StateManager) {
+/** A Luxon DateTime from Dataview (or anything with a timestamp). */
+function hasTimestamp(v: unknown): v is { ts: number } {
+  return typeof v === 'object' && v !== null && 'ts' in v && !!v.ts;
+}
+
+/** An rrule RRule (recurrence), which describes itself with `toText`. */
+function isRecurrence(v: unknown): v is { rrule: unknown; toText(): string } {
+  return typeof v === 'object' && v !== null && 'rrule' in v && !!v.rrule && 'toText' in v;
+}
+
+export function getDateFromObj(v: unknown, stateManager: StateManager) {
   let m: moment.Moment;
 
-  if (v.ts) {
+  if (hasTimestamp(v)) {
     m = moment(v.ts);
   } else if (moment.isMoment(v)) {
     m = v;
@@ -27,7 +37,7 @@ export function getDateFromObj(v: any, stateManager: StateManager) {
   return null;
 }
 
-export function getDate(v: any, app: App) {
+export function getDate(v: unknown, app: App) {
   if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}/.test(v)) {
     const d = moment(v);
     if (d.isValid()) {
@@ -41,7 +51,7 @@ export function getDate(v: any, app: App) {
   return null;
 }
 
-export function anyToString(v: any, stateManager: StateManager): string {
+export function anyToString(v: unknown, stateManager: StateManager): string {
   if (isPlainObject(v) && v.value) v = v.value;
   const date = getDate(v, stateManager.app);
   if (date) return getDateFromObj(date, stateManager);
@@ -50,7 +60,7 @@ export function anyToString(v: any, stateManager: StateManager): string {
   if (Array.isArray(v)) {
     return v.map((v2) => anyToString(v2, stateManager)).join(' ');
   }
-  if (v.rrule) return v.toText();
+  if (isRecurrence(v)) return v.toText();
   const dv = getDataviewApi(stateManager.app);
   if (dv) return dv.value.toString(v);
   return `${v}`;

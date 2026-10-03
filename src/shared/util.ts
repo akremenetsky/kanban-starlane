@@ -10,7 +10,7 @@ export class PromiseCapability<T = void> {
   promise: Promise<T>;
 
   resolve: (data: T) => void;
-  reject: (reason?: any) => void;
+  reject: (reason: Error) => void;
 
   settled = false;
 
@@ -29,7 +29,7 @@ export class PromiseCapability<T = void> {
   }
 }
 
-type QAble = () => Promise<any>;
+type QAble = () => Promise<unknown>;
 
 export class PromiseQueue {
   queue: Array<QAble> = [];
@@ -88,13 +88,13 @@ export function escapeRegExpStr(str: string) {
 }
 
 /** True for plain objects (`{}`, `Object.create(null)`), also those made in another window. */
-export function isPlainObject(value: unknown): value is Record<string, any> {
+export function isPlainObject(value: unknown): value is Record<string, unknown> {
   if (Object.prototype.toString.call(value) !== '[object Object]') return false;
-  const ctor = (value as any).constructor;
+  const ctor = (value as { constructor?: { prototype: unknown } }).constructor;
   if (ctor === undefined) return true;
   const proto = ctor.prototype;
   if (Object.prototype.toString.call(proto) !== '[object Object]') return false;
-  return Object.prototype.hasOwnProperty.call(proto, 'isPrototypeOf');
+  return Object.prototype.hasOwnProperty.call(proto, 'isPrototypeOf') as boolean;
 }
 
 /** Whatever was thrown, as an Error. */
