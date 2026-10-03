@@ -181,7 +181,7 @@ export function MarkdownEditor({
           if (this.app.vault.getConfig('smartIndentList')) {
             this.editor.newlineAndIndentContinueMarkdownList();
           } else {
-            insertBlankLine(cm as any);
+            insertBlankLine(cm);
           }
           return true;
         };

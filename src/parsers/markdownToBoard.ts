@@ -255,7 +255,7 @@ export function astToUnhydratedBoard(
   root.children.forEach((child, index) => {
     if (child.type === 'heading') {
       const isArchive = isArchiveLane(child, root.children, index);
-      const headingBoundary = getNodeContentBoundary(child as Parent);
+      const headingBoundary = getNodeContentBoundary(child);
       const title = getStringFromBoundary(md, headingBoundary);
 
       let shouldMarkItemsComplete = false;

@@ -62,7 +62,7 @@ export function mapLegacySettings(legacy: Record<string, unknown>): KanbanSettin
     settings[FRONTMATTER_KEY] = settings[LEGACY_FRONTMATTER_KEY];
     delete settings[LEGACY_FRONTMATTER_KEY];
   }
-  return settings as KanbanSettings;
+  return settings;
 }
 
 export async function importLegacySettings(plugin: KanbanPlugin) {

@@ -90,7 +90,7 @@ export function useItemMenu({
               const newNoteTemplatePath = stateManager.getSetting('new-note-template');
 
               const targetFolder = newNoteFolder
-                ? (stateManager.app.vault.getAbstractFileByPath(newNoteFolder as string) as TFolder)
+                ? (stateManager.app.vault.getAbstractFileByPath(newNoteFolder) as TFolder)
                 : stateManager.app.fileManager.getNewFileParent(stateManager.file.path);
 
               const newFile = (await (stateManager.app.fileManager as any).createNewMarkdownFile(
@@ -104,7 +104,7 @@ export function useItemMenu({
 
               stateManager.app.workspace.setActiveLeaf(newLeaf, false, true);
 
-              await applyTemplate(stateManager, newNoteTemplatePath as string | undefined);
+              await applyTemplate(stateManager, newNoteTemplatePath);
 
               const newTitleRaw = linkCardTitleToNote(
                 item.data.titleRaw,
@@ -238,9 +238,7 @@ export function useItemMenu({
               const contentMatch = shouldLinkDates
                 ? '(?:\\[[^\\]]+\\]\\([^\\)]+\\)|\\[\\[[^\\]]+\\]\\])'
                 : '{[^}]+}';
-              const dateRegEx = new RegExp(
-                `(^|\\s)${escapeRegExpStr(dateTrigger as string)}${contentMatch}`
-              );
+              const dateRegEx = new RegExp(`(^|\\s)${escapeRegExpStr(dateTrigger)}${contentMatch}`);
 
               const titleRaw = item.data.titleRaw.replace(dateRegEx, '').trim();
 
@@ -274,9 +272,7 @@ export function useItemMenu({
               .setTitle(t('Remove time'))
               .onClick(() => {
                 const timeTrigger = stateManager.getSetting('time-trigger');
-                const timeRegEx = new RegExp(
-                  `(^|\\s)${escapeRegExpStr(timeTrigger as string)}{([^}]+)}`
-                );
+                const timeRegEx = new RegExp(`(^|\\s)${escapeRegExpStr(timeTrigger)}{([^}]+)}`);
 
                 const titleRaw = item.data.titleRaw.replace(timeRegEx, '').trim();
                 boardModifiers.updateItem(path, stateManager.updateItemContent(item, titleRaw));

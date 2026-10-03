@@ -67,7 +67,7 @@ export class StateManager {
     }
 
     // This helps delay blocking the UI until the the loading indicator is displayed
-    await new Promise((res) => activeWindow.setTimeout(res, 10));
+    await new Promise((res) => window.setTimeout(res, 10));
 
     if (shouldParseData || isFirstView || !this.state) {
       await this.newBoard(view, data);

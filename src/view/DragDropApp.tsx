@@ -231,7 +231,7 @@ export function DragDropApp({ win, plugin }: { win: Window; plugin: KanbanPlugin
             replacementEntity = replacement;
 
             if (recordHistory) {
-              const carried = carryCardHistory(sourceBoard, destinationBoard, next as Item, {
+              const carried = carryCardHistory(sourceBoard, destinationBoard, next, {
                 from: sourceBoard.children[dragPath[0]]?.data.title,
                 to: destinationBoard.children[dropPath[0]]?.data.title,
               });

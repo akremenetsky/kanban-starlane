@@ -22,7 +22,7 @@ export function fixLinks(text: string) {
   return text.replace(/^\[(.*)\]\(app:\/\/obsidian.md\/(.*)\)$/, '[$1]($2)');
 }
 
-export function getFileListFromClipboard(win: Window & typeof globalThis) {
+export function getFileListFromClipboard(win: Window & typeof window) {
   const clipboard = win.require('electron').remote.clipboard;
 
   if (process.platform === 'darwin') {
@@ -117,7 +117,7 @@ async function linkFromBuffer(
   return linkTo(stateManager, newFile, stateManager.file.path);
 }
 
-async function handleElectronPaste(stateManager: StateManager, win: Window & typeof globalThis) {
+async function handleElectronPaste(stateManager: StateManager, win: Window & typeof window) {
   const list = getFileListFromClipboard(win);
 
   if (!list || list.length === 0) return null;
@@ -207,7 +207,7 @@ function handleFiles(stateManager: StateManager, files: FileWithPath[], isPaste?
             reject(e);
           }
         };
-        reader.readAsArrayBuffer(file as FileWithPath);
+        reader.readAsArrayBuffer(file);
       });
     })
   );
@@ -216,7 +216,7 @@ function handleFiles(stateManager: StateManager, files: FileWithPath[], isPaste?
 async function handleNullDraggable(
   stateManager: StateManager,
   e: DragEvent | ClipboardEvent,
-  win: Window & typeof globalThis
+  win: Window & typeof window
 ) {
   const isClipboardEvent = (e as DragEvent).view ? false : true;
   const forcePlaintext = isClipboardEvent ? stateManager.getAView().isShiftPressed : false;
@@ -268,7 +268,7 @@ async function handleNullDraggable(
 export async function handleDragOrPaste(
   stateManager: StateManager,
   e: DragEvent | ClipboardEvent,
-  win: Window & typeof globalThis
+  win: Window & typeof window
 ): Promise<string[]> {
   const draggable = (stateManager.app as any).dragManager.draggable;
   const transfer = (e as DragEvent).view

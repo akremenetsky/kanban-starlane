@@ -156,7 +156,7 @@ export class KanbanView extends TextFileView implements HoverParent {
   }
 
   getWindow() {
-    return getParentWindow(this.containerEl) as Window & typeof globalThis;
+    return getParentWindow(this.containerEl) as Window & typeof window;
   }
 
   async loadFile(file: TFile) {

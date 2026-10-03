@@ -69,7 +69,7 @@ export class PromiseQueue {
 
       const now = performance.now();
       if (now - intervalStart > 50) {
-        await new Promise((res) => activeWindow.setTimeout(res));
+        await new Promise((res) => window.setTimeout(res));
         intervalStart = now;
       }
     }
