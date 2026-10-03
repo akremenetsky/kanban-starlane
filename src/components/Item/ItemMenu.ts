@@ -89,20 +89,24 @@ export function useItemMenu({
               const newNoteFolder = stateManager.getSetting('new-note-folder');
               const newNoteTemplatePath = stateManager.getSetting('new-note-template');
 
-              const targetFolder = newNoteFolder
-                ? (stateManager.app.vault.getAbstractFileByPath(newNoteFolder) as TFolder)
-                : stateManager.app.fileManager.getNewFileParent(stateManager.file.path);
+              const configuredFolder = newNoteFolder
+                ? stateManager.app.vault.getAbstractFileByPath(newNoteFolder)
+                : null;
+              const targetFolder =
+                configuredFolder instanceof TFolder
+                  ? configuredFolder
+                  : stateManager.app.fileManager.getNewFileParent(stateManager.file.path);
 
-              const newFile = (await stateManager.app.fileManager.createNewMarkdownFile(
+              const newFile = await stateManager.app.fileManager.createNewMarkdownFile(
                 targetFolder,
                 sanitizedTitle
-              ));
+              );
 
-              const newLeaf = stateManager.app.workspace.splitActiveLeaf();
+              const newLeaf = stateManager.app.workspace.getLeaf('split');
 
               await newLeaf.openFile(newFile);
 
-              stateManager.app.workspace.setActiveLeaf(newLeaf, false, true);
+              stateManager.app.workspace.setActiveLeaf(newLeaf, { focus: true });
 
               await applyTemplate(stateManager, newNoteTemplatePath);
 
@@ -152,11 +156,7 @@ export function useItemMenu({
             .setTitle(t('Split card'))
             .onClick(async () => {
               const titles = item.data.titleRaw.split(/[\r\n]+/g).map((t) => t.trim());
-              const newItems = await Promise.all(
-                titles.map((title) => {
-                  return stateManager.getNewItem(title, ' ');
-                })
-              );
+              const newItems = titles.map((title) => stateManager.getNewItem(title, ' '));
 
               boardModifiers.splitItem(path, newItems);
             });

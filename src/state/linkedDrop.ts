@@ -84,7 +84,7 @@ export function planLinkedDrop(
   const [targetLane] = drop;
   const entriesOf = (laneIndex: number): LaneEntry[] | undefined =>
     laneEntries(board, laneIndex, getBoard) ??
-    board.children[laneIndex]?.children.map((item) => ({ source: null as string | null, item }));
+    board.children[laneIndex]?.children.map((item): LaneEntry => ({ source: null, item }));
 
   const before = entriesOf(sourceLane);
   const entry = before?.[dragIndex];

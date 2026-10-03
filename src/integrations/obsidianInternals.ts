@@ -123,6 +123,11 @@ declare module 'obsidian' {
     newlineAndIndentContinueMarkdownList(): void;
   }
 
+  interface EditorSuggest<T> {
+    /** Re-positions the open suggestion popover (e.g. after its content changed size). */
+    updatePosition(force?: boolean): void;
+  }
+
   interface WorkspaceLeaf {
     id: string;
   }

@@ -93,7 +93,7 @@ export class BasicMarkdownRenderer extends Component {
     );
 
     this.renderCapability.resolve();
-    if (!(this.view as any)?._loaded || !(this as any)._loaded) return;
+    if (!this.view?._loaded || !this._loaded) return;
 
     const { containerEl } = this;
 
@@ -184,7 +184,7 @@ export class BasicMarkdownRenderer extends Component {
   }
 
   set(markdown: string) {
-    if ((this as any)._loaded) {
+    if (this._loaded) {
       this.markdown = markdown;
       this.renderCapability = new PromiseCapability<void>();
       this.unload();

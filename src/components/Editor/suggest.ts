@@ -42,7 +42,7 @@ export class DateSuggest extends EditorSuggest<[]> {
     this.app = app;
     this.plugin = plugin;
 
-    [...this.scope.keys].forEach((k: any) => this.scope.unregister(k));
+    [...this.scope.keys].forEach((k) => this.scope.unregister(k));
 
     this.suggestEl.addClass(c('date-suggest'));
 
@@ -118,7 +118,6 @@ export class DateSuggest extends EditorSuggest<[]> {
       suggestEl.addClasses([c('date-picker'), c('ignore-click-outside')]);
       constructDatePicker(context, stateManager, suggestEl, (picker) => {
         this.datepicker = picker;
-        // @ts-ignore -- updatePosition is internal to Obsidian and not in the public typings
         this.updatePosition(true);
       });
     }

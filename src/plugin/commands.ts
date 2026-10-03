@@ -39,8 +39,10 @@ export function registerCommands(plugin: KanbanPlugin) {
     callback: () => plugin.newKanban(),
   });
 
-  boardCommand('archive-completed-cards', t('Archive completed cards in active board'), (view) =>
-    plugin.stateManagers.get(view.file).archiveCompletedCards()
+  boardCommand(
+    'archive-completed-cards',
+    t('Archive completed cards in active board'),
+    (view) => void plugin.stateManagers.get(view.file).archiveCompletedCards()
   );
 
   plugin.addCommand({

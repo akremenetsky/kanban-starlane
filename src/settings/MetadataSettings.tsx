@@ -121,12 +121,12 @@ function Item({
 interface MetadataSettingsProps {
   dataKeys: MetadataSetting[];
   scrollEl: HTMLElement;
-  onChange(keys: MetadataSetting[]): void;
+  onChange: (keys: MetadataSetting[]) => void;
   portalContainer: HTMLElement;
 }
 
 interface UseKeyModifiersParams {
-  onChange(keys: MetadataSetting[]): void;
+  onChange: (keys: MetadataSetting[]) => void;
   inputValue: string;
   keys: MetadataSetting[];
   setKeys: Dispatch<StateUpdater<MetadataSetting[]>>;

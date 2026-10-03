@@ -101,7 +101,7 @@ export class LinkLanesModal extends Modal {
 
     addSetting.addDropdown((dropdown) => {
       dropdown.addOption('', t('Board'));
-      this.boardFiles().forEach((f) => dropdown.addOption(f.path, f.path.replace(/\.md$/, '')));
+      for (const f of this.boardFiles()) dropdown.addOption(f.path, f.path.replace(/\.md$/, ''));
       dropdown.setValue(this.boardPath);
       dropdown.onChange((value) => {
         this.boardPath = value;
@@ -115,7 +115,7 @@ export class LinkLanesModal extends Modal {
       dropdown.setDisabled(!this.boardPath);
       if (this.boardPath) {
         void this.laneTitles(this.boardPath).then((titles) => {
-          titles.forEach((title) => dropdown.addOption(title, title));
+          for (const title of titles) dropdown.addOption(title, title);
           dropdown.setValue(this.lanePath);
         });
       }

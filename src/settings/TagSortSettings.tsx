@@ -29,12 +29,12 @@ interface ItemProps {
 interface TagSortSettingsProps {
   tags: TagSortSetting[];
   scrollEl: HTMLElement;
-  onChange(tags: TagSortSetting[]): void;
+  onChange: (tags: TagSortSetting[]) => void;
   portalContainer: HTMLElement;
 }
 
 interface UseKeyModifiersParams {
-  onChange(tags: TagSortSetting[]): void;
+  onChange: (tags: TagSortSetting[]) => void;
   inputValue: string;
   tags: TagSortSetting[];
   setTags: Dispatch<StateUpdater<TagSortSetting[]>>;
