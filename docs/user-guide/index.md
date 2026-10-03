@@ -1,34 +1,46 @@
 # Kanban Starlane
 
-Kanban Starlane turns markdown notes into Kanban boards inside [Obsidian](https://obsidian.md).
-Lists are headings, cards are task-list items — a board stays a plain markdown file that you
-can read and edit without the plugin.
+Kanban boards for [Obsidian](https://obsidian.md), stored as plain markdown notes.
+
+Kanban Starlane turns a note into a board: lists are headings and cards are task-list items, so
+the note stays readable and editable without the plugin. Cards carry dates, tags and links to
+other notes, move between lists and boards by drag and drop, and keep a history of what happened
+to them. One list can also show the cards of lists on other boards, so you can keep a board per
+area and still see all your work in one place.
 
 ![A Kanban board in Obsidian](assets/home-board-overview-3.png)
 
-Kanban Starlane is an independent Kanban plugin, developed further on its own roadmap. It
-started as a fork of the [Kanban plugin](https://github.com/mgmeyers/obsidian-kanban) by
-Matthew Meyers. It can be installed next to the original plugin and converts its boards on
-demand — see [Coming from the Kanban plugin](getting-started/migrating-from-kanban-plugin.md).
-
 ## What it does
 
-- Boards, lists and tables backed by a single markdown note.
-- Drag and drop cards between lists and between boards.
-- **Linked lanes**: a list can also show the cards of lists on other boards — keep one board
-  per area and still see everything together ([how it works](guide/linked-lists.md)).
-- Dates, times, tags, [WIP limits](guide/cards-and-lists.md#wip-limits) and an
-  [archive](guide/archive.md) for finished cards.
-- [Card history](guide/card-history.md): see when a card was created, moved or checked, even
-  across boards.
-- Cards can link to a note and show its [metadata](guide/linked-page-metadata.md), including
-  fields from the Tasks and Dataview plugins.
-- Every setting can be set globally or overridden per board — see [Settings](settings/index.md).
+- **[Three views](guide/views.md)** of the same note: board, table and list.
+- **[Cards and lists](guide/cards-and-lists.md)**: edit cards in place, embed images, turn a card
+  into a note, search the board, drag cards between lists and boards.
+- **[Linked lists](guide/linked-lists.md)**: a list also shows the cards of lists on other boards;
+  each board's cards carry its color, and changes go to that board's file.
+- **[Dates and times](guide/dates-and-times.md)** on cards, shown as dates or relative
+  ("in 3 days").
+- **[Tags](guide/tags.md)** with their own colors.
+- **[WIP limits](guide/cards-and-lists.md#wip-limits)** per list.
+- **[Card history](guide/card-history.md)**: when a card was created, edited, moved, checked or
+  archived, even across boards.
+- **[Archive](guide/archive.md)** for finished cards.
+- **[Linked page metadata](guide/linked-page-metadata.md)**: a card linking to a note shows that
+  note's properties, and [Tasks and Dataview fields](settings/inline-metadata.md) on the card are
+  shown too.
+- **[Settings](settings/index.md)** set globally or overridden per board.
 
 ![Cards linking to other notes](assets/home-board-overview-2.png)
 
 ## Where to start
 
 - New to Kanban Starlane? Start with [Getting started](getting-started/installation.md).
+- Using the Kanban plugin already? See
+  [Coming from the Kanban plugin](getting-started/migrating-from-kanban-plugin.md): both plugins
+  can be installed side by side, and boards are converted on demand.
 - Looking for a specific setting? Go to [Settings](settings/index.md).
 - Something not working as expected? Check the [FAQ](faq.md).
+
+## About
+
+Kanban Starlane is a fork of the [Kanban plugin](https://github.com/mgmeyers/obsidian-kanban)
+2.0.51 by Matthew Meyers. It is developed on its own roadmap.
