@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Mongolian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Mongolian: CustomLocale = {
   firstDayOfWeek: 1,
@@ -51,5 +44,3 @@ export const Mongolian: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.mn = Mongolian;
-export default fp.l10ns;

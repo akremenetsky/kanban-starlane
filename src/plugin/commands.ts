@@ -39,8 +39,10 @@ export function registerCommands(plugin: KanbanPlugin) {
     callback: () => plugin.newKanban(),
   });
 
-  boardCommand('archive-completed-cards', t('Archive completed cards in active board'), (view) =>
-    plugin.stateManagers.get(view.file).archiveCompletedCards()
+  boardCommand(
+    'archive-completed-cards',
+    t('Archive completed cards in active board'),
+    (view) => void plugin.stateManagers.get(view.file).archiveCompletedCards()
   );
 
   plugin.addCommand({
@@ -56,15 +58,15 @@ export function registerCommands(plugin: KanbanPlugin) {
 
       const kanbanView = app.workspace.getActiveViewOfType(KanbanView);
       if (kanbanView) {
-        plugin.kanbanFileModes[(kanbanView.leaf as any).id || activeFile.path] = 'markdown';
-        plugin.setMarkdownView(kanbanView.leaf);
+        plugin.kanbanFileModes[kanbanView.leaf.id || activeFile.path] = 'markdown';
+        void plugin.setMarkdownView(kanbanView.leaf);
         return;
       }
 
       const markdownView = app.workspace.getActiveViewOfType(MarkdownView);
       if (fileIsKanban && markdownView) {
-        plugin.kanbanFileModes[(markdownView.leaf as any).id || activeFile.path] = VIEW_TYPE;
-        plugin.setKanbanView(markdownView.leaf);
+        plugin.kanbanFileModes[markdownView.leaf.id || activeFile.path] = VIEW_TYPE;
+        void plugin.setKanbanView(markdownView.leaf);
       }
     },
   });

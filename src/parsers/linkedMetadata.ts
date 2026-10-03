@@ -1,19 +1,19 @@
 import { TFile, moment } from 'obsidian';
 import { getDataViewCache } from 'src/integrations/dataview';
-import { FileMetadata } from 'src/model/types';
+import { FileMetadata, PageDataValue } from 'src/model/types';
 import { defaultSort } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 
-function getPageData(obj: any, path: string) {
+function getPageData(obj: Record<string, unknown> | null | undefined, path: string): unknown {
   if (!obj) return null;
   if (obj[path]) return obj[path];
 
   const split = path.split('.');
-  let ctx = obj;
+  let ctx: unknown = obj;
 
   for (const p of split) {
-    if (typeof ctx === 'object' && p in ctx) {
-      ctx = ctx[p];
+    if (typeof ctx === 'object' && ctx !== null && p in ctx) {
+      ctx = (ctx as Record<string, unknown>)[p];
     } else {
       ctx = null;
       break;
@@ -57,13 +57,14 @@ export function getLinkedPageMetadata(
     seenKey[k.metadataKey] = true;
 
     if (k.metadataKey === 'tags') {
-      let tags = cache?.tags || [];
+      let tags: Array<{ tag: string }> = cache?.tags || [];
+      const frontmatterTags: unknown = cache?.frontmatter?.tags;
 
-      if (Array.isArray(cache?.frontmatter?.tags)) {
-        tags = [].concat(
-          tags,
-          cache.frontmatter.tags.map((tag: string) => ({ tag: `#${tag}` }))
-        );
+      if (Array.isArray(frontmatterTags)) {
+        tags = [
+          ...tags,
+          ...(frontmatterTags as unknown[]).map((tag) => ({ tag: `#${String(tag)}` })),
+        ];
       }
 
       if (tags?.length === 0) return;
@@ -112,7 +113,7 @@ export function getLinkedPageMetadata(
           }
         }
       } else if (Array.isArray(cacheVal)) {
-        cacheVal = cacheVal.map<any>((v, i) => {
+        cacheVal = (cacheVal as unknown[]).map<unknown>((v, i) => {
           if (typeof v === 'string' && /^\[\[[^\]]+\]\]$/.test(v)) {
             const link = (cache.frontmatterLinks || []).find(
               (l) => l.key === k.metadataKey + '.' + i.toString()
@@ -134,7 +135,7 @@ export function getLinkedPageMetadata(
       order.push(k.metadataKey);
       metadata[k.metadataKey] = {
         ...k,
-        value: cacheVal,
+        value: cacheVal as PageDataValue,
       };
       haveData = true;
     } else if (
@@ -143,7 +144,8 @@ export function getLinkedPageMetadata(
       dataviewVal !== '' &&
       !(Array.isArray(dataviewVal) && dataviewVal.length === 0)
     ) {
-      const cachedValue = dataviewCache[k.metadataKey];
+      // Dataview values (Luxon dates, links, ...) are kept as they are; anyToString formats them.
+      const cachedValue = dataviewCache[k.metadataKey] as PageDataValue;
 
       order.push(k.metadataKey);
       metadata[k.metadataKey] = {

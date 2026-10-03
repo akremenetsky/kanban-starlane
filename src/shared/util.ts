@@ -10,7 +10,7 @@ export class PromiseCapability<T = void> {
   promise: Promise<T>;
 
   resolve: (data: T) => void;
-  reject: (reason?: any) => void;
+  reject: (reason: Error) => void;
 
   settled = false;
 
@@ -29,13 +29,17 @@ export class PromiseCapability<T = void> {
   }
 }
 
-type QAble = () => Promise<any>;
+type QAble = () => Promise<unknown>;
 
 export class PromiseQueue {
   queue: Array<QAble> = [];
   isRunning: boolean = false;
 
-  constructor(public onComplete: () => void) {}
+  /** `getWin`: the window of the board, so the pauses run on its (unthrottled) timers. */
+  constructor(
+    public onComplete: () => void,
+    private getWin: () => Window
+  ) {}
 
   clear() {
     this.queue.length = 0;
@@ -46,7 +50,7 @@ export class PromiseQueue {
     this.queue.push(item);
 
     if (!this.isRunning) {
-      this.run();
+      void this.run();
     }
   }
 
@@ -69,7 +73,7 @@ export class PromiseQueue {
 
       const now = performance.now();
       if (now - intervalStart > 50) {
-        await new Promise((res) => activeWindow.setTimeout(res));
+        await new Promise((res) => this.getWin().setTimeout(res));
         intervalStart = now;
       }
     }
@@ -88,11 +92,16 @@ export function escapeRegExpStr(str: string) {
 }
 
 /** True for plain objects (`{}`, `Object.create(null)`), also those made in another window. */
-export function isPlainObject(value: unknown): value is Record<string, any> {
+export function isPlainObject(value: unknown): value is Record<string, unknown> {
   if (Object.prototype.toString.call(value) !== '[object Object]') return false;
-  const ctor = (value as any).constructor;
+  const ctor = (value as { constructor?: { prototype: unknown } }).constructor;
   if (ctor === undefined) return true;
   const proto = ctor.prototype;
   if (Object.prototype.toString.call(proto) !== '[object Object]') return false;
-  return Object.prototype.hasOwnProperty.call(proto, 'isPrototypeOf');
+  return Object.prototype.hasOwnProperty.call(proto, 'isPrototypeOf') as boolean;
+}
+
+/** Whatever was thrown, as an Error. */
+export function toError(thrown: unknown): Error {
+  return thrown instanceof Error ? thrown : new Error(String(thrown));
 }

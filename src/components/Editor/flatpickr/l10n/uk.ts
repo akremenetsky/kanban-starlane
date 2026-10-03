@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Ukrainian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Ukrainian: CustomLocale = {
   firstDayOfWeek: 1,
@@ -38,6 +31,4 @@ export const Ukrainian: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.uk = Ukrainian;
 
-export default fp.l10ns;

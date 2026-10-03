@@ -78,7 +78,7 @@ export class BasicMarkdownRenderer extends Component {
   }
 
   onload() {
-    this.render();
+    void this.render();
   }
 
   async render() {
@@ -93,7 +93,7 @@ export class BasicMarkdownRenderer extends Component {
     );
 
     this.renderCapability.resolve();
-    if (!(this.view as any)?._loaded || !(this as any)._loaded) return;
+    if (!this.view?._loaded || !this._loaded) return;
 
     const { containerEl } = this;
 
@@ -184,7 +184,7 @@ export class BasicMarkdownRenderer extends Component {
   }
 
   set(markdown: string) {
-    if ((this as any)._loaded) {
+    if (this._loaded) {
       this.markdown = markdown;
       this.renderCapability = new PromiseCapability<void>();
       this.unload();
@@ -310,7 +310,7 @@ export const MarkdownRenderer = memo(function MarkdownPreviewRenderer({
     preview.renderCapability.resolve();
 
     preview.set(markdownString);
-    preview.renderCapability.promise.then(() => {
+    void preview.renderCapability.promise.then(() => {
       colorizeTags(elRef.current, getTagColor);
       colorizeDates(elRef.current, getDateColor);
     });

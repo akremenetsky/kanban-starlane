@@ -1,0 +1,7 @@
+[
+  {
+    "file": "src/settings/SettingsTab.ts",
+    "rule": "obsidianmd/settings-tab/prefer-setting-definitions",
+    "reason": "On Obsidian 1.13+ a non-empty getSettingDefinitions() replaces display(), so adopting it means rebuilding the settings tab on the declarative API. Kept as is by product decision (2026-10-03)."
+  }
+]

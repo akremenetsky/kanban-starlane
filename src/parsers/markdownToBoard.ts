@@ -1,11 +1,12 @@
 import update from 'immutability-helper';
-import { Content, List, Parent, Root } from 'mdast';
+import { Content, List, PhrasingContent, Root } from 'mdast';
 import { ListItem } from 'mdast-util-from-markdown/lib';
 import { toString } from 'mdast-util-to-string';
 import { getInlineFieldSources } from 'src/integrations/inlineFields';
 import { shouldUseTabs } from 'src/integrations/vaultConfig';
 import {
   Board,
+  BoardData,
   BoardTemplate,
   Item,
   ItemData,
@@ -19,7 +20,6 @@ import { defaultSort } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 import { visit } from 'unist-util-visit';
 
-import { DateNode, FileNode, TimeNode, ValueNode } from './extensions/types';
 import {
   ContentBoundary,
   getNextOfType,
@@ -27,7 +27,7 @@ import {
   getPrevSibling,
   getStringFromBoundary,
 } from './helpers/ast';
-import { extractInlineFields, taskFields } from './helpers/inlineMetadata';
+import { InlineField, extractInlineFields, taskFields } from './helpers/inlineMetadata';
 import {
   addBlockId,
   dedentNewLines,
@@ -45,6 +45,19 @@ import { parseFragment } from './parseMarkdown';
 
 interface TaskItem extends ListItem {
   checkChar?: string;
+}
+
+/** The text a node contributes to search: its value, or an image's alt text. */
+function nodeText(node: object): string {
+  if ('value' in node && typeof node.value === 'string' && node.value) return node.value;
+  if ('alt' in node && typeof node.alt === 'string') return node.alt;
+  return '';
+}
+
+function startsWithCodeFence(node: object | undefined): boolean {
+  return (
+    !!node && 'value' in node && typeof node.value === 'string' && node.value.startsWith('```')
+  );
 }
 
 export function listItemToItemData(stateManager: StateManager, md: string, item: TaskItem) {
@@ -77,13 +90,13 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
   visit(
     item,
     ['text', 'wikilink', 'embedWikilink', 'image', 'inlineCode', 'code', 'hashtag'],
-    (node: any, i, parent) => {
+    (node, i, parent) => {
       if (node.type === 'hashtag') {
-        if (!parent.children.first()?.value?.startsWith('```')) {
+        if (!startsWithCodeFence(parent.children.first())) {
           titleSearch += ' #' + node.value;
         }
       } else {
-        titleSearch += node.value || node.alt || '';
+        titleSearch += nodeText(node);
       }
     }
   );
@@ -115,17 +128,14 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
       return node.type !== 'paragraph';
     },
     (node, i, parent) => {
-      const genericNode = node as ValueNode;
+      const genericNode = node as PhrasingContent;
 
       if (genericNode.type === 'blockid') {
         itemData.blockId = genericNode.value;
         return true;
       }
 
-      if (
-        genericNode.type === 'hashtag' &&
-        !(parent.children.first() as any)?.value?.startsWith('```')
-      ) {
+      if (genericNode.type === 'hashtag' && !startsWithCodeFence(parent.children.first())) {
         if (!itemData.metadata.tags) {
           itemData.metadata.tags = [];
         }
@@ -142,7 +152,7 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
       }
 
       if (genericNode.type === 'date' || genericNode.type === 'dateLink') {
-        itemData.metadata.dateStr = (genericNode as DateNode).date;
+        itemData.metadata.dateStr = genericNode.date;
 
         if (moveDates) {
           title = markRangeForDeletion(title, {
@@ -154,7 +164,7 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
       }
 
       if (genericNode.type === 'time') {
-        itemData.metadata.timeStr = (genericNode as TimeNode).time;
+        itemData.metadata.timeStr = genericNode.time;
         if (moveDates) {
           title = markRangeForDeletion(title, {
             start: node.position.start.offset - itemBoundary.start,
@@ -165,26 +175,26 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
       }
 
       if (genericNode.type === 'embedWikilink') {
-        itemData.metadata.fileAccessor = (genericNode as FileNode).fileAccessor;
+        itemData.metadata.fileAccessor = genericNode.fileAccessor;
         return true;
       }
 
       if (genericNode.type === 'wikilink') {
-        itemData.metadata.fileAccessor = (genericNode as FileNode).fileAccessor;
-        itemData.metadata.fileMetadata = (genericNode as FileNode).fileMetadata;
-        itemData.metadata.fileMetadataOrder = (genericNode as FileNode).fileMetadataOrder;
+        itemData.metadata.fileAccessor = genericNode.fileAccessor;
+        itemData.metadata.fileMetadata = genericNode.fileMetadata;
+        itemData.metadata.fileMetadataOrder = genericNode.fileMetadataOrder;
         return true;
       }
 
-      if (genericNode.type === 'link' && (genericNode as FileNode).fileAccessor) {
-        itemData.metadata.fileAccessor = (genericNode as FileNode).fileAccessor;
-        itemData.metadata.fileMetadata = (genericNode as FileNode).fileMetadata;
-        itemData.metadata.fileMetadataOrder = (genericNode as FileNode).fileMetadataOrder;
+      if (genericNode.type === 'link' && genericNode.fileAccessor) {
+        itemData.metadata.fileAccessor = genericNode.fileAccessor;
+        itemData.metadata.fileMetadata = genericNode.fileMetadata;
+        itemData.metadata.fileMetadataOrder = genericNode.fileMetadataOrder;
         return true;
       }
 
       if (genericNode.type === 'embedLink') {
-        itemData.metadata.fileAccessor = (genericNode as FileNode).fileAccessor;
+        itemData.metadata.fileAccessor = genericNode.fileAccessor;
         return true;
       }
     }
@@ -200,12 +210,15 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
   );
 
   if (inlineFields?.length) {
-    const inlineMetadata = (itemData.metadata.inlineMetadata = inlineFields.reduce((acc, curr) => {
-      if (!taskFields.has(curr.key)) acc.push(curr);
-      else if (firstLineEnd <= 0 || curr.end < firstLineEnd) acc.push(curr);
+    const inlineMetadata = (itemData.metadata.inlineMetadata = inlineFields.reduce<InlineField[]>(
+      (acc, curr) => {
+        if (!taskFields.has(curr.key)) acc.push(curr);
+        else if (firstLineEnd <= 0 || curr.end < firstLineEnd) acc.push(curr);
 
-      return acc;
-    }, []));
+        return acc;
+      },
+      []
+    ));
 
     const moveTaskData = stateManager.getSetting('move-task-metadata');
     const moveMetadata = stateManager.getSetting('inline-metadata-position') !== 'body';
@@ -246,7 +259,7 @@ function isArchiveLane(child: Content, children: Content[], currentIndex: number
 export function astToUnhydratedBoard(
   stateManager: StateManager,
   settings: KanbanSettings,
-  frontmatter: Record<string, any>,
+  frontmatter: Record<string, unknown>,
   root: Root,
   md: string
 ): Board {
@@ -255,7 +268,7 @@ export function astToUnhydratedBoard(
   root.children.forEach((child, index) => {
     if (child.type === 'heading') {
       const isArchive = isArchiveLane(child, root.children, index);
-      const headingBoundary = getNodeContentBoundary(child as Parent);
+      const headingBoundary = getNodeContentBoundary(child);
       const title = getStringFromBoundary(md, headingBoundary);
 
       let shouldMarkItemsComplete = false;
@@ -330,7 +343,8 @@ export function astToUnhydratedBoard(
     children: lanes,
     data: {
       settings,
-      frontmatter,
+      // YAML values are kept as they are; the board only writes them back.
+      frontmatter: frontmatter as BoardData['frontmatter'],
       archive,
       isSearching: false,
       errors: [],

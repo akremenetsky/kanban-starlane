@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Bosnian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Bosnian: CustomLocale = {
   firstDayOfWeek: 1,
@@ -38,6 +31,4 @@ export const Bosnian: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.bs = Bosnian;
 
-export default fp.l10ns;

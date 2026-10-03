@@ -17,7 +17,7 @@ export function createHTMLDndEntity(
   const minY = y - 25;
   const maxY = y + 25;
 
-  return {
+  const entity: Entity = {
     scopeId: scopeId,
     entityId: `${scopeId}-${id}`,
     initial: [minX, minY, maxX, maxY],
@@ -29,7 +29,7 @@ export function createHTMLDndEntity(
     },
     recalcInitial() {},
     getHitbox() {
-      return this.initial;
+      return entity.initial;
     },
     getPath() {
       return [];
@@ -45,4 +45,5 @@ export function createHTMLDndEntity(
       };
     },
   };
+  return entity;
 }

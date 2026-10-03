@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Japanese locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Japanese: CustomLocale = {
   weekdays: {
@@ -55,6 +48,4 @@ export const Japanese: CustomLocale = {
   minuteAriaLabel: '分',
 };
 
-fp.l10ns.ja = Japanese;
 
-export default fp.l10ns;

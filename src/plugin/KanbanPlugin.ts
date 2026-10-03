@@ -1,4 +1,12 @@
-import { Plugin, TFile, TFolder, ViewState, WorkspaceLeaf } from 'obsidian';
+import {
+  App,
+  EmbeddableMarkdownEditorClass,
+  Plugin,
+  TFile,
+  TFolder,
+  ViewState,
+  WorkspaceLeaf,
+} from 'obsidian';
 import { render, unmountComponentAtNode, useEffect, useState } from 'preact/compat';
 import { DateSuggest, TimeSuggest } from 'src/components/Editor/suggest';
 import { FRONTMATTER_KEY, VIEW_ICON, VIEW_TYPE } from 'src/constants';
@@ -23,7 +31,7 @@ interface WindowRegistry {
   appRoot: HTMLElement;
 }
 
-function getEditorClass(app: any) {
+function getEditorClass(app: App): EmbeddableMarkdownEditorClass {
   const md = app.embedRegistry.embedByExtension.md(
     { app: app, containerEl: createDiv(), state: {} },
     null,
@@ -34,7 +42,11 @@ function getEditorClass(app: any) {
   md.editable = true;
   md.showEditor();
 
-  const MarkdownEditor = Object.getPrototypeOf(Object.getPrototypeOf(md.editMode)).constructor;
+  // The embed's editor is a subclass of the reusable editor class two prototypes up.
+  const editorProto = Object.getPrototypeOf(Object.getPrototypeOf(md.editMode) as object) as {
+    constructor: EmbeddableMarkdownEditorClass;
+  };
+  const MarkdownEditor = editorProto.constructor;
 
   md.unload();
 
@@ -56,7 +68,7 @@ export default class KanbanPlugin extends Plugin {
   isShiftPressed: boolean = false;
 
   async loadSettings() {
-    this.settings = Object.assign({}, await this.loadData());
+    this.settings = Object.assign({}, (await this.loadData()) as KanbanSettings | null);
   }
 
   async saveSettings() {
@@ -77,9 +89,9 @@ export default class KanbanPlugin extends Plugin {
 
   unload(): void {
     super.unload();
-    Promise.all(
+    void Promise.all(
       this.app.workspace.getLeavesOfType(VIEW_TYPE).map((leaf) => {
-        this.kanbanFileModes[(leaf as any).id] = 'markdown';
+        this.kanbanFileModes[leaf.id] = 'markdown';
         return this.setMarkdownView(leaf);
       })
     );
@@ -98,10 +110,10 @@ export default class KanbanPlugin extends Plugin {
     this.windowRegistry.clear();
     this.kanbanFileModes = {};
 
-    (this.app.workspace as any).unregisterHoverLinkSource(FRONTMATTER_KEY);
+    this.app.workspace.unregisterHoverLinkSource(FRONTMATTER_KEY);
   }
 
-  MarkdownEditor: any;
+  MarkdownEditor: EmbeddableMarkdownEditorClass;
 
   async onload() {
     await this.loadSettings();
@@ -112,19 +124,19 @@ export default class KanbanPlugin extends Plugin {
     this.registerEditorSuggest(new DateSuggest(this.app, this));
 
     this.registerEvent(
-      this.app.workspace.on('window-open', (_: any, win: Window) => {
+      this.app.workspace.on('window-open', (_, win: Window) => {
         this.mount(win);
       })
     );
 
     this.registerEvent(
-      this.app.workspace.on('window-close', (_: any, win: Window) => {
+      this.app.workspace.on('window-close', (_, win: Window) => {
         this.unmount(win);
       })
     );
 
     this.settingsTab = new KanbanSettingsTab(this, {
-      onSettingsChange: (newSettings) => this.updateSettings(newSettings),
+      onSettingsChange: (newSettings) => void this.updateSettings(newSettings),
     });
 
     this.addSettingTab(this.settingsTab);
@@ -138,7 +150,7 @@ export default class KanbanPlugin extends Plugin {
     // Mount an empty component to start; views will be added as we go
     this.mount(window);
 
-    (this.app.workspace as any).floatingSplit?.children?.forEach((c: any) => {
+    this.app.workspace.floatingSplit?.children?.forEach((c) => {
       this.mount(c.win);
     });
 
@@ -146,7 +158,7 @@ export default class KanbanPlugin extends Plugin {
     this.registerDomEvent(window, 'keyup', this.handleShift);
 
     this.addRibbonIcon(VIEW_ICON, t('Create new board'), () => {
-      this.newKanban();
+      void this.newKanban();
     });
   }
 
@@ -222,9 +234,9 @@ export default class KanbanPlugin extends Plugin {
     const file = view.file;
 
     if (this.stateManagers.has(file)) {
-      this.stateManagers.get(file).registerView(view, data, shouldParseData);
+      void this.stateManagers.get(file).registerView(view, data, shouldParseData);
     } else {
-      this.createStateManager(file).registerView(view, data, true);
+      void this.createStateManager(file).registerView(view, data, true);
     }
 
     reg.viewStateReceivers.forEach((fn) => fn(this.getKanbanViews(win)));
@@ -298,7 +310,7 @@ export default class KanbanPlugin extends Plugin {
     }
 
     const reg = this.windowRegistry.get(win);
-    const oldId = `${(view.leaf as any).id}:::${oldPath}`;
+    const oldId = `${view.leaf.id}:::${oldPath}`;
 
     if (reg.viewMap.has(oldId)) {
       reg.viewMap.delete(oldId);
@@ -375,7 +387,7 @@ export default class KanbanPlugin extends Plugin {
       : this.app.fileManager.getNewFileParent(this.app.workspace.getActiveFile()?.path || '');
 
     try {
-      const kanban: TFile = await (this.app.fileManager as any).createNewMarkdownFile(
+      const kanban: TFile = await this.app.fileManager.createNewMarkdownFile(
         targetFolder,
         t('Untitled Kanban')
       );

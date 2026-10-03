@@ -62,20 +62,20 @@ export function registerVaultEvents(plugin: KanbanPlugin) {
   );
 
   plugin.registerEvent(
-    (plugin.app as any).metadataCache.on('dataview:metadata-change', (_: any, file: TFile) => {
+    plugin.app.metadataCache.on('dataview:metadata-change', (_, file) => {
       notifyFileChange(file);
     })
   );
 
   plugin.registerEvent(
-    (plugin.app as any).metadataCache.on('dataview:api-ready', () => {
+    plugin.app.metadataCache.on('dataview:api-ready', () => {
       plugin.stateManagers.forEach((manager) => {
         manager.forceRefresh();
       });
     })
   );
 
-  (plugin.app.workspace as any).registerHoverLinkSource(FRONTMATTER_KEY, {
+  plugin.app.workspace.registerHoverLinkSource(FRONTMATTER_KEY, {
     display: 'Kanban',
     defaultMod: true,
   });

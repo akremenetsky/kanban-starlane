@@ -9,7 +9,7 @@ export function createElement<T extends HTMLElement>(
   className: string,
   content?: string
 ): T {
-  const e = doc.createElement(tag) as T;
+  const e = doc.win.createEl(tag) as T;
   className = className || '';
   content = content || '';
 
@@ -34,7 +34,7 @@ export function findParent(node: Element, condition: (n: Element) => boolean): E
 export function createNumberInput(
   doc: Document,
   inputClassName: string,
-  opts?: Record<string, any>
+  opts?: Record<string, string | number>
 ) {
   const wrapper = createElement<HTMLDivElement>(doc, 'div', 'numInputWrapper'),
     numInput = createElement<HTMLInputElement>(doc, 'input', 'numInput ' + inputClassName),
@@ -43,7 +43,7 @@ export function createNumberInput(
 
   numInput.type = 'number';
 
-  if (opts !== undefined) for (const key in opts) numInput.setAttribute(key, opts[key]);
+  if (opts !== undefined) for (const key in opts) numInput.setAttribute(key, String(opts[key]));
 
   wrapper.appendChild(numInput);
   wrapper.appendChild(arrowUp);
@@ -59,7 +59,7 @@ export function getEventTarget(event: Event): EventTarget | null {
       return path[0];
     }
     return event.target;
-  } catch (error) {
+  } catch {
     return event.target;
   }
 }

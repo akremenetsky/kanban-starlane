@@ -32,7 +32,7 @@ export function describeCardEvent(event: CardEvent): string {
     case 'restored':
       return `${t('Restored from archive to list')} ${quoted(event.lane)}`;
     default:
-      return String((event as CardEvent).type);
+      return String(event.type);
   }
 }
 

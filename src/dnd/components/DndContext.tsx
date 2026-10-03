@@ -7,9 +7,9 @@ import { DndManagerContext } from './context';
 
 interface DndContextProps extends WithChildren {
   win: Window;
-  onDrop(dragEntity: Entity, dropEntity: Entity): void;
+  onDrop: (dragEntity: Entity, dropEntity: Entity) => void;
   /** Optional: which drop targets a drag may use (called once per drag). */
-  getDropFilter?(dragEntity: Entity): ((dropEntity: Entity) => boolean) | null;
+  getDropFilter?: (dragEntity: Entity) => ((dropEntity: Entity) => boolean) | null;
 }
 
 export function DndContext({ win, children, onDrop, getDropFilter }: DndContextProps) {

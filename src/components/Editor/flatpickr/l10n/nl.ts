@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Dutch locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Dutch: CustomLocale = {
   weekdays: {
@@ -61,6 +54,4 @@ export const Dutch: CustomLocale = {
   },
 };
 
-fp.l10ns.nl = Dutch;
 
-export default fp.l10ns;

@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Italian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Italian: CustomLocale = {
   weekdays: {
@@ -42,6 +35,4 @@ export const Italian: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.it = Italian;
 
-export default fp.l10ns;

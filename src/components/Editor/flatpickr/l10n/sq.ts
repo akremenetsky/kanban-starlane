@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Albanian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Albanian: CustomLocale = {
   weekdays: {
@@ -43,6 +36,4 @@ export const Albanian: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.sq = Albanian;
 
-export default fp.l10ns;

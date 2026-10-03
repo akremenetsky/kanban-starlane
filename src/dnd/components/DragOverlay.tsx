@@ -8,7 +8,7 @@ import { emptyHitbox } from 'src/dnd/util/hitbox';
 import { DndManagerContext } from './context';
 
 export interface DragOverlayProps {
-  children(entity: Entity, styles: JSX.CSSProperties): JSX.Element;
+  children: (entity: Entity, styles: JSX.CSSProperties) => JSX.Element;
 }
 
 function getDragOverlayStyles(
@@ -101,7 +101,7 @@ export function DragOverlay({ children }: DragOverlayProps) {
           )
         );
 
-        activeWindow.setTimeout(() => {
+        dndManager.win.setTimeout(() => {
           setDragEntity(undefined);
           setStyles(undefined);
         }, dropDuration);
@@ -147,7 +147,7 @@ export function useIsAnythingDragging() {
         destination: dropDestination,
       });
 
-      activeWindow.setTimeout(() => setIsDragging(false), dropDuration);
+      dndManager.win.setTimeout(() => setIsDragging(false), dropDuration);
     };
 
     const { emitter } = dndManager.dragManager;

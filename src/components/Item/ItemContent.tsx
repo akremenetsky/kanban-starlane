@@ -33,7 +33,8 @@ import {
 
 export function useDatePickers(item: Item, explicitPath?: Path) {
   const { stateManager, boardModifiers } = useContext(KanbanContext);
-  const path = explicitPath || useNestedEntityPath();
+  const nestedPath = useNestedEntityPath();
+  const path = explicitPath || nestedPath;
 
   return useMemo(() => {
     const onEditDate = (e: MouseEvent) => {
@@ -156,7 +157,7 @@ export function Tags({
                 return;
               }
 
-              (stateManager.app as any).internalPlugins
+              stateManager.app.internalPlugins
                 .getPluginById('global-search')
                 .instance.openGlobalSearch(`tag:${tag}`);
             }}

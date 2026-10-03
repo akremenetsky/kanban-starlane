@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Gaelic Irish locale for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Irish: CustomLocale = {
   firstDayOfWeek: 1,
@@ -46,6 +39,4 @@ export const Irish: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.hr = Irish;
 
-export default fp.l10ns;

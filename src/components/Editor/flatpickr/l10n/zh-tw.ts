@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Mandarin locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 export const MandarinTraditional: CustomLocale = {
   weekdays: {
     shorthand: ['週日', '週一', '週二', '週三', '週四', '週五', '週六'],
@@ -49,5 +42,3 @@ export const MandarinTraditional: CustomLocale = {
   scrollTitle: '滾動切換',
   toggleTitle: '點擊切換 12/24 小時時制',
 };
-fp.l10ns.zh_tw = MandarinTraditional;
-export default fp.l10ns;

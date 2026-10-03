@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* German locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const German: CustomLocale = {
   weekdays: {
@@ -42,6 +35,4 @@ export const German: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.de = German;
 
-export default fp.l10ns;

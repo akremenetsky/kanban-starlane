@@ -116,8 +116,10 @@ export function TableView({
       dbTimer.current = 0;
       return;
     }
-    activeWindow.clearTimeout(dbTimer.current);
-    dbTimer.current = activeWindow.setTimeout(() => {
+    // The board's window: a pop-out's timers keep running while the main window is hidden.
+    const win = stateManager.getAView()?.getWindow() ?? window;
+    win.clearTimeout(dbTimer.current);
+    dbTimer.current = win.setTimeout(() => {
       if (!stateManager.getAView()) return;
       stateManager.setState((board) => {
         return update(board, {
@@ -203,7 +205,7 @@ export function TableView({
                       className={classcat({
                         'mod-has-icon': cell.column.id === 'lane',
                         'mod-search-match': row.columnFiltersMeta[cell.column.id]
-                          ? (row.columnFiltersMeta[cell.column.id] as any).itemRank.passed
+                          ? row.columnFiltersMeta[cell.column.id].itemRank.passed
                           : false,
                       })}
                     >

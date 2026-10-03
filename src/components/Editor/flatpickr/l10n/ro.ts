@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Romanian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Romanian: CustomLocale = {
   weekdays: {
@@ -42,6 +35,4 @@ export const Romanian: CustomLocale = {
   },
 };
 
-fp.l10ns.ro = Romanian;
 
-export default fp.l10ns;

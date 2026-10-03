@@ -66,7 +66,7 @@ export function toggleSetting(
   setting.addToggle((toggle) => {
     const { value, globalValue } = values(ctx, key);
     toggle.setValue(Boolean(value ?? globalValue ?? defaultValue));
-    toggle.onChange((next) => set(ctx, key, next as any));
+    toggle.onChange((next) => set(ctx, key, next));
 
     addResetButton(setting, () => {
       const { globalValue } = values(ctx, key);
@@ -86,7 +86,7 @@ export function dropdownSetting(
     options: Array<[value: string, label: string]>;
     defaultValue: string;
     /** Convert the dropdown string to the stored value. '' always unsets. */
-    parse?: (value: string) => unknown;
+    parse?: (value: string) => KanbanSettings[Key];
     resettable?: boolean;
   }
 ) {
@@ -99,7 +99,7 @@ export function dropdownSetting(
     dropdown.setValue(value?.toString() || globalValue?.toString() || opts.defaultValue);
     dropdown.onChange((next) => {
       if (next === '') unset(ctx, key);
-      else set(ctx, key, (opts.parse ? opts.parse(next) : next) as any);
+      else set(ctx, key, opts.parse ? opts.parse(next) : next);
     });
 
     if (opts.resettable) {
@@ -124,7 +124,7 @@ export function textSetting(
     const { value, globalValue } = values(ctx, key);
     if (value || globalValue) text.setValue(String(value || globalValue));
     text.setPlaceholder(String(globalValue || opts.defaultValue));
-    text.onChange((next) => (next ? set(ctx, key, next as any) : unset(ctx, key)));
+    text.onChange((next) => (next ? set(ctx, key, next) : unset(ctx, key)));
   });
 }
 
@@ -139,7 +139,7 @@ export function overrideTextSetting(
     const fallback = globalValue || opts.defaultValue;
     text.inputEl.placeholder = fallback ? `${fallback} (${t('default')})` : '';
     text.inputEl.value = value ? String(value) : '';
-    text.onChange((next) => (next ? set(ctx, key, next as any) : unset(ctx, key)));
+    text.onChange((next) => (next ? set(ctx, key, next) : unset(ctx, key)));
   });
 }
 
@@ -161,7 +161,7 @@ export function numberSetting(
       const valid = numberRegEx.test(next) && (opts.min === undefined || Number(next) >= opts.min);
       text.inputEl.toggleClass('error', !!next && !valid);
 
-      if (next && valid) set(ctx, key, parseInt(next) as any);
+      if (next && valid) set(ctx, key, parseInt(next));
       else unset(ctx, key);
     });
   });
@@ -184,7 +184,7 @@ export function colorSetting(ctx: SettingsContext, key: Key, opts: BaseOptions) 
   setting.addColorPicker((picker) => {
     const { value } = values(ctx, key);
     if (value) picker.setValue(String(value));
-    picker.onChange((next) => set(ctx, key, next as any));
+    picker.onChange((next) => set(ctx, key, next));
 
     addResetButton(setting, () => unset(ctx, key));
   });
@@ -221,7 +221,7 @@ export function momentFormatSetting(
     mf.setDefaultFormat(defaultFormat);
     if (value || globalValue) mf.setValue(String(value || globalValue));
 
-    mf.onChange((next) => (next ? set(ctx, key, next as any) : unset(ctx, key)));
+    mf.onChange((next) => (next ? set(ctx, key, next) : unset(ctx, key)));
   });
 
   return setting;

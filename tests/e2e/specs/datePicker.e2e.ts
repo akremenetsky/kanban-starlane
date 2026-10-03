@@ -39,4 +39,30 @@ describe('date picker', () => {
 
     await waitForFile(BOARD, (md) => /- \[ \] First card .*@\{\d{4}-\d{2}-\d{2}\}/.test(md));
   });
+
+  it('moves between days and picks one with the keyboard', async function () {
+    await openBoard(BOARD);
+    await expectEventually(async () => (await cardTitles(0)).length, 2);
+
+    await lane(0).$(cls('item')).$(cls('item-postfix-button')).click();
+    const item = await browser.$('.menu-item-title=Add date');
+    await item.waitForDisplayed();
+    await item.click();
+
+    const calendar = await browser.$('.flatpickr-calendar');
+    await calendar.waitForDisplayed();
+    const today = await calendar.$('.flatpickr-day.today').getElement();
+    await today.waitForExist();
+    await browser.execute((el: HTMLElement) => el.focus(), today);
+
+    // From today: one day right, one week down, then pick it.
+    await browser.keys('ArrowRight');
+    await browser.keys('ArrowDown');
+    await browser.keys('Enter');
+
+    const expected = await browser.executeObsidian(({ obsidian }) =>
+      obsidian.moment().add(8, 'days').format('YYYY-MM-DD')
+    );
+    await waitForFile(BOARD, (md) => md.includes(`- [ ] First card @{${expected}}`));
+  });
 });

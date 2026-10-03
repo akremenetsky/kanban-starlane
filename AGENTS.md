@@ -37,7 +37,8 @@ writes in Russian — reply in Russian; code, comments, docs and commit messages
 | `npm install` | Install dependencies (npm only, no yarn) |
 | `npm run dev` | Watch build → `dist/` and `test-vault/.obsidian/plugins/kanban-starlane` |
 | `npm run build` | Production build → `dist/` |
-| `npm run check` | typecheck + lint + format check + unit tests (run before every commit) |
+| `npm run check` | typecheck + lint + review scanner + format check + unit tests (run before every commit) |
+| `npm run lint:scanner` | The Obsidian community review scanner's ESLint/Stylelint setup; fails on any finding not listed in `scripts/scanner/accepted.json` |
 | `npm test` | Unit tests (Vitest) · `npx vitest run <file>` for one file |
 | `npm run test:e2e` | Build + e2e in real Obsidian (headless via xvfb) · `-- --spec <file>` for one spec |
 | `E2E_VERSIONS=all npm run test:e2e` | e2e on minimum (`manifest.json` minAppVersion) and latest Obsidian |
@@ -100,8 +101,15 @@ zensical.toml        Zensical config for docs/user-guide (site_url, nav, theme)
   (use a CSS class or `setCssStyles`), no `innerHTML`/`insertAdjacentHTML` (use DOM helpers or
   `sanitizeHTMLToDom`), no `navigator.userAgent` (use `Platform`), every `eslint-disable` needs
   a `-- reason` and block disables need a matching `eslint-enable`.
-- Pop-out windows: use `activeWindow` / `win.setTimeout` / `getParentWindow(el)`, not global
-  `window`/`document`, for timers and DOM that belongs to a board.
+- The review scanner lists **every** finding, warnings included, as a risk on the plugin page,
+  so `npm run check` fails on any (`lint:scanner`). No `any` and no `as any`: type Obsidian
+  internals in `src/integrations/obsidianInternals.ts`, other plugins' APIs in their
+  integration module, and narrow `unknown` values. The scanner forbids disabling `obsidianmd/*`
+  rules with comments; an exception goes into `scripts/scanner/accepted.json` with a reason.
+- Pop-out windows: timers and DOM that belong to a board use the board's window
+  (`view.getWindow()`, `getParentWindow(el)`, `dndManager.win`), not global `window`/`document`
+  — a hidden main window's timers are throttled. The scanner rejects `activeWindow.setTimeout`
+  (and suggests `window.setTimeout`, which is wrong for a board): use a window variable.
 - Board data is immutable: build new objects (`immutability-helper`, `src/dnd/util/data.ts`).
 - Keep modules focused; if a file passes ~500 lines, split it by responsibility.
 - Comments explain *why*, not what. Public functions in `parsers/`, `state/`, `integrations/`

@@ -62,7 +62,7 @@ export function mapLegacySettings(legacy: Record<string, unknown>): KanbanSettin
     settings[FRONTMATTER_KEY] = settings[LEGACY_FRONTMATTER_KEY];
     delete settings[LEGACY_FRONTMATTER_KEY];
   }
-  return settings as KanbanSettings;
+  return settings;
 }
 
 export async function importLegacySettings(plugin: KanbanPlugin) {
@@ -74,7 +74,7 @@ export async function importLegacySettings(plugin: KanbanPlugin) {
     return;
   }
 
-  const legacy = JSON.parse(await adapter.read(path));
+  const legacy = JSON.parse(await adapter.read(path)) as Record<string, unknown>;
   await plugin.updateSettings({ ...plugin.settings, ...mapLegacySettings(legacy) });
   new Notice(t('Settings imported from the Kanban plugin.'));
 }

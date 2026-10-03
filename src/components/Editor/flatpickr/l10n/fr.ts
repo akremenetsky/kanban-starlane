@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* French locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const French: CustomLocale = {
   firstDayOfWeek: 1,
@@ -61,6 +54,4 @@ export const French: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.fr = French;
 
-export default fp.l10ns;

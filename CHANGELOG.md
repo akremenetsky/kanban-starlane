@@ -3,6 +3,21 @@
 All notable changes to Kanban Starlane. Kanban Starlane is a modified version of the
 [Kanban plugin](https://github.com/mgmeyers/obsidian-kanban) by Matthew Meyers (2.0.51).
 
+## Unreleased
+
+Clean-up for the review scanner of the community directory (the plugin page listed 1698
+issues). Nothing changes for boards or their files.
+
+### Changed
+- The date picker no longer adds `flatpickr` to every element, list and date in Obsidian, nor
+  CSS rules to Obsidian's stylesheet; keyboard navigation uses current browser APIs.
+- The UI language is read with Obsidian's `getLanguage()` (on Obsidian 1.8.7 and later).
+- *New note from card* opens the note with current Obsidian APIs; if the configured note folder
+  does not exist, the note is created in the default location.
+- An image pasted from the clipboard on desktop is saved through Obsidian's binary API with the
+  expected data type.
+- Removed unused parts of the bundled date picker and dependency updates past known advisories.
+
 ## 0.1.1 — 2026-10-03
 
 Changes made for Obsidian's community plugin review. Nothing changes for boards or their files.

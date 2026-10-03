@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Uzbek locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const UzbekLatin: CustomLocale = {
   weekdays: {
@@ -58,6 +51,4 @@ export const UzbekLatin: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns['uz_latn'] = UzbekLatin;
 
-export default fp.l10ns;

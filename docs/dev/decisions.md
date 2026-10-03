@@ -82,8 +82,13 @@ were insider builds). Raise it deliberately when using newer APIs; CI tests both
 
 **Tooling.** npm (no yarn), TypeScript 5.9, esbuild, ESLint 9 flat config, Prettier, Vitest
 with a fake Obsidian API, WebdriverIO + wdio-obsidian-service for e2e in real Obsidian.
-The obsidian-dataview npm package is used for types only (its `getAPI()` read the global
-`app` and bundled Luxon); access goes through `src/integrations/dataview.ts`.
+Dataview is reached through `src/integrations/dataview.ts` with its own minimal API type: the
+obsidian-dataview npm package's `getAPI()` reads the global `app` and bundles Luxon, and its
+typings do not resolve outside its repository (they resolve to `any`).
+
+**Obsidian internals are typed** in `src/integrations/obsidianInternals.ts` (module
+augmentation of `obsidian`), never reached through `as any`. Each member is typed as narrowly
+as the code needs; values of other plugins are typed per plugin in its integration module.
 
 **Layered `src/`** — see `docs/dev/architecture.md`. Module moves are done with
 `scripts/mv.mjs` / `scripts/move-symbol.mjs` so imports stay consistent.

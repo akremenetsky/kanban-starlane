@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Georgian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Georgian: CustomLocale = {
   weekdays: {
@@ -45,6 +38,4 @@ export const Georgian: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.ka = Georgian;
 
-export default fp.l10ns;

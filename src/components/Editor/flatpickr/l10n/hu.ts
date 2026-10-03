@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Hungarian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Hungarian: CustomLocale = {
   firstDayOfWeek: 1,
@@ -60,6 +53,4 @@ export const Hungarian: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.hu = Hungarian;
 
-export default fp.l10ns;

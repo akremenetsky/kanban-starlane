@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Hebrew locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Hebrew: CustomLocale = {
   weekdays: {
@@ -50,6 +43,4 @@ export const Hebrew: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.he = Hebrew;
 
-export default fp.l10ns;

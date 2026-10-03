@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Armenian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Armenian: CustomLocale = {
   weekdays: {
@@ -48,6 +41,4 @@ export const Armenian: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.hy = Armenian;
 
-export default fp.l10ns;

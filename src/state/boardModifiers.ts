@@ -126,7 +126,7 @@ export function getBoardModifiers(view: KanbanView, stateManager: StateManager):
     },
 
     updateLane: (path: Path, lane: Lane) => {
-      const oldTitle = getEntityFromPath(stateManager.state, path)?.data.title;
+      const oldTitle = getEntityFromPath<Lane>(stateManager.state, path)?.data.title;
 
       stateManager.setState((boardData) => {
         const updated = updateParentEntity(boardData, path, {
@@ -146,7 +146,7 @@ export function getBoardModifiers(view: KanbanView, stateManager: StateManager):
 
     archiveLane: (path: Path) => {
       stateManager.setState((boardData) => {
-        const lane = getEntityFromPath(boardData, path);
+        const lane = getEntityFromPath<Lane>(boardData, path);
         const items = lane.children;
 
         try {
@@ -177,7 +177,7 @@ export function getBoardModifiers(view: KanbanView, stateManager: StateManager):
 
     archiveLaneItems: (path: Path) => {
       stateManager.setState((boardData) => {
-        const lane = getEntityFromPath(boardData, path);
+        const lane = getEntityFromPath<Lane>(boardData, path);
         const items = lane.children;
 
         try {
@@ -240,7 +240,7 @@ export function getBoardModifiers(view: KanbanView, stateManager: StateManager):
 
     archiveItem: (path: Path) => {
       stateManager.setState((boardData) => {
-        const item = getEntityFromPath(boardData, path);
+        const item = getEntityFromPath<Item>(boardData, path);
         try {
           return update(removeEntity(boardData, path), {
             data: {

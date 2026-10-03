@@ -300,54 +300,54 @@ export class ScrollManager {
   }
 
   createScrollEntity(side: Side): Entity {
-    const manager = this;
-
-    return {
+    // Arrow functions: `this` is the manager, `entity` the object handed out.
+    const entity: Entity = {
       scopeId: this.scopeId,
-      entityId: manager.getId(side),
+      entityId: this.getId(side),
       initial: calculateScrollHitbox(
         this.scrollEl.getBoundingClientRect(),
         this.parent?.scrollState || initialScrollState,
         this.parent?.getScrollShift() || initialScrollShift,
         side
       ),
-      getParentScrollState() {
-        return manager.parent?.scrollState || initialScrollState;
+      getParentScrollState: () => {
+        return this.parent?.scrollState || initialScrollState;
       },
-      getParentScrollShift() {
-        return manager.parent?.getScrollShift() || initialScrollShift;
+      getParentScrollShift: () => {
+        return this.parent?.getScrollShift() || initialScrollShift;
       },
-      recalcInitial() {
-        this.initial = calculateScrollHitbox(
-          manager.scrollEl.getBoundingClientRect(),
-          manager.parent?.scrollState || initialScrollState,
-          manager.parent?.getScrollShift() || initialScrollShift,
+      recalcInitial: () => {
+        entity.initial = calculateScrollHitbox(
+          this.scrollEl.getBoundingClientRect(),
+          this.parent?.scrollState || initialScrollState,
+          this.parent?.getScrollShift() || initialScrollShift,
           side
         );
       },
-      getHitbox() {
+      getHitbox: () => {
         return adjustHitbox(
-          this.initial[0],
-          this.initial[1],
-          this.initial[2],
-          this.initial[3],
-          this.getParentScrollState(),
-          this.getParentScrollShift()
+          entity.initial[0],
+          entity.initial[1],
+          entity.initial[2],
+          entity.initial[3],
+          entity.getParentScrollState(),
+          entity.getParentScrollShift()
         );
       },
-      getPath() {
-        return manager.getPath(side);
+      getPath: () => {
+        return this.getPath(side);
       },
-      getData() {
+      getData: () => {
         return {
-          id: manager.getId(side),
+          id: this.getId(side),
           type: scrollContainerEntityType,
           side: side,
-          accepts: manager.triggerTypes || [],
-          scrollContainer: manager.scrollEl,
-          win: getParentWindow(manager.scrollEl),
+          accepts: this.triggerTypes || [],
+          scrollContainer: this.scrollEl,
+          win: getParentWindow(this.scrollEl),
         };
       },
     };
+    return entity;
   }
 }

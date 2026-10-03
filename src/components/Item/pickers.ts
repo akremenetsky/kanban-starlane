@@ -29,7 +29,7 @@ export function constructDatePicker(
 
           const clickHandler = (e: MouseEvent) => {
             if (
-              e.target instanceof (e.view as Window & typeof globalThis).HTMLElement &&
+              e.target instanceof (e.view as Window & typeof window).HTMLElement &&
               e.target.closest(`.${c('date-picker')}`) === null
             ) {
               selfDestruct();
@@ -94,7 +94,7 @@ export function constructMenuDatePickerOnChange({
   const contentMatch = shouldLinkDates
     ? '(?:\\[[^\\]]+\\]\\([^)]+\\)|\\[\\[[^\\]]+\\]\\])'
     : '{[^}]+}';
-  const dateRegEx = new RegExp(`(^|\\s)${escapeRegExpStr(dateTrigger as string)}${contentMatch}`);
+  const dateRegEx = new RegExp(`(^|\\s)${escapeRegExpStr(dateTrigger)}${contentMatch}`);
 
   return (dates: Date[]) => {
     const date = dates[0];
@@ -145,7 +145,7 @@ export function constructTimePicker(
 
     const clickHandler = (e: MouseEvent) => {
       if (
-        e.target instanceof (e.view as Window & typeof globalThis).HTMLElement &&
+        e.target instanceof (e.view as Window & typeof window).HTMLElement &&
         e.target.hasClass(c('time-picker-item')) &&
         e.target.dataset.value
       ) {
@@ -156,7 +156,7 @@ export function constructTimePicker(
 
     const clickOutsideHandler = (e: MouseEvent) => {
       if (
-        e.target instanceof (e.view as Window & typeof globalThis).HTMLElement &&
+        e.target instanceof (e.view as Window & typeof window).HTMLElement &&
         e.target.closest(`.${pickerClassName}`) === null
       ) {
         selfDestruct();
@@ -190,7 +190,7 @@ export function constructTimePicker(
           text: opt,
         },
         (item) => {
-          item.createEl('span', { cls: c('time-picker-check'), prepend: true }, (span) => {
+          item.createSpan({ cls: c('time-picker-check'), prepend: true }, (span) => {
             setIcon(span, 'lucide-check');
           });
 
@@ -240,7 +240,7 @@ export function constructMenuTimePickerOnChange({
   path,
 }: ConstructMenuTimePickerOnChangeParams) {
   const timeTrigger = stateManager.getSetting('time-trigger');
-  const timeRegEx = new RegExp(`(^|\\s)${escapeRegExpStr(timeTrigger as string)}{([^}]+)}`);
+  const timeRegEx = new RegExp(`(^|\\s)${escapeRegExpStr(timeTrigger)}{([^}]+)}`);
 
   return (time: string) => {
     let titleRaw = item.data.titleRaw;

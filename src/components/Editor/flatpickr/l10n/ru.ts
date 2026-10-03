@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Russian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Russian: CustomLocale = {
   weekdays: {
@@ -58,6 +51,4 @@ export const Russian: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.ru = Russian;
 
-export default fp.l10ns;

@@ -84,7 +84,7 @@ export function planLinkedDrop(
   const [targetLane] = drop;
   const entriesOf = (laneIndex: number): LaneEntry[] | undefined =>
     laneEntries(board, laneIndex, getBoard) ??
-    board.children[laneIndex]?.children.map((item) => ({ source: null as string | null, item }));
+    board.children[laneIndex]?.children.map((item): LaneEntry => ({ source: null, item }));
 
   const before = entriesOf(sourceLane);
   const entry = before?.[dragIndex];
@@ -193,7 +193,9 @@ export function planLinkedDrop(
 export function applyBlockIds(board: Board, ids: Array<{ path: Path; id: string }>): Board {
   return ids.reduce(
     (b, { path, id }) =>
-      getEntityFromPath(b, path) ? updateEntity(b, path, { data: { blockId: { $set: id } } }) : b,
+      getEntityFromPath(b, path)
+        ? updateEntity<Board, Item>(b, path, { data: { blockId: { $set: id } } })
+        : b,
     board
   );
 }

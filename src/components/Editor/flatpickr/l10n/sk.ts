@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Slovak locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Slovak: CustomLocale = {
   weekdays: {
@@ -42,6 +35,4 @@ export const Slovak: CustomLocale = {
   },
 };
 
-fp.l10ns.sk = Slovak;
 
-export default fp.l10ns;

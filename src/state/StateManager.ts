@@ -8,6 +8,7 @@ import { t } from 'src/lang/helpers';
 import { Board, BoardTemplate, Item } from 'src/model/types';
 import { BaseFormat, ListFormat } from 'src/parsers/ListFormat';
 import { KanbanSettings, SettingRetrievers, shouldRefreshBoard } from 'src/settings/types';
+import { toError } from 'src/shared/util';
 import { KanbanView } from 'src/view/KanbanView';
 
 import { recordCardHistory } from './cardHistory';
@@ -51,7 +52,7 @@ export class StateManager {
   }
 
   getAView(): KanbanView {
-    return this.viewSet.values().next().value;
+    return this.viewSet.values().next().value as KanbanView;
   }
 
   hasError(): boolean {
@@ -67,7 +68,7 @@ export class StateManager {
     }
 
     // This helps delay blocking the UI until the the loading indicator is displayed
-    await new Promise((res) => activeWindow.setTimeout(res, 10));
+    await new Promise((res) => view.getWindow().setTimeout(res, 10));
 
     if (shouldParseData || isFirstView || !this.state) {
       await this.newBoard(view, data);
@@ -113,7 +114,7 @@ export class StateManager {
         const board = this.getParsedBoard('');
         this.setState(
           update(board, {
-            data: { errors: { $push: [{ description: String(e), stack: e?.stack }] } },
+            data: { errors: { $push: [{ description: String(e), stack: toError(e).stack }] } },
           }),
           false
         );
@@ -396,7 +397,7 @@ export class StateManager {
       board = update(board, {
         data: {
           errors: {
-            $push: [{ description: e.toString(), stack: e.stack }],
+            $push: [{ description: String(e), stack: toError(e).stack }],
           },
         },
       });
@@ -405,12 +406,13 @@ export class StateManager {
     return board;
   }
 
-  setError(e: Error) {
+  /** Shows an error in place of the board; takes whatever was thrown. */
+  setError(thrown: unknown) {
     this.setState(
       update(this.state, {
         data: {
           errors: {
-            $push: [{ description: e.toString(), stack: e.stack }],
+            $push: [{ description: String(thrown), stack: toError(thrown).stack }],
           },
         },
       }),
@@ -419,7 +421,7 @@ export class StateManager {
   }
 
   onFileMetadataChange() {
-    this.reparseBoardFromMd();
+    void this.reparseBoardFromMd();
   }
 
   async reparseBoardFromMd() {
@@ -479,7 +481,7 @@ export class StateManager {
           data: {
             archive: {
               $push: shouldAppendArchiveDate
-                ? await Promise.all(archived.map((item) => appendArchiveDate(item)))
+                ? archived.map((item) => appendArchiveDate(item))
                 : archived,
             },
           },

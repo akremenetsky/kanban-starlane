@@ -80,10 +80,10 @@ export const DEFAULT_SYMBOLS = {
   idSymbol: '🆔',
 } as const;
 
-export function lableToIcon(label: string, value: any) {
+export function lableToIcon(label: string, value: unknown) {
   switch (label) {
     case 'priority':
-      return priorityToIcon(value);
+      return priorityToIcon(value as Priority);
     case 'start':
       return DEFAULT_SYMBOLS.startDateSymbol;
     case 'created':

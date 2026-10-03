@@ -56,14 +56,14 @@ export class ListFormat implements BaseFormat {
         (path) => {
           return generatedKeys.includes(path.last());
         },
-        (val: any) => {
+        (val: unknown) => {
           if (!val) return String(val);
           if (val instanceof TFile) return val.path;
           if (isPlainObject(val) || Array.isArray(val)) return String(val);
           if (dv && !dv.value.isObject(val)) return dv.value.toString(val);
           return String(val);
         },
-        (val: any) => !!dv?.value.isObject(val)
+        (val: unknown) => !!dv?.value.isObject(val)
       );
 
       const patchedBoard = diffApply(state, ops) as Board;

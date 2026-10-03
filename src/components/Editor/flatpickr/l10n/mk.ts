@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Macedonian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Macedonian: CustomLocale = {
   weekdays: {
@@ -40,6 +33,4 @@ export const Macedonian: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.mk = Macedonian;
 
-export default fp.l10ns;

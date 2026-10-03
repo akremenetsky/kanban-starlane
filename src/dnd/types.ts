@@ -10,7 +10,13 @@ export interface NestableProps {
   accepts: string[];
 }
 
-export interface Nestable<D = any, T = any> extends NestableProps {
+/** Any node of a nested entity tree (board → lanes → cards), whatever its data. */
+export interface TreeNode extends NestableProps {
+  children: TreeNode[];
+  data: unknown;
+}
+
+export interface Nestable<D = unknown, T = TreeNode> extends NestableProps {
   children: T[];
   data: D;
 }
@@ -36,7 +42,12 @@ export interface EntityData {
   accepts: string[];
   acceptsSort?: string[];
   sortAxis?: Axis;
-  [k: string]: any;
+  /** Scroll entities: the edge of the scroll container they trigger. */
+  side?: Side;
+  scrollContainer?: HTMLElement;
+  /** Entities dragged in from outside (createHTMLDndEntity): the board view and the dropped text. */
+  viewId?: string;
+  content?: string[];
 }
 
 export interface ScopedEntityData extends EntityData {

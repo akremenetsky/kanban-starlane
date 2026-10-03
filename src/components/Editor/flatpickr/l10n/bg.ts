@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Bulgarian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Bulgarian: CustomLocale = {
   weekdays: {
@@ -50,5 +43,3 @@ export const Bulgarian: CustomLocale = {
   firstDayOfWeek: 1,
 };
 
-fp.l10ns.bg = Bulgarian;
-export default fp.l10ns;

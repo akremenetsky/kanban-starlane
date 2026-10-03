@@ -89,22 +89,26 @@ export function useItemMenu({
               const newNoteFolder = stateManager.getSetting('new-note-folder');
               const newNoteTemplatePath = stateManager.getSetting('new-note-template');
 
-              const targetFolder = newNoteFolder
-                ? (stateManager.app.vault.getAbstractFileByPath(newNoteFolder as string) as TFolder)
-                : stateManager.app.fileManager.getNewFileParent(stateManager.file.path);
+              const configuredFolder = newNoteFolder
+                ? stateManager.app.vault.getAbstractFileByPath(newNoteFolder)
+                : null;
+              const targetFolder =
+                configuredFolder instanceof TFolder
+                  ? configuredFolder
+                  : stateManager.app.fileManager.getNewFileParent(stateManager.file.path);
 
-              const newFile = (await (stateManager.app.fileManager as any).createNewMarkdownFile(
+              const newFile = await stateManager.app.fileManager.createNewMarkdownFile(
                 targetFolder,
                 sanitizedTitle
-              )) as TFile;
+              );
 
-              const newLeaf = stateManager.app.workspace.splitActiveLeaf();
+              const newLeaf = stateManager.app.workspace.getLeaf('split');
 
               await newLeaf.openFile(newFile);
 
-              stateManager.app.workspace.setActiveLeaf(newLeaf, false, true);
+              stateManager.app.workspace.setActiveLeaf(newLeaf, { focus: true });
 
-              await applyTemplate(stateManager, newNoteTemplatePath as string | undefined);
+              await applyTemplate(stateManager, newNoteTemplatePath);
 
               const newTitleRaw = linkCardTitleToNote(
                 item.data.titleRaw,
@@ -120,7 +124,7 @@ export function useItemMenu({
             .setTitle(t('Copy link to card'))
             .onClick(() => {
               if (item.data.blockId) {
-                navigator.clipboard.writeText(
+                void navigator.clipboard.writeText(
                   `${stateManager.app.fileManager.generateMarkdownLink(
                     stateManager.file,
                     '',
@@ -130,7 +134,7 @@ export function useItemMenu({
               } else {
                 const id = generateInstanceId(6);
 
-                navigator.clipboard.writeText(
+                void navigator.clipboard.writeText(
                   `${stateManager.app.fileManager.generateMarkdownLink(stateManager.file, '', '#^' + id)}`
                 );
 
@@ -152,11 +156,7 @@ export function useItemMenu({
             .setTitle(t('Split card'))
             .onClick(async () => {
               const titles = item.data.titleRaw.split(/[\r\n]+/g).map((t) => t.trim());
-              const newItems = await Promise.all(
-                titles.map((title) => {
-                  return stateManager.getNewItem(title, ' ');
-                })
-              );
+              const newItems = titles.map((title) => stateManager.getNewItem(title, ' '));
 
               boardModifiers.splitItem(path, newItems);
             });
@@ -238,9 +238,7 @@ export function useItemMenu({
               const contentMatch = shouldLinkDates
                 ? '(?:\\[[^\\]]+\\]\\([^\\)]+\\)|\\[\\[[^\\]]+\\]\\])'
                 : '{[^}]+}';
-              const dateRegEx = new RegExp(
-                `(^|\\s)${escapeRegExpStr(dateTrigger as string)}${contentMatch}`
-              );
+              const dateRegEx = new RegExp(`(^|\\s)${escapeRegExpStr(dateTrigger)}${contentMatch}`);
 
               const titleRaw = item.data.titleRaw.replace(dateRegEx, '').trim();
 
@@ -274,9 +272,7 @@ export function useItemMenu({
               .setTitle(t('Remove time'))
               .onClick(() => {
                 const timeTrigger = stateManager.getSetting('time-trigger');
-                const timeRegEx = new RegExp(
-                  `(^|\\s)${escapeRegExpStr(timeTrigger as string)}{([^}]+)}`
-                );
+                const timeRegEx = new RegExp(`(^|\\s)${escapeRegExpStr(timeTrigger)}{([^}]+)}`);
 
                 const titleRaw = item.data.titleRaw.replace(timeRegEx, '').trim();
                 boardModifiers.updateItem(path, stateManager.updateItemContent(item, titleRaw));
@@ -310,7 +306,7 @@ export function useItemMenu({
         addMoveToOptions(menu);
       } else {
         menu.addItem((item) => {
-          const submenu = (item as any)
+          const submenu = item
             .setTitle(t('Move to list'))
             .setIcon('lucide-square-kanban')
             .setSubmenu();

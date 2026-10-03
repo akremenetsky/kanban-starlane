@@ -3,8 +3,14 @@ import { moment } from 'obsidian';
 import { isPlainObject } from './util';
 
 type Key = string | number;
-type Diffable = Record<Key, any> | any[];
+/** A plain object or array (or another object `isObject` accepts). */
+type Diffable = object;
 type OpPath = Array<Key>;
+
+/** Reads a key of an object or array (arrays are indexed by number keys). */
+function at(obj: Diffable, key: Key): unknown {
+  return (obj as Record<Key, unknown>)[key];
+}
 
 const REMOVE = 'remove';
 const REPLACE = 'replace';
@@ -13,7 +19,7 @@ const ADD = 'add';
 export interface Op {
   op: 'remove' | 'replace' | 'add';
   path: OpPath;
-  value?: any;
+  value?: unknown;
 }
 
 interface Diff {
@@ -22,14 +28,14 @@ interface Diff {
   add: Op[];
 }
 
-type SkipFn = (k: OpPath, val?: any) => boolean;
-type ToStringFn = (val: any) => string;
+type SkipFn = (k: OpPath, val?: unknown) => boolean;
+type ToStringFn = (val: unknown) => string;
 /** Extra predicate for non-plain objects that should be diffed structurally. */
-type IsObjectFn = (val: any) => boolean;
+type IsObjectFn = (val: unknown) => boolean;
 
 const never: IsObjectFn = () => false;
 
-function isDiffable(obj: any, isObject: IsObjectFn = never): obj is Diffable {
+function isDiffable(obj: unknown, isObject: IsObjectFn = never): obj is Diffable {
   if (!obj) return false;
   if (isPlainObject(obj) || Array.isArray(obj)) return true;
 
@@ -79,7 +85,6 @@ function getDiff(
   const obj1Keys = Object.keys(obj1);
   const obj2Keys = Object.keys(obj2);
   const obj2KeysLength = obj2Keys.length;
-  const lengthDelta = obj1.length - obj2.length;
 
   let path: OpPath;
 
@@ -112,6 +117,8 @@ function getDiff(
     }
   } else {
     // trim from left, objects are both arrays
+    const arr1 = obj1 as unknown[];
+    const lengthDelta = arr1.length - (obj2 as unknown[]).length;
     for (let i = 0; i < lengthDelta; i++) {
       path = basePathForRemoves.concat(i);
       if (skip(path)) continue;
@@ -122,7 +129,7 @@ function getDiff(
     }
 
     // now make a copy of obj1 with excess elements left trimmed and see if there any replaces
-    const obj1Trimmed = obj1.slice(lengthDelta);
+    const obj1Trimmed = arr1.slice(lengthDelta);
     for (let i = 0; i < obj2KeysLength; i++) {
       pushReplaces(
         i,
@@ -144,7 +151,7 @@ function getDiff(
 }
 
 function pushReplaces(
-  key: any,
+  key: Key,
   obj1: Diffable,
   obj2: Diffable,
   path: OpPath,
@@ -154,8 +161,8 @@ function pushReplaces(
   toString: ToStringFn,
   isObject: IsObjectFn
 ) {
-  const obj1AtKey = obj1[key];
-  const obj2AtKey = obj2[key];
+  const obj1AtKey = at(obj1, key);
+  const obj2AtKey = at(obj2, key);
 
   if (skip(path, obj2AtKey)) return;
 
@@ -176,20 +183,31 @@ function pushReplaces(
       ) {
         diffs.replace.push({ op: REPLACE, path, value: obj2AtKey });
       } else {
-        getDiff(obj1[key], obj2[key], path, pathForRemoves, diffs, skip, toString, isObject);
+        getDiff(
+          obj1AtKey as Diffable,
+          obj2AtKey as Diffable,
+          path,
+          pathForRemoves,
+          diffs,
+          skip,
+          toString,
+          isObject
+        );
       }
     }
   }
 }
 
-function differentTypes(a: any, b: any) {
+function differentTypes(a: unknown, b: unknown) {
   return Object.prototype.toString.call(a) !== Object.prototype.toString.call(b);
 }
 
-function trimFromRight(obj1: Record<string, any>, obj2: Record<string, any>) {
+function trimFromRight(obj1: Diffable, obj2: Diffable) {
+  if (!Array.isArray(obj1) || !Array.isArray(obj2)) return true;
+
   const lengthDelta = obj1.length - obj2.length;
 
-  if (Array.isArray(obj1) && Array.isArray(obj2) && lengthDelta > 0) {
+  if (lengthDelta > 0) {
     let leftMatches = 0;
     let rightMatches = 0;
     for (let i = 0; i < obj2.length; i++) {
@@ -215,7 +233,8 @@ function trimFromRight(obj1: Record<string, any>, obj2: Record<string, any>) {
   return true;
 }
 
-export function diffApply(obj: Diffable, diff: Op[]) {
+export function diffApply<T extends Diffable>(base: T, diff: Op[]): T | false {
+  let obj: Diffable = base;
   if (!isDiffable(obj)) {
     throw new Error('base object must be an object or an array');
   }
@@ -231,26 +250,32 @@ export function diffApply(obj: Diffable, diff: Op[]) {
     const thisOp = thisDiff.op;
     const thisPath = thisDiff.path;
     const pathCopy = thisPath.slice();
-    const lastProp: any = pathCopy.pop();
-    let subObject = obj;
+    const lastProp = pathCopy.pop();
+    // Arrays are indexed through the same record view (number keys).
+    let subObject = obj as Record<Key, unknown>;
 
     prototypeCheck(lastProp);
     if (lastProp == null) return false;
 
-    let thisProp: any;
+    let thisProp: Key | undefined;
     while ((thisProp = pathCopy.shift()) !== null) {
       if (thisProp === undefined) break;
 
       prototypeCheck(thisProp);
+      const child = subObject[thisProp];
+      let next: unknown;
       if (!(thisProp in subObject)) {
-        subObject = subObject[thisProp] = {};
-      } else if (Array.isArray(subObject[thisProp])) {
-        subObject = subObject[thisProp] = subObject[thisProp].slice();
-      } else if (isPlainObject(subObject[thisProp])) {
-        subObject = subObject[thisProp] = { ...subObject[thisProp] };
+        next = {};
+      } else if (Array.isArray(child)) {
+        next = child.slice();
+      } else if (isPlainObject(child)) {
+        next = { ...child };
       } else {
-        subObject = subObject[thisProp];
+        subObject = child as Record<Key, unknown>;
+        continue;
       }
+      subObject[thisProp] = next;
+      subObject = next as Record<Key, unknown>;
     }
 
     if (thisOp === REMOVE || thisOp === REPLACE) {
@@ -270,7 +295,7 @@ export function diffApply(obj: Diffable, diff: Op[]) {
     }
   }
 
-  return obj;
+  return obj as T;
 }
 
 function prototypeCheck(prop?: string | number) {

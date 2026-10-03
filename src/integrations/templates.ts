@@ -1,4 +1,4 @@
-import { App, MarkdownView, TFile } from 'obsidian';
+import { App, MarkdownView, Plugin, TFile } from 'obsidian';
 import { StateManager } from 'src/state/StateManager';
 
 export const templaterDetectRegex = /<%/;
@@ -34,11 +34,11 @@ export async function applyTemplate(stateManager: StateManager, templatePath?: s
           return await templaterPlugin.append_template_to_active_file(templateFile);
         }
 
-        return await templatesPlugin.instance.insertTemplate(templateFile);
+        return await templatesPlugin.instance.insertTemplate?.(templateFile);
       }
 
       if (templatesEnabled) {
-        return await templatesPlugin.instance.insertTemplate(templateFile);
+        return await templatesPlugin.instance.insertTemplate?.(templateFile);
       }
 
       if (templaterEnabled) {
@@ -57,18 +57,22 @@ export async function applyTemplate(stateManager: StateManager, templatePath?: s
   }
 }
 
+interface TemplaterPlugin extends Plugin {
+  settings?: { empty_file_template?: string; template_folder?: string };
+  templater?: { append_template_to_active_file(file: TFile): Promise<void> };
+}
+
 export function getTemplatePlugins(app: App) {
-  const templatesPlugin = (app as any).internalPlugins.plugins.templates;
-  const templatesEnabled = templatesPlugin.enabled;
-  const templaterPlugin = (app as any).plugins.plugins['templater-obsidian'];
-  const templaterEnabled = (app as any).plugins.enabledPlugins.has('templater-obsidian');
-  const templaterEmptyFileTemplate =
-    templaterPlugin && templaterPlugin.settings?.empty_file_template;
+  const templatesPlugin = app.internalPlugins.plugins['templates'];
+  const templatesEnabled = !!templatesPlugin?.enabled;
+  const templaterPlugin = app.plugins.plugins['templater-obsidian'] as TemplaterPlugin | undefined;
+  const templaterEnabled = app.plugins.enabledPlugins.has('templater-obsidian');
+  const templaterEmptyFileTemplate = templaterPlugin?.settings?.empty_file_template;
 
   const templateFolder = templatesEnabled
-    ? templatesPlugin.instance.options.folder
+    ? (templatesPlugin.instance.options?.folder as string | undefined)
     : templaterPlugin
-      ? templaterPlugin.settings.template_folder
+      ? templaterPlugin.settings?.template_folder
       : undefined;
 
   return {

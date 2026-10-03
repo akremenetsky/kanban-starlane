@@ -78,8 +78,20 @@ interface MetadataValueProps {
   searchQuery?: string;
 }
 
-export function getLinkFromObj(v: any, view: KanbanView) {
-  if (typeof v !== 'object' || !v.path) return null;
+/** A Dataview link value. */
+interface LinkValue {
+  path: string;
+  subpath?: string;
+  display?: string;
+  embed?: boolean;
+}
+
+function isLinkValue(v: unknown): v is LinkValue {
+  return typeof v === 'object' && v !== null && 'path' in v && !!v.path;
+}
+
+export function getLinkFromObj(v: unknown, view: KanbanView) {
+  if (!isLinkValue(v)) return null;
 
   const { app } = view;
   const file = app.vault.getAbstractFileByPath(v.path);
@@ -95,7 +107,7 @@ export function MetadataValue({ data, dateLabel, searchQuery }: MetadataValuePro
   const { view, stateManager } = useContext(KanbanContext);
   const getDateColor = useGetDateColorFn(stateManager);
 
-  const renderChild = (v: any, sep?: string) => {
+  const renderChild = (v: unknown, sep?: string) => {
     const link = getLinkFromObj(v, view);
     const date = getDate(v, stateManager.app);
     const str = anyToString(v, stateManager);

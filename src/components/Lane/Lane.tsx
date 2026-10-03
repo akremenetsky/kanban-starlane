@@ -113,7 +113,7 @@ function DraggableLaneRaw({
         const laneItems = elementRef.current?.getElementsByClassName(c('lane-items'));
 
         if (laneItems.length) {
-          animateScrollTo([0, shouldPrepend ? 0 : laneItems[0].scrollHeight], {
+          void animateScrollTo([0, shouldPrepend ? 0 : laneItems[0].scrollHeight], {
             elementToScroll: laneItems[0],
             speed: 200,
             minDuration: 150,
@@ -131,7 +131,7 @@ function DraggableLaneRaw({
   const SortableComponent = isStatic ? StaticSortable : Sortable;
   const CollapsedDropArea = !isCollapsed || isStatic ? Fragment : Droppable;
   const dropAreaProps: DraggableProps = useMemo(() => {
-    if (!isCollapsed || isStatic) return {} as any;
+    if (!isCollapsed || isStatic) return {} as DraggableProps;
     const data = {
       id: generateInstanceId(),
       type: 'lane',

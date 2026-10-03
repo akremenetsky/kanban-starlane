@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Vietnamese locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Vietnamese: CustomLocale = {
   weekdays: {
@@ -51,6 +44,4 @@ export const Vietnamese: CustomLocale = {
   rangeSeparator: ' đến ',
 };
 
-fp.l10ns.vn = Vietnamese;
 
-export default fp.l10ns;

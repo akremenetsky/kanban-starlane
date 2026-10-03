@@ -27,13 +27,10 @@ export function getFolderChoices(app: App) {
 export function getTemplateChoices(app: App, folderStr?: string) {
   const fileList: IChoices.Choice[] = [];
 
-  let folder = folderStr ? app.vault.getAbstractFileByPath(folderStr) : null;
+  const configured = folderStr ? app.vault.getAbstractFileByPath(folderStr) : null;
+  const folder = configured instanceof TFolder ? configured : app.vault.getRoot();
 
-  if (!folder || !(folder instanceof TFolder)) {
-    folder = app.vault.getRoot();
-  }
-
-  Vault.recurseChildren(folder as TFolder, (f) => {
+  Vault.recurseChildren(folder, (f) => {
     if (f instanceof TFile) {
       fileList.push({
         value: f.path,
@@ -144,7 +141,7 @@ export function createSearchSelect({
           c.setChoiceByValue(value);
         }
 
-        const onChange = (e: CustomEvent) => {
+        const onChange = (e: CustomEvent<{ value: string }>) => {
           const val = e.detail.value;
 
           if (val) {

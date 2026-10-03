@@ -53,7 +53,10 @@ export function DragDropApp({ win, plugin }: { win: Window; plugin: KanbanPlugin
         const data = dragEntity.getData();
         const stateManager = plugin.getStateManagerFromViewID(data.viewId, data.win);
         const dropPath = dropEntity.getPath();
-        const destinationParent = getEntityFromPath(stateManager.state, dropPath.slice(0, -1));
+        const destinationParent = getEntityFromPath<Lane>(
+          stateManager.state,
+          dropPath.slice(0, -1)
+        );
 
         try {
           const items: Item[] = data.content.map((title: string) => {
@@ -137,7 +140,7 @@ export function DragDropApp({ win, plugin }: { win: Window; plugin: KanbanPlugin
                   stateManager,
                   board,
                   dropPath,
-                  entity
+                  entity as Item
                 );
                 return next;
               }
@@ -152,7 +155,7 @@ export function DragDropApp({ win, plugin }: { win: Window; plugin: KanbanPlugin
                   stateManager,
                   board,
                   dropPath,
-                  entity
+                  entity as Item
                 );
                 return replacement;
               }
@@ -181,10 +184,10 @@ export function DragDropApp({ win, plugin }: { win: Window; plugin: KanbanPlugin
 
           // Remove sorting in the destination lane
           const destinationParentPath = dropPath.slice(0, -1);
-          const destinationParent = getEntityFromPath(board, destinationParentPath);
+          const destinationParent = getEntityFromPath<Lane>(board, destinationParentPath);
 
           if (destinationParent?.data?.sorted !== undefined) {
-            return updateEntity(newBoard, destinationParentPath, {
+            return updateEntity<Board, Lane>(newBoard, destinationParentPath, {
               data: {
                 $unset: ['sorted'],
               },
@@ -226,12 +229,12 @@ export function DragDropApp({ win, plugin }: { win: Window; plugin: KanbanPlugin
               destinationStateManager,
               destinationBoard,
               dropPath,
-              entity
+              entity as Item
             );
             replacementEntity = replacement;
 
             if (recordHistory) {
-              const carried = carryCardHistory(sourceBoard, destinationBoard, next as Item, {
+              const carried = carryCardHistory(sourceBoard, destinationBoard, next, {
                 from: sourceBoard.children[dragPath[0]]?.data.title,
                 to: destinationBoard.children[dropPath[0]]?.data.title,
               });

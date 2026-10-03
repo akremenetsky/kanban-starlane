@@ -169,7 +169,7 @@ export function getScrollIntersection(
 
   if (!primary) return null;
 
-  const side = primary.getData().side as Side;
+  const side = primary.getData().side;
   const hitbox = primary.getHitbox();
 
   let targetIndex = 0;

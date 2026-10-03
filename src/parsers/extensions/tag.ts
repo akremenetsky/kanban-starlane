@@ -1,37 +1,42 @@
-import { Extension as FromMarkdownExtension, Token } from 'mdast-util-from-markdown';
+import {
+  CompileContext,
+  Extension as FromMarkdownExtension,
+  Token,
+} from 'mdast-util-from-markdown';
 import { markdownLineEndingOrSpace } from 'micromark-util-character';
-import { Effects, Extension, State } from 'micromark-util-types';
+import { Code, Effects, Extension, State, TokenizeContext } from 'micromark-util-types';
 
 import { getSelf } from './helpers';
+import { TagNode } from './types';
 
 export function tagExtension(): Extension {
   const name = 'hashtag';
   const hashCharCode = '#'.charCodeAt(0);
 
-  function tokenize(effects: Effects, ok: State, nok: State) {
+  function tokenize(this: TokenizeContext, effects: Effects, ok: State, nok: State): State {
     let data = false;
     let startMarkerCursor = 0;
-    const self = this;
 
-    return start;
-
-    function start(code: number) {
+    // An arrow function, to read the tokenizer context (`this`) when the tag starts.
+    const start = (code: Code): State | void => {
       if (
         code !== hashCharCode ||
-        (self.previous !== null && !/\s/.test(String.fromCharCode(self.previous)))
+        (this.previous !== null && !/\s/.test(String.fromCharCode(this.previous)))
       ) {
         return nok(code);
       }
 
-      effects.enter(name as any);
-      effects.enter(`${name}Marker` as any);
+      effects.enter(name);
+      effects.enter(`${name}Marker`);
 
       return consumeStart(code);
-    }
+    };
 
-    function consumeStart(code: number) {
+    return start;
+
+    function consumeStart(code: Code) {
       if (startMarkerCursor === 1) {
-        effects.exit(`${name}Marker` as any);
+        effects.exit(`${name}Marker`);
         return consumeData(code);
       }
 
@@ -45,13 +50,13 @@ export function tagExtension(): Extension {
       return consumeStart;
     }
 
-    function consumeData(code: number) {
-      effects.enter(`${name}Data` as any);
-      effects.enter(`${name}Target` as any);
+    function consumeData(code: Code) {
+      effects.enter(`${name}Data`);
+      effects.enter(`${name}Target`);
       return consumeTarget(code);
     }
 
-    function consumeTarget(code: number) {
+    function consumeTarget(code: Code) {
       if (
         code === null ||
         markdownLineEndingOrSpace(code) ||
@@ -60,9 +65,9 @@ export function tagExtension(): Extension {
         )
       ) {
         if (!data) return nok(code);
-        effects.exit(`${name}Target` as any);
-        effects.exit(`${name}Data` as any);
-        effects.exit(name as any);
+        effects.exit(`${name}Target`);
+        effects.exit(`${name}Data`);
+        effects.exit(name);
 
         return ok(code);
       }
@@ -84,24 +89,18 @@ export function tagExtension(): Extension {
 export function tagFromMarkdown(): FromMarkdownExtension {
   const name = 'hashtag';
 
-  function enterTag(token: Token) {
-    this.enter(
-      {
-        type: name,
-        value: null,
-      },
-      token
-    );
+  function enterTag(this: CompileContext, token: Token) {
+    this.enter({ type: name, value: null }, token);
   }
 
-  function exitTagTarget(token: Token) {
+  function exitTagTarget(this: CompileContext, token: Token) {
     const target = this.sliceSerialize(token);
-    const current = getSelf(this.stack);
+    const current = getSelf(this.stack) as TagNode;
 
-    (current as any).value = target;
+    current.value = target;
   }
 
-  function exitTag(token: Token) {
+  function exitTag(this: CompileContext, token: Token) {
     this.exit(token);
   }
 

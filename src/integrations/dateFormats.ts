@@ -1,26 +1,30 @@
-import { App } from 'obsidian';
+import { App, Plugin } from 'obsidian';
+
+interface NaturalLanguageDatesPlugin extends Plugin {
+  settings?: { format?: string; timeFormat?: string };
+}
+
+function coreOption(app: App, pluginId: string, option: string): string | undefined {
+  const plugin = app.internalPlugins.plugins[pluginId];
+  if (!plugin?.enabled) return undefined;
+  const value = plugin.instance.options?.[option];
+  return typeof value === 'string' ? value : undefined;
+}
+
+function nlDatesSettings(app: App) {
+  const plugin: NaturalLanguageDatesPlugin | undefined = app.plugins.plugins['nldates-obsidian'];
+  return plugin?.settings;
+}
 
 export function getDefaultDateFormat(app: App) {
-  const internalPlugins = (app as any).internalPlugins.plugins;
-  const dailyNotesEnabled = internalPlugins['daily-notes']?.enabled;
-  const dailyNotesValue = internalPlugins['daily-notes']?.instance.options.format;
-  const nlDatesValue = (app as any).plugins.plugins['nldates-obsidian']?.settings.format;
-  const templatesEnabled = internalPlugins.templates?.enabled;
-  const templatesValue = internalPlugins.templates?.instance.options.dateFormat;
-
   return (
-    (dailyNotesEnabled && dailyNotesValue) ||
-    nlDatesValue ||
-    (templatesEnabled && templatesValue) ||
+    coreOption(app, 'daily-notes', 'format') ||
+    nlDatesSettings(app)?.format ||
+    coreOption(app, 'templates', 'dateFormat') ||
     'YYYY-MM-DD'
   );
 }
 
 export function getDefaultTimeFormat(app: App) {
-  const internalPlugins = (app as any).internalPlugins.plugins;
-  const nlDatesValue = (app as any).plugins.plugins['nldates-obsidian']?.settings.timeFormat;
-  const templatesEnabled = internalPlugins.templates?.enabled;
-  const templatesValue = internalPlugins.templates?.instance.options.timeFormat;
-
-  return nlDatesValue || (templatesEnabled && templatesValue) || 'HH:mm';
+  return nlDatesSettings(app)?.timeFormat || coreOption(app, 'templates', 'timeFormat') || 'HH:mm';
 }
