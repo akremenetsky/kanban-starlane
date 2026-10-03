@@ -68,7 +68,10 @@ export class KanbanView extends TextFileView implements HoverParent {
     this.emitter = new EventEmitter();
     this.previewCache = new Map();
 
-    this.previewQueue = new PromiseQueue(() => this.emitter.emit('queueEmpty'));
+    this.previewQueue = new PromiseQueue(
+      () => this.emitter.emit('queueEmpty'),
+      () => this.getWindow()
+    );
 
     this.emitter.on('hotkey', ({ commandId }) => {
       switch (commandId) {

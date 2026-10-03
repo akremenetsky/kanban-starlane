@@ -96,6 +96,9 @@ export class FakeView {
   }
 
   async prerender() {}
+  getWindow() {
+    return window;
+  }
   initHeaderButtons() {}
   validatePreviewCache() {}
   populateViewState() {}

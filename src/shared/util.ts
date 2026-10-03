@@ -35,7 +35,11 @@ export class PromiseQueue {
   queue: Array<QAble> = [];
   isRunning: boolean = false;
 
-  constructor(public onComplete: () => void) {}
+  /** `getWin`: the window of the board, so the pauses run on its (unthrottled) timers. */
+  constructor(
+    public onComplete: () => void,
+    private getWin: () => Window
+  ) {}
 
   clear() {
     this.queue.length = 0;
@@ -69,7 +73,7 @@ export class PromiseQueue {
 
       const now = performance.now();
       if (now - intervalStart > 50) {
-        await new Promise((res) => window.setTimeout(res));
+        await new Promise((res) => this.getWin().setTimeout(res));
         intervalStart = now;
       }
     }

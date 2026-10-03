@@ -106,8 +106,10 @@ zensical.toml        Zensical config for docs/user-guide (site_url, nav, theme)
   internals in `src/integrations/obsidianInternals.ts`, other plugins' APIs in their
   integration module, and narrow `unknown` values. The scanner forbids disabling `obsidianmd/*`
   rules with comments; an exception goes into `scripts/scanner/accepted.json` with a reason.
-- Pop-out windows: use `activeWindow` / `win.setTimeout` / `getParentWindow(el)`, not global
-  `window`/`document`, for timers and DOM that belongs to a board.
+- Pop-out windows: timers and DOM that belong to a board use the board's window
+  (`view.getWindow()`, `getParentWindow(el)`, `dndManager.win`), not global `window`/`document`
+  — a hidden main window's timers are throttled. The scanner rejects `activeWindow.setTimeout`
+  (and suggests `window.setTimeout`, which is wrong for a board): use a window variable.
 - Board data is immutable: build new objects (`immutability-helper`, `src/dnd/util/data.ts`).
 - Keep modules focused; if a file passes ~500 lines, split it by responsibility.
 - Comments explain *why*, not what. Public functions in `parsers/`, `state/`, `integrations/`

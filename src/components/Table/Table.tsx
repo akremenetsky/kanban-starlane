@@ -116,8 +116,10 @@ export function TableView({
       dbTimer.current = 0;
       return;
     }
-    window.clearTimeout(dbTimer.current);
-    dbTimer.current = window.setTimeout(() => {
+    // The board's window: a pop-out's timers keep running while the main window is hidden.
+    const win = stateManager.getAView()?.getWindow() ?? window;
+    win.clearTimeout(dbTimer.current);
+    dbTimer.current = win.setTimeout(() => {
       if (!stateManager.getAView()) return;
       stateManager.setState((board) => {
         return update(board, {

@@ -101,7 +101,7 @@ export function DragOverlay({ children }: DragOverlayProps) {
           )
         );
 
-        window.setTimeout(() => {
+        dndManager.win.setTimeout(() => {
           setDragEntity(undefined);
           setStyles(undefined);
         }, dropDuration);
@@ -147,7 +147,7 @@ export function useIsAnythingDragging() {
         destination: dropDestination,
       });
 
-      window.setTimeout(() => setIsDragging(false), dropDuration);
+      dndManager.win.setTimeout(() => setIsDragging(false), dropDuration);
     };
 
     const { emitter } = dndManager.dragManager;

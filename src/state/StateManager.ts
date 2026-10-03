@@ -68,7 +68,7 @@ export class StateManager {
     }
 
     // This helps delay blocking the UI until the the loading indicator is displayed
-    await new Promise((res) => window.setTimeout(res, 10));
+    await new Promise((res) => view.getWindow().setTimeout(res, 10));
 
     if (shouldParseData || isFirstView || !this.state) {
       await this.newBoard(view, data);
@@ -408,12 +408,11 @@ export class StateManager {
 
   /** Shows an error in place of the board; takes whatever was thrown. */
   setError(thrown: unknown) {
-    const e = toError(thrown);
     this.setState(
       update(this.state, {
         data: {
           errors: {
-            $push: [{ description: String(e), stack: toError(e).stack }],
+            $push: [{ description: String(thrown), stack: toError(thrown).stack }],
           },
         },
       }),

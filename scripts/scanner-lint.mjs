@@ -15,7 +15,9 @@ const jsonOut = process.argv.includes('--json')
 
 let findings = [];
 
-// The scanner lints a fresh checkout, so only tracked files count.
+// The scanner lints a fresh checkout, so only files git knows count (untracked work folders
+// would give findings the real scanner never sees). New files under src/ are still covered by
+// `npm run lint`, which reports the same typing rules.
 const tracked = (...patterns) =>
   execFileSync('git', ['ls-files', ...patterns], { cwd: root, encoding: 'utf8' })
     .split('\n')
@@ -77,6 +79,12 @@ if (cssFiles.length) {
   );
   fs.rmSync(configPath);
   const out = stylelint.stderr.match(/^[ \t]*(\[.*\])[ \t]*$/m)?.[1] ?? stylelint.stdout;
+  // 0: clean, 2: problems found; anything else means Stylelint itself failed.
+  if ((stylelint.status !== 0 && stylelint.status !== 2) || !out.trim().startsWith('[')) {
+    process.stderr.write(stylelint.stderr || stylelint.stdout);
+    console.error(`Stylelint did not run (exit code ${stylelint.status}).`);
+    process.exit(2);
+  }
   for (const file of JSON.parse(out || '[]')) {
     for (const w of file.warnings) {
       findings.push({
