@@ -5,6 +5,8 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 
 ## Unreleased
 
+## 0.1.2 — 2026-10-03
+
 Clean-up for the review scanner of the community directory (the plugin page listed 1698
 issues). Nothing changes for boards or their files.
 
