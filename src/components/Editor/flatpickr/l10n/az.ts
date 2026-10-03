@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Azerbaijan locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Azerbaijan: CustomLocale = {
   weekdays: {
@@ -53,6 +46,4 @@ export const Azerbaijan: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.az = Azerbaijan;
 
-export default fp.l10ns;

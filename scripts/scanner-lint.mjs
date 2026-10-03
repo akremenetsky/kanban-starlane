@@ -1,6 +1,6 @@
 // Runs the Obsidian community review scanner's ESLint and Stylelint checks on the tracked files
 // and fails on any finding, warnings included: each one is a "Review: Risks" issue on the
-// plugin page. `--json <file>` also writes all findings for tooling.
+// plugin page. Exceptions live in scanner/accepted.json. `--json <file>` writes all findings.
 import { execFileSync, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -13,7 +13,7 @@ const jsonOut = process.argv.includes('--json')
   ? process.argv[process.argv.indexOf('--json') + 1]
   : null;
 
-const findings = [];
+let findings = [];
 
 // The scanner lints a fresh checkout, so only tracked files count.
 const tracked = (...patterns) =>
@@ -92,6 +92,19 @@ if (cssFiles.length) {
 
 if (jsonOut) fs.writeFileSync(jsonOut, JSON.stringify(findings, null, 2));
 
+// Findings accepted on purpose (scripts/scanner/accepted.json, each with a reason). An entry
+// that no longer matches anything fails too, so the list cannot go stale.
+const accepted = JSON.parse(
+  fs.readFileSync(path.join(root, 'scripts/scanner/accepted.json'), 'utf8')
+);
+const isAccepted = (f) => accepted.some((a) => a.file === f.file && a.rule === f.rule);
+const stale = accepted.filter((a) => !findings.some((f) => a.file === f.file && a.rule === f.rule));
+for (const a of stale) {
+  console.log(`Accepted finding no longer reported, remove it: ${a.file}  ${a.rule}`);
+}
+const acceptedCount = findings.filter(isAccepted).length;
+findings = findings.filter((f) => !isAccepted(f));
+
 for (const f of findings) console.log(`${f.file}:${f.line}  ${f.rule}  ${f.message}`);
 if (findings.length) {
   const byRule = {};
@@ -103,4 +116,8 @@ if (findings.length) {
   console.log(`\n${findings.length} finding(s) the Obsidian review scanner would report.`);
   process.exit(1);
 }
-console.log('Obsidian review scanner: no findings.');
+if (stale.length) process.exit(1);
+console.log(
+  `Obsidian review scanner: no findings` +
+    (acceptedCount ? ` (${acceptedCount} accepted, see scripts/scanner/accepted.json).` : '.')
+);

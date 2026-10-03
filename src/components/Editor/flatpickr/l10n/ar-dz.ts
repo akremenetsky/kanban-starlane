@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Algerian Arabic locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const AlgerianArabic: CustomLocale = {
   weekdays: {
@@ -45,6 +38,4 @@ export const AlgerianArabic: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.ar = AlgerianArabic;
 
-export default fp.l10ns;

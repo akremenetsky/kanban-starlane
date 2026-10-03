@@ -106,18 +106,19 @@ export default tseslint.config(
   {
     files: ['src/**/*.{ts,tsx}'],
     rules: {
-      // Inherited code is loosely typed (Obsidian internals, mdast, flatpickr); the review only
-      // warns about it. Tracked in docs/dev/known-issues.md, not enforced here.
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-this-alias': 'off',
+      // Everything the review scanner reports is an error here (it shows each one as a risk on
+      // the plugin page); `npm run lint:scanner` runs the scanner's own setup on top.
+      '@typescript-eslint/no-unsafe-member-access': 'error',
+      '@typescript-eslint/no-unsafe-assignment': 'error',
+      '@typescript-eslint/no-unsafe-call': 'error',
+      '@typescript-eslint/no-unsafe-argument': 'error',
+      '@typescript-eslint/no-unsafe-return': 'error',
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-this-alias': 'error',
+      '@typescript-eslint/no-deprecated': 'error',
       // TypeScript itself reports undefined names.
       'no-undef': 'off',
-      // Type-aware rules that find real bugs, but not ones the review blocks on: warn only.
+      // Type-aware rules the scanner does not run (or only warns about): warnings here.
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-misused-promises': 'warn',
       '@typescript-eslint/unbound-method': 'warn',

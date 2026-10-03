@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Hindi locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Hindi: CustomLocale = {
   weekdays: {
@@ -48,6 +41,4 @@ export const Hindi: CustomLocale = {
   },
 };
 
-fp.l10ns.hi = Hindi;
 
-export default fp.l10ns;

@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Croatian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Croatian: CustomLocale = {
   firstDayOfWeek: 1,
@@ -51,6 +44,4 @@ export const Croatian: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.hr = Croatian;
 
-export default fp.l10ns;

@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Faroese locale for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Faroese: CustomLocale = {
   weekdays: {
@@ -55,6 +48,4 @@ export const Faroese: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.fo = Faroese;
 
-export default fp.l10ns;

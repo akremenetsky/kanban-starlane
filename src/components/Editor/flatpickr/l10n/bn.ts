@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Bangla locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Bangla: CustomLocale = {
   weekdays: {
@@ -48,5 +41,3 @@ export const Bangla: CustomLocale = {
   },
 };
 
-fp.l10ns.bn = Bangla;
-export default fp.l10ns;

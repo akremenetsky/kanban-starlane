@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Estonian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Estonian: CustomLocale = {
   weekdays: {
@@ -60,6 +53,4 @@ export const Estonian: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.et = Estonian;
 
-export default fp.l10ns;

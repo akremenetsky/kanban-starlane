@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Mandarin locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Mandarin: CustomLocale = {
   weekdays: {
@@ -53,6 +46,4 @@ export const Mandarin: CustomLocale = {
   toggleTitle: '点击切换 12/24 小时时制',
 };
 
-fp.l10ns.zh = Mandarin;
 
-export default fp.l10ns;

@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Esperanto locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Esperanto: CustomLocale = {
   firstDayOfWeek: 1,
@@ -47,5 +40,3 @@ export const Esperanto: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.eo = Esperanto;
-export default fp.l10ns;

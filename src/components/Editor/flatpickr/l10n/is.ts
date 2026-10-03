@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Icelandic locale for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Icelandic: CustomLocale = {
   weekdays: {
@@ -53,6 +46,4 @@ export const Icelandic: CustomLocale = {
   time_24hr: true,
 };
 
-fp.l10ns.is = Icelandic;
 
-export default fp.l10ns;

@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Malaysian locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Malaysian: CustomLocale = {
   weekdays: {
@@ -41,4 +34,3 @@ export const Malaysian: CustomLocale = {
   },
 };
 
-export default fp.l10ns;

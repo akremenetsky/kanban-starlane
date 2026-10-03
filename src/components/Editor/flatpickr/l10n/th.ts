@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Thai locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Thai: CustomLocale = {
   weekdays: {
@@ -58,6 +51,4 @@ export const Thai: CustomLocale = {
   },
 };
 
-fp.l10ns.th = Thai;
 
-export default fp.l10ns;

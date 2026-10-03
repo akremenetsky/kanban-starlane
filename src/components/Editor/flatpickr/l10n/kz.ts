@@ -1,14 +1,7 @@
-import { FlatpickrFn } from '../types/instance';
 
 /* Kazakh locals for flatpickr */
 import { CustomLocale } from '../types/locale';
 
-const fp =
-  typeof window !== 'undefined' && (window as any).flatpickr !== undefined
-    ? (window as any).flatpickr
-    : ({
-        l10ns: {},
-      } as FlatpickrFn);
 
 export const Kazakh: CustomLocale = {
   weekdays: {
@@ -44,6 +37,4 @@ export const Kazakh: CustomLocale = {
   yearAriaLabel: 'Жыл',
 };
 
-fp.l10ns.kz = Kazakh;
 
-export default fp.l10ns;
