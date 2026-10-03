@@ -6,7 +6,7 @@
 import { TFile } from 'obsidian';
 import { Entity, Path } from 'src/dnd/types';
 import { getEntityFromPath, moveEntity, updateEntity } from 'src/dnd/util/data';
-import { Board, DataTypes, Item } from 'src/model/types';
+import { Board, DataTypes, Item, Lane } from 'src/model/types';
 import type KanbanPlugin from 'src/plugin/KanbanPlugin';
 import { getBoardColor } from 'src/shared/colors';
 import { StateManager } from 'src/state/StateManager';
@@ -147,8 +147,8 @@ function moveWithCompletion(stateManager: StateManager, board: Board, from: Path
   );
 
   const lanePath = to.slice(0, -1);
-  return getEntityFromPath(board, lanePath)?.data?.sorted !== undefined
-    ? updateEntity(moved, lanePath, { data: { $unset: ['sorted'] } })
+  return getEntityFromPath<Lane>(board, lanePath)?.data?.sorted !== undefined
+    ? updateEntity<Board, Lane>(moved, lanePath, { data: { $unset: ['sorted'] } })
     : moved;
 }
 

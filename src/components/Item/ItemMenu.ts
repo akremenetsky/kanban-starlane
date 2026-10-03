@@ -120,7 +120,7 @@ export function useItemMenu({
             .setTitle(t('Copy link to card'))
             .onClick(() => {
               if (item.data.blockId) {
-                navigator.clipboard.writeText(
+                void navigator.clipboard.writeText(
                   `${stateManager.app.fileManager.generateMarkdownLink(
                     stateManager.file,
                     '',
@@ -130,7 +130,7 @@ export function useItemMenu({
               } else {
                 const id = generateInstanceId(6);
 
-                navigator.clipboard.writeText(
+                void navigator.clipboard.writeText(
                   `${stateManager.app.fileManager.generateMarkdownLink(stateManager.file, '', '#^' + id)}`
                 );
 

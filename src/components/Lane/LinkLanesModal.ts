@@ -114,7 +114,7 @@ export class LinkLanesModal extends Modal {
       dropdown.addOption('', t('List'));
       dropdown.setDisabled(!this.boardPath);
       if (this.boardPath) {
-        this.laneTitles(this.boardPath).then((titles) => {
+        void this.laneTitles(this.boardPath).then((titles) => {
           titles.forEach((title) => dropdown.addOption(title, title));
           dropdown.setValue(this.lanePath);
         });

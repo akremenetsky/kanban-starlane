@@ -46,7 +46,7 @@ export class PromiseQueue {
     this.queue.push(item);
 
     if (!this.isRunning) {
-      this.run();
+      void this.run();
     }
   }
 

@@ -10,7 +10,13 @@ export interface NestableProps {
   accepts: string[];
 }
 
-export interface Nestable<D = any, T = any> extends NestableProps {
+/** Any node of a nested entity tree (board → lanes → cards), whatever its data. */
+export interface TreeNode extends NestableProps {
+  children: TreeNode[];
+  data: unknown;
+}
+
+export interface Nestable<D = unknown, T = TreeNode> extends NestableProps {
   children: T[];
   data: D;
 }

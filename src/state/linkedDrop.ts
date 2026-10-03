@@ -193,7 +193,9 @@ export function planLinkedDrop(
 export function applyBlockIds(board: Board, ids: Array<{ path: Path; id: string }>): Board {
   return ids.reduce(
     (b, { path, id }) =>
-      getEntityFromPath(b, path) ? updateEntity(b, path, { data: { blockId: { $set: id } } }) : b,
+      getEntityFromPath(b, path)
+        ? updateEntity<Board, Item>(b, path, { data: { blockId: { $set: id } } })
+        : b,
     board
   );
 }

@@ -1,22 +1,23 @@
 import merge from 'deepmerge';
 import update, { Spec } from 'immutability-helper';
-import { Nestable, Path } from 'src/dnd/types';
+import { Path, TreeNode } from 'src/dnd/types';
 import { isPlainObject } from 'src/shared/util';
 
 import { SiblingDirection, getSiblingDirection } from './path';
 
-export function getEntityFromPath(root: Nestable, path: Path): Nestable {
+/** The node at `path`; the caller names its type (e.g. `getEntityFromPath<Lane>`). */
+export function getEntityFromPath<R extends TreeNode = TreeNode>(root: TreeNode, path: Path): R {
   const step = path.length ? path[0] : null;
 
   if (step !== null && root.children && root.children[step]) {
-    return getEntityFromPath(root.children[step], path.slice(1));
+    return getEntityFromPath<R>(root.children[step], path.slice(1));
   }
 
-  return root;
+  return root as R;
 }
 
-export function buildUpdateMutation(path: Path, mutation: Spec<Nestable>) {
-  let pathedMutation: Spec<Nestable> = mutation;
+export function buildUpdateMutation(path: Path, mutation: Spec<TreeNode>) {
+  let pathedMutation: Spec<TreeNode> = mutation;
 
   for (let i = path.length - 1; i >= 0; i--) {
     pathedMutation = {
@@ -29,8 +30,8 @@ export function buildUpdateMutation(path: Path, mutation: Spec<Nestable>) {
   return pathedMutation;
 }
 
-export function buildUpdateParentMutation(path: Path, mutation: Spec<Nestable>) {
-  let pathedMutation: Spec<Nestable> = mutation;
+export function buildUpdateParentMutation(path: Path, mutation: Spec<TreeNode>) {
+  let pathedMutation: Spec<TreeNode> = mutation;
 
   for (let i = path.length - 2; i >= 0; i--) {
     pathedMutation = {
@@ -43,8 +44,10 @@ export function buildUpdateParentMutation(path: Path, mutation: Spec<Nestable>) 
   return pathedMutation;
 }
 
-export function buildRemoveMutation(path: Path, replacement?: Nestable) {
-  const val: Spec<any, any> = replacement ? [path.last(), 1, replacement] : [path.last(), 1];
+export function buildRemoveMutation(path: Path, replacement?: TreeNode) {
+  const val: [number, number, ...TreeNode[]] = replacement
+    ? [path.last(), 1, replacement]
+    : [path.last(), 1];
   return buildUpdateParentMutation(path, {
     children: {
       $splice: [val],
@@ -54,7 +57,7 @@ export function buildRemoveMutation(path: Path, replacement?: Nestable) {
 
 export function buildInsertMutation(
   destination: Path,
-  entities: Nestable[],
+  entities: TreeNode[],
   destinationModifier: number = 0
 ) {
   return buildUpdateParentMutation(destination, {
@@ -64,7 +67,7 @@ export function buildInsertMutation(
   });
 }
 
-export function buildAppendMutation(destination: Path, entities: Nestable[]) {
+export function buildAppendMutation(destination: Path, entities: TreeNode[]) {
   return buildUpdateParentMutation(destination, {
     children: {
       $push: entities,
@@ -72,7 +75,7 @@ export function buildAppendMutation(destination: Path, entities: Nestable[]) {
   });
 }
 
-export function buildPrependMutation(destination: Path, entities: Nestable[]) {
+export function buildPrependMutation(destination: Path, entities: TreeNode[]) {
   return buildUpdateParentMutation(destination, {
     children: {
       $unshift: entities,
@@ -80,13 +83,15 @@ export function buildPrependMutation(destination: Path, entities: Nestable[]) {
   });
 }
 
-export function moveEntity(
-  root: Nestable,
+// The tree helpers return the type they were given: a mutation keeps the root's shape.
+
+export function moveEntity<T extends TreeNode>(
+  root: T,
   source: Path,
   destination: Path,
-  transform?: (entity: Nestable) => Nestable | Nestable[],
-  replace?: (entity: Nestable) => Nestable
-) {
+  transform?: (entity: TreeNode) => TreeNode | TreeNode[],
+  replace?: (entity: TreeNode) => TreeNode
+): T {
   const entity = transform
     ? transform(getEntityFromPath(root, source))
     : getEntityFromPath(root, source);
@@ -102,37 +107,58 @@ export function moveEntity(
     destinationModifier
   );
 
-  const mutation = merge<Spec<Nestable>>(removeMutation, insertMutation, {
+  const mutation = merge<Spec<TreeNode>>(removeMutation, insertMutation, {
     isMergeableObject: (val) => {
       return isPlainObject(val) || Array.isArray(val);
     },
   });
 
-  const newBoard = update(root, mutation);
+  const newBoard = update(root, mutation as Spec<T>);
 
   return newBoard;
 }
 
-export function removeEntity(root: Nestable, target: Path, replacement?: Nestable) {
-  return update(root, buildRemoveMutation(target, replacement));
+export function removeEntity<T extends TreeNode>(root: T, target: Path, replacement?: TreeNode): T {
+  return update(root, buildRemoveMutation(target, replacement) as Spec<T>);
 }
 
-export function insertEntity(root: Nestable, destination: Path, entities: Nestable[]) {
-  return update(root, buildInsertMutation(destination, entities));
+export function insertEntity<T extends TreeNode>(
+  root: T,
+  destination: Path,
+  entities: TreeNode[]
+): T {
+  return update(root, buildInsertMutation(destination, entities) as Spec<T>);
 }
 
-export function appendEntities(root: Nestable, destination: Path, entities: Nestable[]) {
-  return update(root, buildAppendMutation(destination, entities));
+export function appendEntities<T extends TreeNode>(
+  root: T,
+  destination: Path,
+  entities: TreeNode[]
+): T {
+  return update(root, buildAppendMutation(destination, entities) as Spec<T>);
 }
 
-export function prependEntities(root: Nestable, destination: Path, entities: Nestable[]) {
-  return update(root, buildPrependMutation(destination, entities));
+export function prependEntities<T extends TreeNode>(
+  root: T,
+  destination: Path,
+  entities: TreeNode[]
+): T {
+  return update(root, buildPrependMutation(destination, entities) as Spec<T>);
 }
 
-export function updateEntity(root: Nestable, path: Path, mutation: Spec<Nestable>) {
-  return update(root, buildUpdateMutation(path, mutation));
+/** `N` is the type of the node at `path`, which the mutation applies to. */
+export function updateEntity<T extends TreeNode, N extends TreeNode = TreeNode>(
+  root: T,
+  path: Path,
+  mutation: Spec<N>
+): T {
+  return update(root, buildUpdateMutation(path, mutation as Spec<TreeNode>) as Spec<T>);
 }
 
-export function updateParentEntity(root: Nestable, path: Path, mutation: Spec<Nestable>) {
-  return update(root, buildUpdateParentMutation(path, mutation));
+export function updateParentEntity<T extends TreeNode>(
+  root: T,
+  path: Path,
+  mutation: Spec<TreeNode>
+): T {
+  return update(root, buildUpdateParentMutation(path, mutation) as Spec<T>);
 }

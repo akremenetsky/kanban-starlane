@@ -195,11 +195,11 @@ export function hydratePostOp(stateManager: StateManager, board: Board, ops: Op[
     const entity = getEntityFromPath(board, path);
 
     if (entity.type === DataTypes.Lane) {
-      return hydrateLane(stateManager, entity);
+      return hydrateLane(stateManager, entity as Lane);
     }
 
     if (entity.type === DataTypes.Item) {
-      return hydrateItem(stateManager, entity);
+      return hydrateItem(stateManager, entity as Item);
     }
   });
 

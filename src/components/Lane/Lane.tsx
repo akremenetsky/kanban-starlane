@@ -113,7 +113,7 @@ function DraggableLaneRaw({
         const laneItems = elementRef.current?.getElementsByClassName(c('lane-items'));
 
         if (laneItems.length) {
-          animateScrollTo([0, shouldPrepend ? 0 : laneItems[0].scrollHeight], {
+          void animateScrollTo([0, shouldPrepend ? 0 : laneItems[0].scrollHeight], {
             elementToScroll: laneItems[0],
             speed: 200,
             minDuration: 150,

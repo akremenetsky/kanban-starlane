@@ -56,7 +56,7 @@ export function registerFileMenu(plugin: KanbanPlugin) {
               .setSection('pane')
               .onClick(() => {
                 plugin.kanbanFileModes[leaf.id || file.path] = VIEW_TYPE;
-                plugin.setKanbanView(leaf);
+                void plugin.setKanbanView(leaf);
               });
           });
 
@@ -77,7 +77,7 @@ export function registerFileMenu(plugin: KanbanPlugin) {
             .setSection('pane')
             .onClick(() => {
               plugin.kanbanFileModes[leaf.id || file.path] = VIEW_TYPE;
-              plugin.setKanbanView(leaf);
+              void plugin.setKanbanView(leaf);
             });
         });
       }
@@ -91,7 +91,7 @@ export function registerFileMenu(plugin: KanbanPlugin) {
               .setSection('pane')
               .onClick(() => {
                 plugin.kanbanFileModes[leaf.id || file.path] = 'markdown';
-                plugin.setMarkdownView(leaf);
+                void plugin.setMarkdownView(leaf);
               });
           });
         }
@@ -118,7 +118,7 @@ export function registerFileMenu(plugin: KanbanPlugin) {
                 .setIcon('lucide-archive')
                 .setSection('pane')
                 .onClick(() => {
-                  stateManager.archiveCompletedCards();
+                  void stateManager.archiveCompletedCards();
                 });
             })
             .addItem((item) =>

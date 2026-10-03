@@ -62,7 +62,7 @@ export function registerVaultEvents(plugin: KanbanPlugin) {
   );
 
   plugin.registerEvent(
-    plugin.app.metadataCache.on('dataview:metadata-change', (_: any, file: TFile) => {
+    plugin.app.metadataCache.on('dataview:metadata-change', (_, file) => {
       notifyFileChange(file);
     })
   );

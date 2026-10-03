@@ -57,14 +57,14 @@ export function registerCommands(plugin: KanbanPlugin) {
       const kanbanView = app.workspace.getActiveViewOfType(KanbanView);
       if (kanbanView) {
         plugin.kanbanFileModes[kanbanView.leaf.id || activeFile.path] = 'markdown';
-        plugin.setMarkdownView(kanbanView.leaf);
+        void plugin.setMarkdownView(kanbanView.leaf);
         return;
       }
 
       const markdownView = app.workspace.getActiveViewOfType(MarkdownView);
       if (fileIsKanban && markdownView) {
         plugin.kanbanFileModes[markdownView.leaf.id || activeFile.path] = VIEW_TYPE;
-        plugin.setKanbanView(markdownView.leaf);
+        void plugin.setKanbanView(markdownView.leaf);
       }
     },
   });

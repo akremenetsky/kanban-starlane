@@ -74,7 +74,7 @@ export async function importLegacySettings(plugin: KanbanPlugin) {
     return;
   }
 
-  const legacy = JSON.parse(await adapter.read(path));
+  const legacy = JSON.parse(await adapter.read(path)) as Record<string, unknown>;
   await plugin.updateSettings({ ...plugin.settings, ...mapLegacySettings(legacy) });
   new Notice(t('Settings imported from the Kanban plugin.'));
 }

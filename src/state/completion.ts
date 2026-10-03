@@ -2,7 +2,7 @@ import update from 'immutability-helper';
 import { Path } from 'src/dnd/types';
 import { getEntityFromPath } from 'src/dnd/util/data';
 import { getTaskStatusDone, getTaskStatusPreDone, toggleTask } from 'src/integrations/tasks';
-import { Board, Item } from 'src/model/types';
+import { Board, Item, Lane } from 'src/model/types';
 
 import { StateManager } from './StateManager';
 
@@ -15,8 +15,8 @@ export function maybeCompleteForMove(
   destinationPath: Path,
   item: Item
 ): { next: Item; replacement?: Item } {
-  const sourceParent = getEntityFromPath(sourceBoard, sourcePath.slice(0, -1));
-  const destinationParent = getEntityFromPath(destinationBoard, destinationPath.slice(0, -1));
+  const sourceParent = getEntityFromPath<Lane>(sourceBoard, sourcePath.slice(0, -1));
+  const destinationParent = getEntityFromPath<Lane>(destinationBoard, destinationPath.slice(0, -1));
 
   const oldShouldComplete = sourceParent?.data?.shouldMarkItemsComplete;
   const newShouldComplete = destinationParent?.data?.shouldMarkItemsComplete;

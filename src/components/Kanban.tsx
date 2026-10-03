@@ -85,7 +85,7 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
       const board = rootRef.current?.getElementsByClassName(c('board'));
 
       if (board?.length) {
-        animateScrollTo([board[0].scrollWidth, 0], {
+        void animateScrollTo([board[0].scrollWidth, 0], {
           elementToScroll: board[0],
           speed: 300,
           minDuration: 150,
