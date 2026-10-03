@@ -34,7 +34,7 @@ BRAT also keeps the plugin updated automatically.
 
 ## Requirements
 
-Kanban Starlane requires Obsidian 1.6.2 or newer.
+Kanban Starlane requires Obsidian 1.8.7 or newer.
 
 Already using the original Kanban plugin? See
 [Coming from the Kanban plugin](migrating-from-kanban-plugin.md) — both plugins can run side by

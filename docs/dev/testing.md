@@ -52,7 +52,9 @@ rewrites them from the serializer output) and review the diff.
 Drag and drop: real pointer drags work in e2e with WebdriverIO pointer actions — see
 `dragCard()` in `specs/linkedLanes.e2e.ts` (scroll the card into view and `waitForStable()`
 first, then move in steps with pauses: the engine starts a drag after 5 px and throttles
-moves per frame). Only linked lanes use it so far; tree operations are unit-tested in
+moves per frame). On slow CI runners a drag is sometimes not picked up (seen on the oldest
+Obsidian), so tests that check a file afterwards use `dragCardUntil()`, which retries the drag.
+Only linked lanes use it so far; tree operations are unit-tested in
 `tests/unit/helpers/boardTree.test.ts`.
 
 ## Manual testing

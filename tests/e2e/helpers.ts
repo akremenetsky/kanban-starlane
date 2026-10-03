@@ -65,13 +65,18 @@ export async function waitForFile(
   timeout = 5000
 ) {
   let last = '';
-  await browser.waitUntil(
-    async () => {
-      last = await readFile(path);
-      return predicate(last);
-    },
-    { timeout, timeoutMsg: `file ${path} never matched; last content:\n${last}` }
-  );
+  try {
+    await browser.waitUntil(
+      async () => {
+        last = await readFile(path);
+        return predicate(last);
+      },
+      { timeout }
+    );
+  } catch {
+    // waitUntil's own message is built before the wait, so it cannot show the content.
+    throw new Error(`file ${path} never matched; last content:\n${last}`);
+  }
   return last;
 }
 
@@ -132,4 +137,27 @@ export async function dragCard(
     .pause(400)
     .up({ button: 0 })
     .perform();
+}
+
+/**
+ * Drag a card until `settled` holds. A drag that starts while Obsidian is still busy (CI runners
+ * are slow, mostly on the oldest Obsidian) is sometimes not picked up at all, so retry a few
+ * times; the card and the target are looked up again for every attempt.
+ */
+export async function dragCardUntil(
+  source: () => Promise<WebdriverIO.Element>,
+  target: () => Promise<WebdriverIO.Element>,
+  where: 'above' | 'below',
+  settled: () => Promise<boolean>,
+  attempts = 3
+) {
+  for (let attempt = 1; ; attempt++) {
+    await dragCard(await source(), await target(), where);
+    try {
+      await browser.waitUntil(settled, { timeout: 3000 });
+      return;
+    } catch (error) {
+      if (attempt >= attempts) throw error;
+    }
+  }
 }
