@@ -1,0 +1,12 @@
+{
+  "name": "obsidian-scanner-lint",
+  "private": true,
+  "description": "The Obsidian review scanner's lint toolchain, at the versions it installs (obsidianmd/obsidian-workflows src/lint.ts). Used by `npm run lint:scanner`.",
+  "dependencies": {
+    "eslint": "9.37.0",
+    "eslint-plugin-obsidianmd": "0.4.1",
+    "stylelint": "17.6.0",
+    "stylelint-no-unsupported-browser-features": "8.1.1",
+    "typescript-eslint": "8.61.1"
+  }
+}

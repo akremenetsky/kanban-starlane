@@ -5,6 +5,10 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 
 ## Unreleased
 
+### Changed
+- Fixed the remaining review scanner findings (typing of dates and a sort helper). Nothing
+  changes for boards or their files.
+
 ## 0.1.2 — 2026-10-03
 
 Clean-up for the review scanner of the community directory (the plugin page listed 1698

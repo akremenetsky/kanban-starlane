@@ -2,18 +2,40 @@
 // and fails on any finding, warnings included: each one is a "Review: Risks" issue on the
 // plugin page. Exceptions live in scanner/accepted.json. `--json <file>` writes all findings.
 import { execFileSync, spawnSync } from 'node:child_process';
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
 import { minElectronVersion, stylelintConfig } from './scanner/config.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
-const bin = (name) => path.join(root, 'node_modules', '.bin', name);
+// The scanner lints with its own pinned tools (and the TypeScript they pull in), not the
+// plugin's, so they live in their own package: scanner/package.json.
+const toolsDir = path.join(root, 'scripts', 'scanner');
+const toolsModules = path.join(toolsDir, 'node_modules');
+const bin = (name) => path.join(toolsModules, '.bin', name);
 const jsonOut = process.argv.includes('--json')
   ? process.argv[process.argv.indexOf('--json') + 1]
   : null;
 
 let findings = [];
+
+// Install the tools on first use and whenever their lockfile changes.
+const lockHash = crypto
+  .createHash('sha256')
+  .update(fs.readFileSync(path.join(toolsDir, 'package-lock.json')))
+  .digest('hex');
+const stampPath = path.join(toolsModules, '.lock-hash');
+if (!fs.existsSync(stampPath) || fs.readFileSync(stampPath, 'utf8') !== lockHash) {
+  console.log('Installing the review scanner lint tools (scripts/scanner)...');
+  const npm = spawnSync('npm', ['ci', '--no-audit', '--no-fund'], {
+    cwd: toolsDir,
+    stdio: 'inherit',
+    shell: process.platform === 'win32',
+  });
+  if (npm.status !== 0) process.exit(2);
+  fs.writeFileSync(stampPath, lockHash);
+}
 
 // The scanner lints a fresh checkout, so only files git knows count (untracked work folders
 // would give findings the real scanner never sees). New files under src/ are still covered by
@@ -34,7 +56,16 @@ const eslint = spawnSync(
     '--no-warn-ignored',
     ...tracked('*.ts', '*.tsx', '*.js', '*.jsx', '*.cts', '*.mts', '*.cjs', '*.mjs', '*.json'),
   ],
-  { cwd: root, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 }
+  {
+    cwd: root,
+    encoding: 'utf8',
+    maxBuffer: 256 * 1024 * 1024,
+    // Same environment as the scanner's run (the config and its plugins resolve from scanner/).
+    env: {
+      ...process.env,
+      NODE_PATH: [toolsModules, path.join(root, 'node_modules')].join(path.delimiter),
+    },
+  }
 );
 if (!eslint.stdout) {
   process.stderr.write(eslint.stderr);
@@ -70,7 +101,7 @@ if (cssFiles.length) {
       '--config',
       configPath,
       '--config-basedir',
-      path.join(root, 'node_modules'),
+      toolsModules,
       '--formatter',
       'json',
       '--allow-empty-input',
