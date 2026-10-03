@@ -77,8 +77,9 @@ any bundled language. Previously they followed the UI language.
 fork must stay GPL-3.0 and keep the original copyright; vendored MIT/ISC code (flatpickr,
 Dataview/Tasks field parsing, Hot Reload in the test vault) keeps its notices.
 
-**`minAppVersion` 1.6.2.** Oldest public Obsidian release the e2e suite runs on (1.6.0/1.6.1
-were insider builds). Raise it deliberately when using newer APIs; CI tests both ends.
+**`minAppVersion` 1.8.7.** Raised from 1.6.2: on 1.6.2 (Chrome 114) the linked-lanes e2e specs
+failed intermittently in CI (drag and drop on a tab Chrome treats as inactive), and 1.8.7 also
+provides `getLanguage()`. Raise it deliberately when using newer APIs; CI tests both ends.
 
 **Tooling.** npm (no yarn), TypeScript 5.9, esbuild, ESLint 9 flat config, Prettier, Vitest
 with a fake Obsidian API, WebdriverIO + wdio-obsidian-service for e2e in real Obsidian.

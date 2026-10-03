@@ -1,7 +1,7 @@
 # Kanban Starlane
 
 [![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
-[![Obsidian](https://img.shields.io/badge/Obsidian-%E2%89%A51.6.2-7C3AED)](https://obsidian.md)
+[![Obsidian](https://img.shields.io/badge/Obsidian-%E2%89%A51.8.7-7C3AED)](https://obsidian.md)
 [![BRAT](https://img.shields.io/badge/install%20with-BRAT-8b5cf6)](https://github.com/TfTHacker/obsidian42-brat)
 
 Kanban boards for [Obsidian](https://obsidian.md), stored as plain markdown notes.
@@ -47,7 +47,7 @@ Documentation: [akremenetsky.github.io/kanban-starlane](https://akremenetsky.git
   `<your vault>/.obsidian/plugins/kanban-starlane/`, then enable _Kanban Starlane_ in
   _Settings → Community plugins_.
 
-Requires Obsidian 1.6.2 or newer.
+Requires Obsidian 1.8.7 or newer.
 
 ## Coming from the Kanban plugin
 
