@@ -1,5 +1,4 @@
 import update from 'immutability-helper';
-import { moment } from 'obsidian';
 import { Path } from 'src/dnd/types';
 import {
   appendEntities,
@@ -13,6 +12,7 @@ import {
 } from 'src/dnd/util/data';
 import { Board, DataTypes, Item, Lane } from 'src/model/types';
 import { generateInstanceId } from 'src/shared/ids';
+import { moment } from 'src/shared/moment';
 import { KanbanView } from 'src/view/KanbanView';
 
 import { StateManager } from './StateManager';

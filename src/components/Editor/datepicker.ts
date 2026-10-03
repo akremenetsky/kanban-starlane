@@ -1,5 +1,6 @@
-import { EditorSuggestContext, moment } from 'obsidian';
+import { EditorSuggestContext } from 'obsidian';
 import { buildLinkToDailyNote } from 'src/integrations/dailyNotes';
+import { Moment, moment } from 'src/shared/moment';
 import { StateManager } from 'src/state/StateManager';
 
 import { getDefaultLocale } from './datePickerLocale';
@@ -47,7 +48,7 @@ export function constructDatePicker(
   });
 }
 
-export function toPreviousMonth(date: moment.Moment) {
+export function toPreviousMonth(date: Moment) {
   const initialMonth = date.month();
   const first = date.clone().startOf('month').weekday(0);
   const diff = date.diff(first, 'week');
@@ -64,7 +65,7 @@ export function toPreviousMonth(date: moment.Moment) {
   return date;
 }
 
-export function toNextMonth(date: moment.Moment) {
+export function toNextMonth(date: Moment) {
   const initialMonth = date.month();
   const first = date.clone().startOf('month').weekday(6);
   const diff = date.diff(first, 'week');

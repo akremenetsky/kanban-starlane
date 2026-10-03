@@ -1,5 +1,6 @@
 import { FileWithPath, fromEvent } from 'file-selector';
-import { Platform, TFile, TFolder, htmlToMarkdown, moment, parseLinktext } from 'obsidian';
+import { Platform, TFile, TFolder, htmlToMarkdown, parseLinktext } from 'obsidian';
+import { moment } from 'src/shared/moment';
 import { toError } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 

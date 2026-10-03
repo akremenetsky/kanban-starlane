@@ -141,5 +141,24 @@ export default tseslint.config(
       // `@ts-ignore` needs a reason, as the review asks for every directive comment.
       '@typescript-eslint/ban-ts-comment': ['error', { 'ts-ignore': 'allow-with-description' }],
     },
+  },
+  {
+    // After the Obsidian set, which turns this rule off.
+    files: ['src/**/*.{ts,tsx}', 'tests/**/*.{ts,tsx}'],
+    ignores: ['src/shared/moment.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'obsidian',
+              importNames: ['moment'],
+              message: "Import moment from 'src/shared/moment' (typed for the review scanner).",
+            },
+          ],
+        },
+      ],
+    },
   }
 );

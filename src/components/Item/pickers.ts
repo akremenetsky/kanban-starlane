@@ -1,4 +1,4 @@
-import { moment, setIcon } from 'obsidian';
+import { setIcon } from 'obsidian';
 import { getDefaultLocale } from 'src/components/Editor/datePickerLocale';
 import flatpickr from 'src/components/Editor/flatpickr';
 import { Instance } from 'src/components/Editor/flatpickr/types/instance';
@@ -6,6 +6,7 @@ import { c } from 'src/components/helpers';
 import { Path } from 'src/dnd/types';
 import { buildLinkToDailyNote } from 'src/integrations/dailyNotes';
 import { Item } from 'src/model/types';
+import { Moment, moment } from 'src/shared/moment';
 import { escapeRegExpStr } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 import { BoardModifiers } from 'src/state/boardModifiers';
@@ -134,7 +135,7 @@ export function constructTimePicker(
   stateManager: StateManager,
   coordinates: { x: number; y: number },
   onSelect: (opt: string) => void,
-  time?: moment.Moment
+  time?: Moment
 ) {
   const pickerClassName = c('time-picker');
   const timeFormat = stateManager.getSetting('time-format');

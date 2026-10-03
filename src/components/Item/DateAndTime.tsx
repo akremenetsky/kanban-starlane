@@ -1,12 +1,13 @@
 import classcat from 'classcat';
-import { getLinkpath, moment } from 'obsidian';
+import { getLinkpath } from 'obsidian';
 import { JSX, useMemo } from 'preact/compat';
 import { c } from 'src/components/helpers';
 import { t } from 'src/lang/helpers';
 import { DateColor, Item } from 'src/model/types';
+import { Moment, moment } from 'src/shared/moment';
 import { StateManager } from 'src/state/StateManager';
 
-export function getRelativeDate(date: moment.Moment, time: moment.Moment) {
+export function getRelativeDate(date: Moment, time: Moment) {
   if (time) {
     return time.from(moment());
   }
@@ -51,7 +52,7 @@ interface DateAndTimeProps {
   onEditDate?: JSX.MouseEventHandler<HTMLSpanElement>;
   onEditTime?: JSX.MouseEventHandler<HTMLSpanElement>;
   filePath: string;
-  getDateColor: (date: moment.Moment) => DateColor;
+  getDateColor: (date: Moment) => DateColor;
 }
 
 export function DateAndTime({

@@ -1,4 +1,4 @@
-import { moment } from 'obsidian';
+import { moment } from 'src/shared/moment';
 
 import { isPlainObject } from './util';
 

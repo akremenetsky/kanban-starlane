@@ -1,7 +1,7 @@
 import update from 'immutability-helper';
-import { moment } from 'obsidian';
 import { moveEntity, removeEntity } from 'src/dnd/util/data';
 import { Board, CardEvent } from 'src/model/types';
+import { moment } from 'src/shared/moment';
 import { StateManager } from 'src/state/StateManager';
 import { getBoardModifiers } from 'src/state/boardModifiers';
 import {

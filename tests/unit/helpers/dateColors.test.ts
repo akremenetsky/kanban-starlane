@@ -1,5 +1,5 @@
-import { moment } from 'obsidian';
 import { getDateColorFn } from 'src/shared/colors';
+import { moment } from 'src/shared/moment';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 beforeEach(() => {

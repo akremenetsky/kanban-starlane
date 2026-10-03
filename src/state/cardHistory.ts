@@ -5,9 +5,9 @@
  * which a card gets on its first event.
  */
 import update from 'immutability-helper';
-import { moment } from 'obsidian';
 import { Board, CardEvent, CardHistory, Item } from 'src/model/types';
 import { generateInstanceId } from 'src/shared/ids';
+import { moment } from 'src/shared/moment';
 
 /** Edits closer together than this are one `edited` event. */
 export const EDIT_MERGE_MS = 2 * 60 * 1000;

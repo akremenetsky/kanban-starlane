@@ -1,6 +1,7 @@
-import { TFile, moment } from 'obsidian';
+import { TFile } from 'obsidian';
 import { getDataViewCache } from 'src/integrations/dataview';
 import { FileMetadata, PageDataValue } from 'src/model/types';
+import { moment } from 'src/shared/moment';
 import { defaultSort } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 

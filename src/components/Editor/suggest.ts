@@ -6,11 +6,11 @@ import {
   EditorSuggestContext,
   EditorSuggestTriggerInfo,
   TFile,
-  moment,
 } from 'obsidian';
 import { buildTimeArray } from 'src/components/Item/pickers';
 import { c } from 'src/components/helpers';
 import KanbanPlugin from 'src/plugin/KanbanPlugin';
+import { moment } from 'src/shared/moment';
 import { escapeRegExpStr } from 'src/shared/util';
 
 import { applyDate, constructDatePicker, toNextMonth, toPreviousMonth } from './datepicker';

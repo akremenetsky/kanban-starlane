@@ -1,5 +1,5 @@
-import { moment } from 'obsidian';
 import { DateColor, TagColor } from 'src/model/types';
+import { Moment, TimeUnit, moment } from 'src/shared/moment';
 
 export function getTagColorFn(tagColors: TagColor[]) {
   const tagMap = (tagColors || []).reduce<Record<string, TagColor>>((total, current) => {
@@ -15,28 +15,26 @@ export function getTagColorFn(tagColors: TagColor[]) {
 }
 
 export function getDateColorFn(dateColors: DateColor[]) {
-  const orders = (dateColors || []).map<[moment.Moment | 'today' | 'before' | 'after', DateColor]>(
-    (c) => {
-      if (c.isToday) {
-        return ['today', c];
-      }
-
-      if (c.isBefore) {
-        return ['before', c];
-      }
-
-      if (c.isAfter) {
-        return ['after', c];
-      }
-
-      const modifier = c.direction === 'after' ? 1 : -1;
-      const date = moment();
-
-      date.add(c.distance * modifier, c.unit);
-
-      return [date, c];
+  const orders = (dateColors || []).map<[Moment | 'today' | 'before' | 'after', DateColor]>((c) => {
+    if (c.isToday) {
+      return ['today', c];
     }
-  );
+
+    if (c.isBefore) {
+      return ['before', c];
+    }
+
+    if (c.isAfter) {
+      return ['after', c];
+    }
+
+    const modifier = c.direction === 'after' ? 1 : -1;
+    const date = moment();
+
+    date.add(c.distance * modifier, c.unit);
+
+    return [date, c];
+  });
 
   const now = moment();
   orders.sort((a, b) => {
@@ -55,7 +53,7 @@ export function getDateColorFn(dateColors: DateColor[]) {
     return a[0].isBefore(b[0]) ? -1 : 1;
   });
 
-  return (date: moment.Moment) => {
+  return (date: Moment) => {
     const now = moment();
     const result = orders.find((o) => {
       const key = o[1];
@@ -63,7 +61,7 @@ export function getDateColorFn(dateColors: DateColor[]) {
       if (key.isAfter) return date.isAfter(now);
       if (key.isBefore) return date.isBefore(now);
 
-      let granularity: moment.unitOfTime.StartOf = 'days';
+      let granularity: TimeUnit = 'days';
 
       if (key.unit === 'hours') {
         granularity = 'hours';
