@@ -1,5 +1,6 @@
-import { App, TFile, moment } from 'obsidian';
+import { App, TFile } from 'obsidian';
 import { getDataviewApi } from 'src/integrations/dataview';
+import { Moment, moment } from 'src/shared/moment';
 import { isPlainObject } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 
@@ -16,7 +17,7 @@ function isRecurrence(v: unknown): v is { rrule: unknown; toText(): string } {
 }
 
 export function getDateFromObj(v: unknown, stateManager: StateManager) {
-  let m: moment.Moment;
+  let m: Moment;
 
   if (hasTimestamp(v)) {
     m = moment(v.ts);

@@ -1,4 +1,4 @@
-import { moment } from 'obsidian';
+import { moment } from 'src/shared/moment';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { board } from '../../setup/fixtures';

@@ -1,5 +1,5 @@
 import update from 'immutability-helper';
-import { App, Notice, TFile, moment } from 'obsidian';
+import { App, Notice, TFile } from 'obsidian';
 import { useEffect, useState } from 'preact/compat';
 import { FRONTMATTER_KEY } from 'src/constants';
 import { getDefaultDateFormat, getDefaultTimeFormat } from 'src/integrations/dateFormats';
@@ -8,6 +8,7 @@ import { t } from 'src/lang/helpers';
 import { Board, BoardTemplate, Item } from 'src/model/types';
 import { BaseFormat, ListFormat } from 'src/parsers/ListFormat';
 import { KanbanSettings, SettingRetrievers, shouldRefreshBoard } from 'src/settings/types';
+import { moment } from 'src/shared/moment';
 import { toError } from 'src/shared/util';
 import { KanbanView } from 'src/view/KanbanView';
 

@@ -9,7 +9,7 @@ import {
   ViewUpdate,
   WidgetType,
 } from '@codemirror/view';
-import { moment } from 'obsidian';
+import { Moment, moment } from 'src/shared/moment';
 import { escapeRegExpStr } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 
@@ -23,11 +23,11 @@ export const stateManagerField = StateField.define<StateManager | null>({
 });
 
 class DateTimeWidget extends WidgetType {
-  date: moment.Moment;
+  date: Moment;
   stateManager: StateManager;
   type: string;
 
-  constructor(stateManager: StateManager, date: moment.Moment, type: 'date' | 'time') {
+  constructor(stateManager: StateManager, date: Moment, type: 'date' | 'time') {
     super();
     this.stateManager = stateManager;
     this.type = type;

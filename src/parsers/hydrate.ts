@@ -1,9 +1,9 @@
-import { moment } from 'obsidian';
 import { c } from 'src/components/helpers';
 import { Path } from 'src/dnd/types';
 import { getEntityFromPath } from 'src/dnd/util/data';
 import { Board, DataTypes, DateColor, Item, Lane } from 'src/model/types';
 import { getDateColorFn } from 'src/shared/colors';
+import { Moment, moment } from 'src/shared/moment';
 import { Op } from 'src/shared/patch';
 import { escapeRegExpStr } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
@@ -24,7 +24,7 @@ export function preprocessTitle(stateManager: StateManager, title: string) {
 
   const { app } = stateManager;
 
-  let date: moment.Moment;
+  let date: Moment;
   let dateColor: DateColor;
   const getWrapperStyles = (baseClass: string) => {
     let wrapperStyle = '';

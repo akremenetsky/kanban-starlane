@@ -1,10 +1,10 @@
-const { compare } = new Intl.Collator(undefined, {
+const collator = new Intl.Collator(undefined, {
   usage: 'sort',
   sensitivity: 'base',
   numeric: true,
 });
 
-export const defaultSort = compare;
+export const defaultSort = (a: string, b: string) => collator.compare(a, b);
 
 export class PromiseCapability<T = void> {
   promise: Promise<T>;

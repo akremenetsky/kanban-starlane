@@ -106,6 +106,10 @@ zensical.toml        Zensical config for docs/user-guide (site_url, nav, theme)
   internals in `src/integrations/obsidianInternals.ts`, other plugins' APIs in their
   integration module, and narrow `unknown` values. The scanner forbids disabling `obsidianmd/*`
   rules with comments; an exception goes into `scripts/scanner/accepted.json` with a reason.
+  `lint:scanner` runs the scanner's own pinned tools (`scripts/scanner/package.json`, which
+  type-check with TypeScript 6, not the project's 5.9); bump them when the scanner does.
+  Import `moment` from `src/shared/moment`, not `obsidian` (Obsidian's typing is not callable
+  under TypeScript 6 defaults).
 - Pop-out windows: timers and DOM that belong to a board use the board's window
   (`view.getWindow()`, `getParentWindow(el)`, `dndManager.win`), not global `window`/`document`
   — a hidden main window's timers are throttled. The scanner rejects `activeWindow.setTimeout`

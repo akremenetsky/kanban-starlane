@@ -1,12 +1,13 @@
 import classcat from 'classcat';
 import Mark from 'mark.js';
-import { Component, MarkdownRenderer as ObsidianRenderer, getLinkpath, moment } from 'obsidian';
+import { Component, MarkdownRenderer as ObsidianRenderer, getLinkpath } from 'obsidian';
 import { CSSProperties, memo, useEffect, useRef } from 'preact/compat';
 import { useContext } from 'preact/hooks';
 import { IntersectionObserverContext, KanbanContext, SortContext } from 'src/components/context';
 import { c, useGetDateColorFn, useGetTagColorFn } from 'src/components/helpers';
 import { DndManagerContext, EntityManagerContext } from 'src/dnd/components/context';
 import { DateColor, TagColor } from 'src/model/types';
+import { Moment, moment } from 'src/shared/moment';
 import { PromiseCapability } from 'src/shared/util';
 import { KanbanView } from 'src/view/KanbanView';
 import { applyCheckboxIndexes } from 'src/view/markdownEvents';
@@ -33,7 +34,7 @@ function colorizeTags(wrapperEl: HTMLElement, getTagColor: (tag: string) => TagC
   });
 }
 
-function colorizeDates(wrapperEl: HTMLElement, getDateColor: (date: moment.Moment) => DateColor) {
+function colorizeDates(wrapperEl: HTMLElement, getDateColor: (date: Moment) => DateColor) {
   if (!wrapperEl) return;
   const dateEls = wrapperEl.querySelectorAll<HTMLElement>('.' + c('date'));
   if (!dateEls?.length) return;

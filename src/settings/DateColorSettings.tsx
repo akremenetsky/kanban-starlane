@@ -1,6 +1,5 @@
 import classcat from 'classcat';
 import update from 'immutability-helper';
-import { moment } from 'obsidian';
 import Preact from 'preact/compat';
 import { Icon } from 'src/components/Icon/Icon';
 import { c } from 'src/components/helpers';
@@ -8,6 +7,7 @@ import { getParentBodyElement } from 'src/dnd/util/getWindow';
 import { t } from 'src/lang/helpers';
 import { DateColor, DateColorSetting, DateColorSettingTemplate } from 'src/model/types';
 import { generateInstanceId } from 'src/shared/ids';
+import { moment } from 'src/shared/moment';
 
 import { ColorPickerInput } from './TagColorSettings';
 

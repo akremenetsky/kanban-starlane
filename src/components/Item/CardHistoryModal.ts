@@ -1,7 +1,8 @@
-import { Modal, moment } from 'obsidian';
+import { Modal } from 'obsidian';
 import { c } from 'src/components/helpers';
 import { t } from 'src/lang/helpers';
 import { CardEvent, Item } from 'src/model/types';
+import { moment } from 'src/shared/moment';
 import { StateManager } from 'src/state/StateManager';
 import { enteredLaneEvent, getCardHistory } from 'src/state/cardHistory';
 
