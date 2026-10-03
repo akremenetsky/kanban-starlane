@@ -1,5 +1,6 @@
 /* flatpickr v4.6.13 stylesheet (MIT, see LICENSE.md), unminified. Removed: IE-only hacks,
-   declarations overridden later in the same block, and the multi-month range rule (unused). */
+   declarations overridden later in the same block, and the multi-month range rule (unused).
+   Added: the centred calendar's arrow rule at the end. */
 .flatpickr-calendar {
   opacity: 0;
   display: none;
@@ -778,4 +779,11 @@ span.flatpickr-weekday {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
   }
+}
+
+/* Arrow of a calendar centred on the page: points at the input (set by positionCalendar). */
+.flatpickr-calendar.centerMost:before,
+.flatpickr-calendar.centerMost:after {
+  left: var(--flatpickr-arrow-left);
+  right: auto;
 }

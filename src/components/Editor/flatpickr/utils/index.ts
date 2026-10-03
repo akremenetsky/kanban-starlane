@@ -1,18 +1,17 @@
-/* eslint-disable prefer-rest-params -- vendored flatpickr code */
 export const pad = (number: string | number, length = 2) => `000${number}`.slice(length * -1);
 export const int = (bool: boolean) => (bool === true ? 1 : 0);
 
 /* istanbul ignore next */
-export function debounce<F extends Function>(fn: F, wait: number, win: Window) {
+export function debounce<A extends unknown[]>(fn: (...args: A) => void, wait: number, win: Window) {
   let t: number;
-  return function (this: any) {
-    const args = arguments;
+  return function (this: unknown, ...args: A) {
     win.clearTimeout(t);
-    t = win.setTimeout(() => fn.apply(this, args), wait);
+    t = win.setTimeout(() => {
+      fn.apply(this, args);
+    }, wait);
   };
 }
 
 export const arrayify = <T>(obj: T | T[]): T[] => (Array.isArray(obj) ? obj : [obj]);
 
 export type IncrementEvent = MouseEvent & { delta: number; type: 'increment' };
-/* eslint-enable prefer-rest-params -- end of the vendored code block */

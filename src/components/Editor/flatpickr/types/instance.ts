@@ -94,7 +94,7 @@ export type Instance = Elements &
     onMouseOver: (elem?: DayElement, cellClass?: string) => void;
     open: (e?: FocusEvent | MouseEvent, positionElement?: HTMLElement) => void;
     redraw: () => void;
-    set: (option: keyof Options | { [k in keyof Options]?: Options[k] }, value?: any) => void;
+    set: (option: keyof Options | { [k in keyof Options]?: Options[k] }, value?: unknown) => void;
     setDate: (date: DateOption | DateOption[], triggerChange?: boolean, format?: string) => void;
     toggle: () => void;
 
@@ -115,7 +115,7 @@ export type Instance = Elements &
     _bind: <E extends Element | Window | Document>(
       element: E | E[],
       event: string | string[],
-      handler: (e?: any) => void,
+      handler: (e: Event) => void,
       options?: { capture?: boolean; once?: boolean; passive?: boolean }
     ) => void;
     _createElement: <E extends HTMLElement>(

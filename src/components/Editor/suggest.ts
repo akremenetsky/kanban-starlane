@@ -31,6 +31,8 @@ export function matchDateTrigger(dateTrigger: string, editor: Editor, cursor: Ed
 export class DateSuggest extends EditorSuggest<[]> {
   plugin: KanbanPlugin;
   app: App;
+  /** Internal to Obsidian: re-positions the popover after its content changed size. */
+  declare updatePosition: (force?: boolean) => void;
 
   get stateManager() {
     return this.context ? this.plugin.stateManagers.get(this.context.file) : null;

@@ -5,7 +5,12 @@ export type DateOption = Date | string | number;
 export type DateRangeLimit<D = DateOption> = { from: D; to: D };
 export type DateLimit<D = DateOption> = D | DateRangeLimit<D> | ((date: Date) => boolean);
 
-export type Hook = (dates: Date[], currentDateString: string, self: Instance, data?: any) => void;
+export type Hook = (
+  dates: Date[],
+  currentDateString: string,
+  self: Instance,
+  data?: unknown
+) => void;
 
 export type HookKey =
   | 'onChange'
@@ -36,7 +41,7 @@ export const HOOKS: HookKey[] = [
   'onPreCalendarPosition',
 ];
 
-export type Plugin<E = any> = (fp: Instance & E) => Options;
+export type Plugin<E = unknown> = (fp: Instance & E) => Options;
 
 export interface BaseOptions {
   /*

@@ -123,11 +123,6 @@ declare module 'obsidian' {
     newlineAndIndentContinueMarkdownList(): void;
   }
 
-  interface EditorSuggest<T> {
-    /** Re-positions the open suggestion popover (e.g. after its content changed size). */
-    updatePosition(force?: boolean): void;
-  }
-
   interface WorkspaceLeaf {
     id: string;
   }
@@ -162,6 +157,9 @@ declare module 'obsidian' {
 
 declare global {
   interface Window {
+    /** Obsidian's DOM helpers, defined on every window (also pop-outs) for its own document. */
+    createEl: typeof createEl;
+    createFragment: typeof createFragment;
     /** Obsidian's CodeMirror Vim adapter, present while Vim key bindings are on. */
     CodeMirrorAdapter?: { Vim?: { enterInsertMode(cm: unknown): void } };
   }
