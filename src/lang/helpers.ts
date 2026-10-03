@@ -1,3 +1,5 @@
+import { getLanguage, moment, requireApiVersion } from 'obsidian';
+
 import ar from './locale/ar';
 import cz from './locale/cz';
 import da from './locale/da';
@@ -50,7 +52,27 @@ const localeMap: { [k: string]: Partial<Lang> } = {
   zh: zhCN,
 };
 
-const lang = window.localStorage.getItem('language');
+// Moment locale codes that differ from the locale keys above.
+const momentLocaleToKey: Record<string, string> = {
+  'zh-cn': 'zh',
+  'zh-tw': 'zh-TW',
+  'pt-br': 'pt-BR',
+  cs: 'cz',
+  nb: 'no',
+};
+
+/** The locale key for a moment locale code (`zh-cn` → `zh`, `en-gb` → `en`). */
+export function localeKeyFromMoment(momentLocale: string): string {
+  return momentLocaleToKey[momentLocale] ?? momentLocale.split('-')[0];
+}
+
+function getAppLanguage(): string {
+  if (requireApiVersion('1.8.7')) return getLanguage();
+  // Before 1.8.7 there is no API for it; Obsidian sets moment's locale to the app language.
+  return localeKeyFromMoment(moment.locale());
+}
+
+const lang = getAppLanguage();
 const locale = localeMap[lang || 'en'];
 
 /** Every translation of a string across all bundled locales (including English). */

@@ -53,6 +53,15 @@ export function htmlToMarkdown(html: string): string {
 
 export function setIcon(_el: HTMLElement, _icon: string) {}
 
+/** The fake app is always the latest Obsidian. */
+export function requireApiVersion(_version: string): boolean {
+  return true;
+}
+
+export function getLanguage(): string {
+  return 'en';
+}
+
 export const Platform = {
   isDesktop: true,
   isDesktopApp: true,
