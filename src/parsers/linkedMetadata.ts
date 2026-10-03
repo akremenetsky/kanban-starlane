@@ -1,6 +1,6 @@
 import { TFile, moment } from 'obsidian';
 import { getDataViewCache } from 'src/integrations/dataview';
-import { FileMetadata } from 'src/model/types';
+import { FileMetadata, PageDataValue } from 'src/model/types';
 import { defaultSort } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 
@@ -143,7 +143,8 @@ export function getLinkedPageMetadata(
       dataviewVal !== '' &&
       !(Array.isArray(dataviewVal) && dataviewVal.length === 0)
     ) {
-      const cachedValue = dataviewCache[k.metadataKey];
+      // Dataview values (Luxon dates, links, ...) are kept as they are; anyToString formats them.
+      const cachedValue = dataviewCache[k.metadataKey] as PageDataValue;
 
       order.push(k.metadataKey);
       metadata[k.metadataKey] = {

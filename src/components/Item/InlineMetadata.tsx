@@ -38,7 +38,8 @@ export function InlineMetadata({ item, stateManager }: InlineMetadataProps) {
         const isEmoji = m.wrapping === 'emoji-shorthand';
         const val = dataview?.api?.parse(value) ?? value;
         const isEmojiPriority = isEmoji && key === 'priority';
-        const isDate = !!val?.ts;
+        // Dataview parses dates into Luxon DateTime objects.
+        const isDate = typeof val === 'object' && !!val && 'ts' in val && !!val.ts;
         const classNameSlug = key.replace(/[^a-zA-Z0-9_]/g, '-');
 
         let label = '';

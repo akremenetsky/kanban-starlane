@@ -5,7 +5,7 @@ import { App } from 'obsidian';
  * `vault.getConfig` is not part of the public API typings.
  */
 export function getVaultConfig<T = unknown>(app: App, key: string): T {
-  return (app.vault as any).getConfig(key);
+  return app.vault.getConfig(key) as T;
 }
 
 export function shouldUseTabs(app: App): boolean {

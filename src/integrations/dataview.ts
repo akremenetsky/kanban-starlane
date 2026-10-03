@@ -1,15 +1,33 @@
 /**
  * Integration with the Dataview plugin. All access to Dataview internals goes through this module.
  */
-import { App, TFile } from 'obsidian';
-import type { DataviewApi } from 'obsidian-dataview';
+import { App, Plugin, TFile } from 'obsidian';
 
-export function getDataviewPlugin(app: App) {
-  if (!(app as any).plugins.enabledPlugins.has('dataview')) {
+/**
+ * The parts of the Dataview API used here. The obsidian-dataview npm typings import their own
+ * modules by bare paths ("api/plugin-api"), which do not resolve in other projects.
+ */
+export interface DataviewApi {
+  page(path: string, originFile?: string): Record<string, unknown> | undefined;
+  /** Parses a field value the way Dataview does (dates, durations, links, ...). */
+  parse(value: unknown): unknown;
+  value: {
+    isDate(value: unknown): value is { ts: number };
+    isObject(value: unknown): boolean;
+    toString(value: unknown): string;
+  };
+}
+
+interface DataviewPlugin extends Plugin {
+  api?: DataviewApi;
+}
+
+export function getDataviewPlugin(app: App): DataviewPlugin | null {
+  if (!app.plugins.enabledPlugins.has('dataview')) {
     return null;
   }
 
-  return (app as any).plugins.plugins['dataview'];
+  return app.plugins.plugins['dataview'] ?? null;
 }
 
 /**
@@ -18,14 +36,10 @@ export function getDataviewPlugin(app: App) {
  * and bundles a copy of Luxon.
  */
 export function getDataviewApi(app: App): DataviewApi | undefined {
-  return (app as any).plugins?.plugins?.dataview?.api;
+  const plugin: DataviewPlugin | undefined = app.plugins?.plugins?.['dataview'];
+  return plugin?.api;
 }
 
 export function getDataViewCache(app: App, linkedFile: TFile, sourceFile: TFile) {
-  if (
-    (app as any).plugins.enabledPlugins.has('dataview') &&
-    (app as any).plugins?.plugins?.dataview?.api
-  ) {
-    return (app as any).plugins.plugins.dataview.api.page(linkedFile.path, sourceFile.path);
-  }
+  return getDataviewPlugin(app)?.api?.page(linkedFile.path, sourceFile.path);
 }
