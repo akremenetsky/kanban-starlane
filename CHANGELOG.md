@@ -5,6 +5,8 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 
 ## Unreleased
 
+## 0.1.4 — 2026-10-05
+
 ### Added
 - **List descriptions.** A list can have an optional description, shown under its title in a
   smaller, muted font. Add or edit it from the list menu (*Add description* / *Edit
