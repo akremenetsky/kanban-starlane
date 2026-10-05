@@ -6,6 +6,8 @@ kanban-starlane: board
 
 ## Ideas
 
+Anything worth trying later. Double-click this description to edit it.
+
 - [ ] Drag me to another list
 - [ ] Double-click a card to edit it
 - [ ] Cards can have
@@ -14,6 +16,9 @@ kanban-starlane: board
 
 
 ## In progress (2)
+
+What we are working on **right now**.
+Descriptions can have several lines and [[Website|links]].
 
 - [ ] This list has a WIP limit of 2 — see the counter in the header
 - [ ] Add a third card here and watch the counter

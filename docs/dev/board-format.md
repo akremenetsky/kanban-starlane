@@ -13,6 +13,8 @@ kanban-starlane: board
 
 ## Todo (3)
 
+Work for this week
+
 - [ ] A card #tag @{2024-03-05} @@{10:30}
 - [ ] A multi-line card
     second line
@@ -55,6 +57,7 @@ kanban-starlane: board
 | Board marker | frontmatter `kanban-starlane: board \| list \| table` | Value is the default view. Legacy `basic` = `board`. Other frontmatter keys are preserved. |
 | Lane | `## Title` | Everything before the first heading is ignored. |
 | WIP limit | `## Title (3)` | Parsed into `maxItems`; `(x)` with non-digits is part of the title. |
+| Lane description | Markdown between the heading and the cards | Optional. Written right under the heading, followed by a blank line and then `**Complete**` / the cards. Several lines and paragraphs are kept (paragraphs are re-joined with one blank line). Stops at the cards, the next heading, a thematic break or the history/settings block. |
 | Multi-line lane title | `<br>` in the heading | |
 | Complete lane | `**Complete**` as the first paragraph under the heading | Cards moved into it are checked. |
 | Card | `- [ ] text` list item under a lane | Any status char in `[ ]` is kept (`[/]`, `[-]`, ...). |

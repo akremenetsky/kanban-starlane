@@ -16,7 +16,7 @@ and use `git checkout test-vault` to get the original notes back.
 
 | Note | What to try |
 |---|---|
-| `Boards/Welcome.md` | Basic board: drag cards, add/edit cards, WIP limit, the "Complete" lane, archive |
+| `Boards/Welcome.md` | Basic board: drag cards, add/edit cards, WIP limit, the "Complete" lane, archive. **List descriptions**: double-click one to edit, lane menu (⋮) → *Add description* on *Done*, or add a list with a description |
 | `Boards/Project.md` | Dates and times, tags, links to notes, metadata of linked notes |
 | `Boards/Legacy board.md` | A board from the original Kanban plugin: run **Convert board from the Kanban plugin** |
 | `Projects/*.md` | Notes the project board links to (their `status`/`owner` show on cards) |
