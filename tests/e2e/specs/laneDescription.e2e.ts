@@ -7,6 +7,7 @@ import {
   lane,
   laneTitles,
   openBoard,
+  readFile,
   resetWorkspace,
   waitForFile,
 } from '../helpers';
@@ -70,6 +71,27 @@ describe('lane description', function () {
 
     await waitForFile(BOARD, (md) => md.includes('## Todo\n\n- [ ] First card'));
     await expectEventually(() => descriptionText(0), null);
+  });
+
+  it('Esc cancels an edit, clicking elsewhere saves it', async function () {
+    await openBoard(BOARD);
+    await expectEventually(async () => (await descriptionText(0)) !== null, true);
+
+    await lane(0).$(cls('lane-description-text')).doubleClick();
+    await browser.$(`${cls('lane-description')} .cm-content`).waitForExist();
+    await browser.keys(['Control', 'a']);
+    await browser.keys('Discarded');
+    await browser.keys('Escape');
+    await expectEventually(() => descriptionText(0), 'Work for this week\nSee Plain note');
+
+    await lane(0).$(cls('lane-description-text')).doubleClick();
+    await browser.$(`${cls('lane-description')} .cm-content`).waitForExist();
+    await browser.keys(['Control', 'a']);
+    await browser.keys('Kept');
+    await lane(1).$(cls('item-title')).click();
+
+    await waitForFile(BOARD, (md) => md.includes('## Todo\n\nKept\n\n- [ ] First card'));
+    expect(await readFile(BOARD)).not.toContain('Discarded');
   });
 
   it('can be given when a lane is created', async function () {

@@ -57,9 +57,9 @@ Work for this week
 | Board marker | frontmatter `kanban-starlane: board \| list \| table` | Value is the default view. Legacy `basic` = `board`. Other frontmatter keys are preserved. |
 | Lane | `## Title` | Everything before the first heading is ignored. |
 | WIP limit | `## Title (3)` | Parsed into `maxItems`; `(x)` with non-digits is part of the title. |
-| Lane description | Markdown between the heading and the cards | Optional. Written right under the heading, followed by a blank line and then `**Complete**` / the cards. Several lines and paragraphs are kept (paragraphs are re-joined with one blank line). Stops at the cards, the next heading, a thematic break or the history/settings block. |
+| Lane description | Markdown between the heading and the cards | Optional. Written right under the heading, followed by a blank line and then `**Complete**` / the cards. Several lines and paragraphs are kept (paragraphs are re-joined with one blank line). Stops at the cards, the next heading, a thematic break or the history/settings block. When writing, description lines that would start a list, heading, thematic break or setext underline are escaped with a backslash (outside fenced code), so they read back as the same text. Text between a thematic break and the next heading is not part of any lane and is dropped. |
 | Multi-line lane title | `<br>` in the heading | |
-| Complete lane | `**Complete**` as the first paragraph under the heading | Cards moved into it are checked. |
+| Complete lane | `**Complete**` paragraph between the heading (or description) and the cards | Cards moved into it are checked. Its plain text is matched, so a description paragraph that is exactly `Complete` (or a translation) is read as the marker. |
 | Card | `- [ ] text` list item under a lane | Any status char in `[ ]` is kept (`[/]`, `[-]`, ...). |
 | Card continuation lines | indented 4 spaces or 1 tab | Written with tabs if the vault uses tabs (*Editor → Indent using tabs*). |
 | Block id | ` ^id` at the end of the first line | Stored separately and re-appended. |

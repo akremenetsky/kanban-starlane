@@ -243,8 +243,10 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
   return itemData;
 }
 
+/** Source of a block node from the start of its line, so leading indentation is kept. */
 function getNodeText(md: string, node: Content) {
-  return md.slice(node.position.start.offset, node.position.end.offset).trim();
+  const lineStart = md.lastIndexOf('\n', node.position.start.offset - 1) + 1;
+  return md.slice(lineStart, node.position.end.offset).trimEnd();
 }
 
 function isArchiveLane(child: Content, children: Content[], currentIndex: number) {

@@ -78,6 +78,41 @@ describe('lane description', () => {
     expect(toMarkdown()).toBe(md);
   });
 
+  it.each([
+    ['a list', 'Rules:\n- one\n2. two', 'Rules:\n\\- one\n2\\. two'],
+    ['a heading', '# Big\nnote', '\\# Big\nnote'],
+    ['a thematic break', 'intro\n\n---\n\nmore', 'intro\n\n\\---\n\nmore'],
+    ['a setext underline', 'title\n===', 'title\n\\==='],
+  ])('escapes %s so it reads back as the same description', async (_, text, written) => {
+    const { stateManager, toMarkdown } = await loadBoard(board(fm, '## Todo\n\n- [ ] a\n\n\n'));
+    stateManager.setState((b) =>
+      update(b, { children: { 0: { data: { description: { $set: text } } } } })
+    );
+
+    const md = toMarkdown();
+    expect(md).toContain(`## Todo\n\n${written}\n\n- [ ] a`);
+
+    const { board: reread, toMarkdown: rewrite } = await loadBoard(md);
+    expect(reread.children.map((l) => l.children.length)).toEqual([1]);
+    expect(reread.children[0].data.description).toBe(written);
+    expect(rewrite()).toBe(md);
+  });
+
+  it('does not escape inside fenced code', async () => {
+    const md = board(fm, '## Todo\n\n```\n- not a card\n```\n\n- [ ] a\n\n\n');
+    const { board: b, toMarkdown } = await loadBoard(md);
+
+    expect(b.children[0].data.description).toBe('```\n- not a card\n```');
+    expect(toMarkdown()).toBe(md);
+  });
+
+  it('keeps the indentation of the first line', async () => {
+    const md = board(fm, '## Todo\n\n    indented code\n\n- [ ] a\n\n\n');
+    const { toMarkdown } = await loadBoard(md);
+
+    expect(toMarkdown()).toBe(md);
+  });
+
   it('follows edits of the file made outside the board', async () => {
     const { stateManager } = await loadBoard(board(fm, '## Todo\n\n- [ ] a\n\n\n'));
 
