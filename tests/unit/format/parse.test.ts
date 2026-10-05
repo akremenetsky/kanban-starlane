@@ -83,6 +83,17 @@ describe('cards', () => {
     expect(item.data.blockId).toBe('a1b2');
   });
 
+  it('strips the block id of a multi-line card from the rendered title', async () => {
+    const { board: b } = await loadBoard(
+      board('kanban-starlane: board', '## L\n\n- [ ] card ^a1b2\n\tsecond line')
+    );
+    const item = b.children[0].children[0];
+
+    expect(item.data.title).toBe('card\nsecond line');
+    expect(item.data.titleRaw).toBe('card\nsecond line');
+    expect(item.data.blockId).toBe('a1b2');
+  });
+
   it('dedents multi-line cards (spaces and tabs)', async () => {
     const { board: b } = await loadBoard(
       board('kanban-starlane: board', '## L\n\n- [ ] one\n    two\n- [ ] three\n\tfour')
