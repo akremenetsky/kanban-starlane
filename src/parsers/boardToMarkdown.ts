@@ -27,6 +27,12 @@ function laneToMd(lane: Lane, opts: BoardSerializeOptions) {
 
   lines.push('');
 
+  const description = lane.data.description?.trim();
+  if (description) {
+    lines.push(description);
+    lines.push('');
+  }
+
   if (lane.data.shouldMarkItemsComplete) {
     lines.push(completeString);
   }

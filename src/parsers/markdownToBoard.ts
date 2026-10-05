@@ -243,6 +243,10 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
   return itemData;
 }
 
+function getNodeText(md: string, node: Content) {
+  return md.slice(node.position.start.offset, node.position.end.offset).trim();
+}
+
 function isArchiveLane(child: Content, children: Content[], currentIndex: number) {
   if (
     child.type !== 'heading' ||
@@ -272,6 +276,8 @@ export function astToUnhydratedBoard(
       const title = getStringFromBoundary(md, headingBoundary);
 
       let shouldMarkItemsComplete = false;
+      const descriptionParts: string[] = [];
+      let descriptionEnded = false;
 
       const list = getNextOfType(root.children, index, 'list', (child) => {
         if (child.type === 'heading') return false;
@@ -289,8 +295,13 @@ export function astToUnhydratedBoard(
           }
         }
 
+        // The break before the archive heading ends what belongs to this lane.
+        if (child.type === 'thematicBreak') descriptionEnded = true;
+        if (!descriptionEnded) descriptionParts.push(getNodeText(md, child));
+
         return true;
       });
+      const description = descriptionParts.join('\n\n') || undefined;
 
       if (isArchive && list) {
         archive.push(
@@ -313,6 +324,7 @@ export function astToUnhydratedBoard(
           id: generateInstanceId(),
           data: {
             ...parseLaneTitle(title),
+            description,
             shouldMarkItemsComplete,
           },
         });
@@ -330,6 +342,7 @@ export function astToUnhydratedBoard(
           id: generateInstanceId(),
           data: {
             ...parseLaneTitle(title),
+            description,
             shouldMarkItemsComplete,
           },
         });

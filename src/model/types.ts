@@ -16,6 +16,8 @@ export enum LaneSort {
 export interface LaneData {
   shouldMarkItemsComplete?: boolean;
   title: string;
+  /** Markdown shown under the title; written between the heading and the cards. */
+  description?: string;
   maxItems?: number;
   dom?: HTMLDivElement;
   forceEditMode?: boolean;
