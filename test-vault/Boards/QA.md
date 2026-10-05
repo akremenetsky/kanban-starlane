@@ -8,6 +8,8 @@ kanban-starlane: board
 
 - [ ] Regression pass on checkout #qa @{2026-09-30} ^qatest1
 - [ ] Load test the notifications service #qa ^qatest3
+- [ ] Card of two lines with a tag below ^qatest4
+	#qa
 
 
 ## Sign-off

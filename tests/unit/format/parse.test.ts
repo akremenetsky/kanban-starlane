@@ -115,6 +115,35 @@ describe('cards', () => {
     expect(b.children[0].children[0].data.metadata.tags).toEqual(['#alpha/beta', '#zeta']);
   });
 
+  it('collects tags at the start of a continuation line', async () => {
+    const { board: b } = await loadBoard(
+      board('kanban-starlane: board', '## L\n\n- [ ] a\n\t#one\n- [ ] b\n    #two and#not')
+    );
+
+    expect(b.children[0].children.map((i) => i.data.metadata.tags)).toEqual([['#one'], ['#two']]);
+  });
+
+  it('renders a card with a block id and a tag on the next line', async () => {
+    const md = board(
+      'kanban-starlane: board',
+      '## L\n\n- [ ] Легкое планирование ^mmwuwm\n\t#compute'
+    );
+
+    for (const moveTags of [false, true]) {
+      const settings = `{"kanban-starlane":"board","move-tags":${moveTags}}`;
+      const { board: b, view } = await loadBoard(
+        md.replace('{"kanban-starlane":"board"}', settings)
+      );
+      const item = b.children[0].children[0];
+
+      expect(item.data.title).toBe(
+        moveTags ? 'Легкое планирование' : 'Легкое планирование\n#compute'
+      );
+      expect(item.data.metadata.tags).toEqual(['#compute']);
+      expect(view.data).toContain('- [ ] Легкое планирование ^mmwuwm\n\t#compute\n');
+    }
+  });
+
   it('parses dates and times with the default triggers and formats', async () => {
     const { board: b } = await loadBoard(
       board(
