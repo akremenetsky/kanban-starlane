@@ -64,11 +64,17 @@ export function ConfirmAction({ action, cancel, onAction, lane }: ConfirmActionP
 
 export interface UseSettingsMenuParams {
   setEditState: Dispatch<StateUpdater<EditState>>;
+  setDescriptionEditState: Dispatch<StateUpdater<EditState>>;
   path: Path;
   lane: Lane;
 }
 
-export function useSettingsMenu({ setEditState, path, lane }: UseSettingsMenuParams) {
+export function useSettingsMenu({
+  setEditState,
+  setDescriptionEditState,
+  path,
+  lane,
+}: UseSettingsMenuParams) {
   const { stateManager, boardModifiers, view } = useContext(KanbanContext);
   const [confirmAction, setConfirmAction] = useState<LaneAction>(null);
 
@@ -96,6 +102,12 @@ export function useSettingsMenu({ setEditState, path, lane }: UseSettingsMenuPar
           .setIcon('lucide-edit-3')
           .setTitle(t('Edit list'))
           .onClick(() => setEditState({ x: 0, y: 0 }));
+      })
+      .addItem((item) => {
+        item
+          .setIcon('lucide-text')
+          .setTitle(lane.data.description ? t('Edit description') : t('Add description'))
+          .onClick(() => setDescriptionEditState({ x: 0, y: 0 }));
       })
       .addItem((item) => {
         item
@@ -347,7 +359,7 @@ export function useSettingsMenu({ setEditState, path, lane }: UseSettingsMenuPar
     }
 
     return menu;
-  }, [stateManager, view, setConfirmAction, path, lane]);
+  }, [stateManager, view, setConfirmAction, setDescriptionEditState, path, lane]);
 
   return {
     settingsMenu,

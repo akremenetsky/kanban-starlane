@@ -17,6 +17,7 @@ interface LaneFormProps {
 export function LaneForm({ onNewLane, closeLaneForm }: LaneFormProps) {
   const [shouldMarkAsComplete, setShouldMarkAsComplete] = useState(false);
   const editorRef = useRef<EditorView>();
+  const descriptionEditorRef = useRef<EditorView>();
   const inputRef = useRef<HTMLTextAreaElement>();
   const clickOutsideRef = useOnclickOutside(() => closeLaneForm(), {
     ignoreClass: [c('ignore-click-outside'), 'mobile-toolbar', 'suggestion-container'],
@@ -28,46 +29,43 @@ export function LaneForm({ onNewLane, closeLaneForm }: LaneFormProps) {
     inputRef.current?.focus();
   }, []);
 
-  const createLane = useCallback(
-    (cm: EditorView, title: string) => {
-      boardModifiers.addLane({
-        ...LaneTemplate,
-        id: generateInstanceId(),
-        children: [],
-        data: {
-          ...parseLaneTitle(title),
-          shouldMarkItemsComplete: shouldMarkAsComplete,
-        },
-      });
+  const createLane = useCallback(() => {
+    const titleEditor = editorRef.current;
+    const descriptionEditor = descriptionEditorRef.current;
+    if (!titleEditor) return;
 
-      cm.dispatch({
-        changes: {
-          from: 0,
-          to: cm.state.doc.length,
-          insert: '',
-        },
-      });
+    const description = descriptionEditor?.state.doc.toString().trim();
+    boardModifiers.addLane({
+      ...LaneTemplate,
+      id: generateInstanceId(),
+      children: [],
+      data: {
+        ...parseLaneTitle(titleEditor.state.doc.toString()),
+        description: description || undefined,
+        shouldMarkItemsComplete: shouldMarkAsComplete,
+      },
+    });
 
-      setShouldMarkAsComplete(false);
-      onNewLane();
-    },
-    [onNewLane, setShouldMarkAsComplete, boardModifiers]
-  );
+    for (const cm of [titleEditor, descriptionEditor]) {
+      cm?.dispatch({ changes: { from: 0, to: cm.state.doc.length, insert: '' } });
+    }
+    titleEditor.focus();
+
+    setShouldMarkAsComplete(false);
+    onNewLane();
+  }, [onNewLane, setShouldMarkAsComplete, boardModifiers, shouldMarkAsComplete]);
 
   const editState = useMemo(() => ({ x: 0, y: 0 }), []);
   const onEnter = useCallback(
     (cm: EditorView, mod: boolean, shift: boolean) => {
       if (!allowNewLine(stateManager, mod, shift)) {
-        createLane(cm, cm.state.doc.toString());
+        createLane();
         return true;
       }
     },
     [createLane]
   );
-  const onSubmit = useCallback(
-    (cm: EditorView) => createLane(cm, cm.state.doc.toString()),
-    [createLane]
-  );
+  const onSubmit = useCallback(() => createLane(), [createLane]);
 
   return (
     <div ref={clickOutsideRef} className={c('lane-form-wrapper')}>
@@ -80,6 +78,16 @@ export function LaneForm({ onNewLane, closeLaneForm }: LaneFormProps) {
           onEscape={closeLaneForm}
           onSubmit={onSubmit}
         />
+        <div className={c('lane-description-input')}>
+          <MarkdownEditor
+            className={c('lane-input')}
+            editorRef={descriptionEditorRef}
+            onEnter={onEnter}
+            onEscape={closeLaneForm}
+            onSubmit={onSubmit}
+            placeholder={t('Description (optional)')}
+          />
+        </div>
       </div>
       <div className={c('checkbox-wrapper')}>
         <div className={c('checkbox-label')}>{t('Mark cards in this list as complete')}</div>
@@ -92,9 +100,7 @@ export function LaneForm({ onNewLane, closeLaneForm }: LaneFormProps) {
         <button
           className={c('lane-action-add')}
           onClick={() => {
-            if (editorRef.current) {
-              createLane(editorRef.current, editorRef.current.state.doc.toString());
-            }
+            createLane();
           }}
         >
           {t('Add list')}
