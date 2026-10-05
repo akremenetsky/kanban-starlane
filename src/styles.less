@@ -373,6 +373,13 @@ button.kanban-starlane__search-cancel-button .kanban-starlane__icon {
 
 .kanban-starlane__lane-input-wrapper {
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+}
+
+.kanban-starlane__lane-description-input .kanban-starlane__lane-input {
+  --font-text-size: var(--font-ui-smaller);
 }
 
 .kanban-starlane__item-input-actions,
@@ -415,6 +422,31 @@ button.kanban-starlane__lane-action-add {
 
 .will-prepend .kanban-starlane__lane-header-wrapper {
   border-bottom: none;
+}
+
+// The description continues the header: the border moves below it.
+.kanban-starlane__lane-header-wrapper:has(+ .kanban-starlane__lane-description) {
+  border-bottom: none;
+  padding-block-end: 2px;
+}
+
+.kanban-starlane__lane-description {
+  padding-block: 0 8px;
+  // Aligned with the title text: header padding + grip + collapse icon + their gaps.
+  padding-inline: calc(8px + 2rem + 2 * var(--size-4-1)) 12px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  border-bottom: 1px solid var(--background-modifier-border);
+  color: var(--text-muted);
+
+  .will-prepend & {
+    border-bottom: none;
+  }
+
+  .kanban-starlane__markdown-preview-wrapper {
+    --font-text-size: var(--font-ui-smaller);
+    --p-spacing: var(--size-4-1);
+  }
 }
 
 .kanban-starlane__lane-wrapper.collapse-horizontal {
@@ -609,7 +641,8 @@ button.kanban-starlane__lane-settings-button + button.kanban-starlane__lane-sett
   }
 }
 
-.kanban-starlane__lane-header-wrapper + .kanban-starlane__item-button-wrapper {
+.kanban-starlane__lane-header-wrapper + .kanban-starlane__item-button-wrapper,
+.kanban-starlane__lane-description + .kanban-starlane__item-button-wrapper {
   border-top: none;
   border-bottom: 1px solid var(--background-modifier-border);
   padding-block: 4px 8px;
@@ -629,7 +662,8 @@ button.kanban-starlane__lane-settings-button + button.kanban-starlane__lane-sett
   }
 }
 
-.kanban-starlane__lane-header-wrapper + .kanban-starlane__item-form {
+.kanban-starlane__lane-header-wrapper + .kanban-starlane__item-form,
+.kanban-starlane__lane-description + .kanban-starlane__item-form {
   border-top: none;
   border-bottom: 1px solid var(--background-modifier-border);
   padding-block: 4px 8px;

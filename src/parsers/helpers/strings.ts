@@ -65,6 +65,40 @@ export function parseLaneTitle(str: string) {
   return { title: match[1], maxItems: Number(match[2]) };
 }
 
+const blockStarts: Array<[RegExp, string]> = [
+  [/^( {0,3})([-*+](?:\s|$))/, '$1\\$2'], // bullet list item
+  [/^( {0,3}\d{1,9})([.)](?:\s|$))/, '$1\\$2'], // ordered list item
+  [/^( {0,3})(#{1,6}(?:\s|$))/, '$1\\$2'], // ATX heading
+  [/^( {0,3})((?:[-*_] *){3,}$)/, '$1\\$2'], // thematic break
+  [/^( {0,3})(=+ *$)/, '$1\\$2'], // setext heading underline
+];
+
+/**
+ * Escapes lines of a lane description that would otherwise be read as cards, a new lane or the
+ * end of the lane. Idempotent; fenced code is left alone.
+ */
+export function escapeLaneDescription(text: string) {
+  let fence: string | null = null;
+
+  return text
+    .split('\n')
+    .map((line) => {
+      const fenceMatch = line.match(/^ {0,3}(`{3,}|~{3,})/);
+      if (fenceMatch) {
+        if (fence === null) fence = fenceMatch[1][0];
+        else if (fenceMatch[1][0] === fence) fence = null;
+        return line;
+      }
+      if (fence !== null) return line;
+
+      for (const [re, replacement] of blockStarts) {
+        if (re.test(line)) return line.replace(re, replacement);
+      }
+      return line;
+    })
+    .join('\n');
+}
+
 export function laneTitleWithMaxItems(title: string, maxItems?: number) {
   if (!maxItems) return title;
   return `${title} (${maxItems})`;

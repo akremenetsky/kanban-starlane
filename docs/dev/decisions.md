@@ -3,6 +3,20 @@
 Short records of decisions that shape the project. Newest first. Add an entry when a
 decision is not obvious from the code (format changes, dependencies, trade-offs).
 
+## 2026-10-05 — Lane descriptions
+
+The product owner wants an optional short description under a list's title (like GitHub
+Projects columns).
+
+- **Stored as markdown under the lane heading**, before the cards. It stays readable and
+  editable without the plugin and survives renaming the list. Rejected: a map in the
+  settings JSON keyed by lane title (invisible in markdown, has to follow renames).
+- Additive: such text used to be dropped on save, so boards without it do not change, and
+  a board that had text there now shows it instead of losing it.
+- Rendered as markdown (links, formatting, several lines), shown in full, never truncated.
+- Edited from the lane menu, by double-click, or in the new-list form (product owner's choice).
+  Clearing the text removes it from the file.
+
 ## 2026-09-26 — Card history
 
 The product owner wants to see what happened to a card (what was done yesterday, how long

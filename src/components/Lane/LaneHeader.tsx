@@ -12,6 +12,7 @@ import { t } from 'src/lang/helpers';
 import { EditState, EditingState, Lane, isEditing } from 'src/model/types';
 import { parseLaneTitle } from 'src/parsers/helpers/strings';
 
+import { LaneDescription } from './LaneDescription';
 import { ConfirmAction, useSettingsMenu } from './LaneMenu';
 import { LaneSettings } from './LaneSettings';
 import { LaneLimitCounter, LaneTitle } from './LaneTitle';
@@ -92,11 +93,13 @@ export const LaneHeader = memo(function LaneHeader({
   itemCount,
 }: LaneHeaderProps) {
   const [editState, setEditState] = useState<EditState>(EditingState.cancel);
+  const [descriptionEditState, setDescriptionEditState] = useState<EditState>(EditingState.cancel);
   const lanePath = useNestedEntityPath(laneIndex);
 
   const { boardModifiers } = useContext(KanbanContext);
   const { settingsMenu, confirmAction, setConfirmAction } = useSettingsMenu({
     setEditState,
+    setDescriptionEditState,
     path: lanePath,
     lane,
   });
@@ -118,6 +121,16 @@ export const LaneHeader = memo(function LaneHeader({
             maxItems: { $set: maxItems },
           },
         })
+      );
+    },
+    [boardModifiers, lane, lanePath]
+  );
+
+  const onDescriptionChange = useCallback(
+    (str: string) => {
+      boardModifiers.updateLane(
+        lanePath,
+        update(lane, { data: { description: { $set: str || undefined } } })
       );
     },
     [boardModifiers, lane, lanePath]
@@ -163,6 +176,15 @@ export const LaneHeader = memo(function LaneHeader({
           settingsMenu={settingsMenu}
         />
       </div>
+
+      {!isCollapsed && (
+        <LaneDescription
+          description={lane.data.description}
+          editState={descriptionEditState}
+          setEditState={setDescriptionEditState}
+          onChange={onDescriptionChange}
+        />
+      )}
 
       <LaneSettings editState={editState} lane={lane} lanePath={lanePath} />
 

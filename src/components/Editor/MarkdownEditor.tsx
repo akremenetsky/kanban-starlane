@@ -249,7 +249,8 @@ export function MarkdownEditor({
 
     controller.editMode = editor;
     editor.set(value || '');
-    if (isEditing(editState)) {
+    // editState is optional: an editor without one (e.g. a second field in a form) takes no focus.
+    if (editState && isEditing(editState)) {
       cm.dispatch({
         userEvent: 'select.pointer',
         selection: EditorSelection.single(cm.posAtCoords(editState, false)),

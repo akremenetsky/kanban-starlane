@@ -4,6 +4,7 @@ import { Board, Item, Lane } from 'src/model/types';
 
 import {
   addBlockId,
+  escapeLaneDescription,
   indentNewLines,
   laneTitleWithMaxItems,
   replaceNewLines,
@@ -26,6 +27,13 @@ function laneToMd(lane: Lane, opts: BoardSerializeOptions) {
   lines.push(`## ${replaceNewLines(laneTitleWithMaxItems(lane.data.title, lane.data.maxItems))}`);
 
   lines.push('');
+
+  // Only blank lines are trimmed at the start: leading spaces can be markdown (indented code).
+  const description = lane.data.description?.replace(/^(?:[ \t]*\n)+|\s+$/g, '');
+  if (description) {
+    lines.push(escapeLaneDescription(description));
+    lines.push('');
+  }
 
   if (lane.data.shouldMarkItemsComplete) {
     lines.push(completeString);
