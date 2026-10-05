@@ -13,6 +13,12 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
   Text that was already written under a list's heading is now shown as its description
   instead of being removed on save.
 
+### Fixed
+- Cards of several lines showed their service id (such as `^mmwuwm`) at the end of the first
+  line; the id is hidden again.
+- Tags at the start of a card's second (or later) line were not recognised: no tag badge, tag
+  colour or *Move tags to footer*.
+
 ## 0.1.3 — 2026-10-04
 
 ### Changed

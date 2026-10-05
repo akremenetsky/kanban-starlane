@@ -19,9 +19,11 @@ export function tagExtension(): Extension {
 
     // An arrow function, to read the tokenizer context (`this`) when the tag starts.
     const start = (code: Code): State | void => {
+      const prev = this.previous;
+      // micromark gives line endings and tabs negative codes, so check them before the regex.
       if (
         code !== hashCharCode ||
-        (this.previous !== null && !/\s/.test(String.fromCharCode(this.previous)))
+        (prev !== null && !markdownLineEndingOrSpace(prev) && !/\s/.test(String.fromCharCode(prev)))
       ) {
         return nok(code);
       }

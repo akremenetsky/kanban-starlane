@@ -20,7 +20,10 @@ export function markRangeForDeletion(str: string, range: { start: number; end: n
 }
 
 export function executeDeletion(str: string) {
-  return str.replace(/ *\0+ */g, ' ').trim();
+  return str
+    .replace(/ *\0+ *(?=\r?\n|$)/g, '')
+    .replace(/ *\0+ */g, ' ')
+    .trim();
 }
 
 export function replaceNewLines(str: string) {

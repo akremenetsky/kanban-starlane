@@ -132,6 +132,15 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
 
       if (genericNode.type === 'blockid') {
         itemData.blockId = genericNode.value;
+
+        // The id is written at the end of the first line, so in a multi-line card it sits
+        // inside the item boundary and would be rendered as text.
+        if (node.position.end.offset <= itemBoundary.end) {
+          title = markRangeForDeletion(title, {
+            start: node.position.start.offset - itemBoundary.start,
+            end: node.position.end.offset - itemBoundary.start,
+          });
+        }
         return true;
       }
 
