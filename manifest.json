@@ -3,7 +3,7 @@
 	"name": "Kanban Starlane",
 	"version": "0.1.4",
 	"minAppVersion": "1.8.7",
-	"description": "Organize notes as Kanban boards backed by plain markdown, with linked boards across files, dates, tags and WIP limits.",
+	"description": "Manage tasks and projects on Kanban boards stored as plain markdown. See cards from several boards in one list, switch to table view, track card history and set WIP limits.",
 	"author": "Anton Kremenetsky",
 	"authorUrl": "https://github.com/akremenetsky",
 	"isDesktopOnly": false
