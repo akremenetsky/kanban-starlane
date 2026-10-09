@@ -20,7 +20,13 @@ export function ItemForm({ addItems, editState, setEditState, hideButton }: Item
   const editorRef = useRef<EditorView>();
 
   const clear = () => setEditState(EditingState.cancel);
-  const clickOutsideRef = useOnclickOutside(clear, {
+  // Clicking away keeps what was typed (as Trello does); Escape is the way to discard it.
+  const saveAndClose = () => {
+    const text = editorRef.current?.state.doc.toString() ?? '';
+    if (text.trim()) addItems([stateManager.getNewItem(text, ' ')]);
+    clear();
+  };
+  const clickOutsideRef = useOnclickOutside(saveAndClose, {
     ignoreClass: [c('ignore-click-outside'), 'mobile-toolbar', 'suggestion-container'],
   });
 
