@@ -1,0 +1,32 @@
+name: E2E on latest Obsidian
+
+# Pull requests test the Obsidian version pinned in wdio.conf.mts. This catches a new
+# Obsidian release breaking the plugin or the tests without failing unrelated pull requests.
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+
+jobs:
+  e2e-latest:
+    name: E2E (latest Obsidian)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            scripts/scanner/package-lock.json
+      - run: npm ci
+      - run: sudo apt-get update && sudo apt-get install -y xvfb
+      - run: npm run test:e2e
+        env:
+          E2E_OBSIDIAN: latest
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: e2e-artifacts
+          path: tests/e2e/.artifacts

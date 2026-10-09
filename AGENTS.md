@@ -41,7 +41,8 @@ writes in Russian — reply in Russian; code, comments, docs and commit messages
 | `npm run lint:scanner` | The Obsidian community review scanner's ESLint/Stylelint setup; fails on any finding not listed in `scripts/scanner/accepted.json` |
 | `npm test` | Unit tests (Vitest) · `npx vitest run <file>` for one file |
 | `npm run test:e2e` | Build + e2e in real Obsidian (headless via xvfb) · `-- --spec <file>` for one spec |
-| `E2E_VERSIONS=all npm run test:e2e` | e2e on minimum (`manifest.json` minAppVersion) and latest Obsidian |
+| `E2E_VERSIONS=all npm run test:e2e` | e2e on minimum (`manifest.json` minAppVersion) and pinned Obsidian (`PINNED_OBSIDIAN` in `wdio.conf.mts`) |
+| `E2E_OBSIDIAN=latest npm run test:e2e` | e2e on the newest Obsidian release (CI runs it daily) |
 | `npm run test:update-fixtures` | Regenerate `tests/fixtures/boards/*.md` from the serializer (review the diff!) |
 | `npm run format` / `npm run lint:fix` | Auto-fix formatting / lint |
 | `npm run docs:install` | Create `.venv-docs` and install Zensical (Python; run once) |

@@ -155,5 +155,6 @@ Paths passed to `moveEntity`/`insertEntity` are *slot* paths counted before remo
 - **Preact, not React.** `react`/`react-dom` are aliased to `preact/compat`.
 - **Internal APIs** (`app.plugins`, `vault.getConfig`, `embedRegistry`, `commands`) are
   used in a few places and wrapped in `src/integrations/` or `plugin/workspacePatches.ts`.
-  They can break on Obsidian updates — the e2e suite runs on the minimum and latest version.
+  They can break on Obsidian updates — the e2e suite runs on the minimum and a pinned
+  version, plus a daily run on the latest one (see `docs/dev/testing.md`).
 - **CSS**: every class is prefixed `kanban-starlane__` via `c('name')`.

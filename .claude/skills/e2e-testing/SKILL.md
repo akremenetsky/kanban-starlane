@@ -6,9 +6,12 @@ description: How to write, run and debug Kanban Starlane end-to-end tests in rea
 # E2E testing
 
 ## Run
-- `npm run test:e2e` — builds `dist/`, runs all specs in the latest Obsidian (headless via xvfb).
+- `npm run test:e2e` — builds `dist/`, runs all specs in the Obsidian version
+  pinned in `wdio.conf.mts` (`PINNED_OBSIDIAN`), headless via xvfb.
 - `npm run test:e2e -- --spec tests/e2e/specs/<file>.e2e.ts` — one spec.
 - `E2E_VERSIONS=all` — also the minimum supported Obsidian. `E2E_HEADED=1` — show the window.
+- `E2E_OBSIDIAN=latest` (or a version) — instead of the pinned one. A daily CI workflow runs
+  the latest; bumping the pin is described in `docs/dev/testing.md`.
 - First run downloads Obsidian into `.obsidian-cache/` (git-ignored).
 
 ## Write
@@ -35,6 +38,8 @@ description: How to write, run and debug Kanban Starlane end-to-end tests in rea
 - Leftover modals/tabs from a previous test cause "element click intercepted" → make sure
   `resetWorkspace()` is in `beforeEach`.
 - `$$()` returns a chainable array: use `.map(...)`/`.getElements()`, not `Promise.all(els.map)`.
+- Clicks land in the centre of an element. On text that contains a link that may hit the link
+  (depends on fonts and Obsidian version): target a plain-text child instead.
 - WebdriverIO text selectors (`.cls=Text`) can't be combined with descendant selectors; filter
   rows in code (see `settingRow()` in `settings.e2e.ts`).
 
