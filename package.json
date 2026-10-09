@@ -1,7 +1,7 @@
 {
   "name": "kanban-starlane",
   "version": "0.1.4",
-  "description": "Markdown-backed Kanban boards for Obsidian",
+  "description": "Manage tasks and projects on Kanban boards stored as plain markdown",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",

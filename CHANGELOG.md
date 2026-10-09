@@ -5,6 +5,9 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 
 ## Unreleased
 
+### Changed
+- New plugin description in the community plugin directory.
+
 ## 0.1.4 — 2026-10-05
 
 ### Added
