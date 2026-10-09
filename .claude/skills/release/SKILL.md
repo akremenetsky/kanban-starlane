@@ -7,7 +7,8 @@ description: Steps to cut a Kanban Starlane release (version bump, changelog, ta
 
 Only when the product owner explicitly asks. Confirm the version number with them.
 
-1. On an up-to-date `main` with a clean tree: `npm run check`, `E2E_VERSIONS=all npm run test:e2e`.
+1. On an up-to-date `main` with a clean tree: `npm run check`, `E2E_VERSIONS=all npm run test:e2e`,
+   and check that the latest *E2E on latest Obsidian* run is green.
 2. Choose the version (semver; `0.x` while pre-1.0). If new Obsidian APIs are used, raise
    `minAppVersion` in `manifest.json` first and re-run e2e.
 3. `npm version <x.y.z> --no-git-tag-version`, then `npm run bump`

@@ -45,7 +45,7 @@ jobs:
           strict: true
 
   e2e:
-    name: E2E (minimum and latest Obsidian)
+    name: E2E (minimum and pinned Obsidian)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -60,7 +60,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: .obsidian-cache
-          key: obsidian-cache-${{ hashFiles('manifest.json') }}
+          key: obsidian-cache-${{ hashFiles('manifest.json', 'wdio.conf.mts') }}
       - run: sudo apt-get update && sudo apt-get install -y xvfb
       - run: npm run test:e2e
         env:

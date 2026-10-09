@@ -3,8 +3,9 @@
 | Command | What it runs | Time |
 |---|---|---|
 | `npm test` | Unit tests (Vitest, jsdom, fake Obsidian API) | ~2 s |
-| `npm run test:e2e` | Build + e2e tests in real Obsidian (latest) | ~20 s (first run downloads Obsidian) |
-| `E2E_VERSIONS=all npm run test:e2e` | e2e on `minAppVersion` and latest | ~40 s |
+| `npm run test:e2e` | Build + e2e tests in real Obsidian (pinned version) | ~20 s (first run downloads Obsidian) |
+| `E2E_VERSIONS=all npm run test:e2e` | e2e on `minAppVersion` and the pinned version | ~40 s |
+| `E2E_OBSIDIAN=latest npm run test:e2e` | e2e on the newest Obsidian release | ~20 s |
 | `npm run check` | typecheck + lint + format check + unit tests | ~15 s |
 
 Rule of thumb: **every behaviour change comes with a test that fails without it.**
@@ -38,6 +39,13 @@ rewrites them from the serializer output) and review the diff.
 - `wdio.conf.mts` + [wdio-obsidian-service](https://github.com/jesse-r-s-hines/wdio-obsidian-service).
   Obsidian is downloaded to `.obsidian-cache/`. On Linux tests run under `xvfb-run`
   (no window); `E2E_HEADED=1` shows the window.
+- **Obsidian versions.** Pull requests run on `minAppVersion` and on the version pinned in
+  `PINNED_OBSIDIAN` (`wdio.conf.mts`), so a new Obsidian release cannot fail unrelated pull
+  requests. The scheduled *E2E on latest Obsidian* workflow (`.github/workflows/e2e-latest.yml`,
+  daily and on demand) runs the suite on the newest release. When it fails, fix the plugin or
+  the tests on a branch, then bump `PINNED_OBSIDIAN` in the same pull request; when it is green
+  on a newer release, bump the pin in a small pull request. GitHub disables scheduled workflows
+  after 60 days without commits; re-enable it in the Actions tab.
 - The vault is `tests/e2e/vaults/basic/`, copied fresh for each run. Call
   `resetWorkspace()` and `obsidianPage.resetVault()` in `beforeEach`.
 - Helpers in `tests/e2e/helpers.ts`: `openBoard`, `laneTitles`, `cardTitles`, `lane(i)`,
