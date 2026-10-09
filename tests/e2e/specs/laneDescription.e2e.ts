@@ -20,6 +20,13 @@ async function descriptionText(laneIndex: number) {
   return (await els[0].getText()).trim();
 }
 
+// Double-click plain text: the description also has a link, and a click that lands on it
+// opens the note instead (where the centre of the block falls depends on fonts and version).
+async function editDescription(laneIndex: number) {
+  await lane(laneIndex).$(cls('lane-description-text')).$('strong').doubleClick();
+  await browser.$(`${cls('lane-description')} .cm-content`).waitForExist();
+}
+
 async function typeInEditor(selector: string, text: string) {
   const input = await browser.$(`${selector} .cm-content`);
   await input.waitForExist();
@@ -62,9 +69,7 @@ describe('lane description', function () {
     await openBoard(BOARD);
     await expectEventually(async () => (await descriptionText(0)) !== null, true);
 
-    await lane(0).$(cls('lane-description-text')).doubleClick();
-    const input = await browser.$(`${cls('lane-description')} .cm-content`);
-    await input.waitForExist();
+    await editDescription(0);
     await browser.keys(['Control', 'a']);
     await browser.keys('Delete');
     await browser.keys('Enter');
@@ -77,15 +82,13 @@ describe('lane description', function () {
     await openBoard(BOARD);
     await expectEventually(async () => (await descriptionText(0)) !== null, true);
 
-    await lane(0).$(cls('lane-description-text')).doubleClick();
-    await browser.$(`${cls('lane-description')} .cm-content`).waitForExist();
+    await editDescription(0);
     await browser.keys(['Control', 'a']);
     await browser.keys('Discarded');
     await browser.keys('Escape');
     await expectEventually(() => descriptionText(0), 'Work for this week\nSee Plain note');
 
-    await lane(0).$(cls('lane-description-text')).doubleClick();
-    await browser.$(`${cls('lane-description')} .cm-content`).waitForExist();
+    await editDescription(0);
     await browser.keys(['Control', 'a']);
     await browser.keys('Kept');
     await lane(1).$(cls('item-title')).click();
