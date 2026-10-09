@@ -86,16 +86,18 @@ export async function waitForFile(
  */
 export async function expectEventually<T>(read: () => Promise<T>, expected: T, timeout = 5000) {
   let last: T | undefined;
-  await browser.waitUntil(
-    async () => {
-      last = await read();
-      return JSON.stringify(last) === JSON.stringify(expected);
-    },
-    {
-      timeout,
-      timeoutMsg: `expected ${JSON.stringify(expected)}, last value ${JSON.stringify(last)}`,
-    }
-  );
+  try {
+    await browser.waitUntil(
+      async () => {
+        last = await read();
+        return JSON.stringify(last) === JSON.stringify(expected);
+      },
+      { timeout }
+    );
+  } catch {
+    // waitUntil's own message is built before the wait, so it cannot show the last value.
+    throw new Error(`expected ${JSON.stringify(expected)}, last value ${JSON.stringify(last)}`);
+  }
 }
 
 /** The card of a lane with this title; waits for it, as titles render asynchronously. */

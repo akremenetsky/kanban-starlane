@@ -39,6 +39,11 @@ rewrites them from the serializer output) and review the diff.
 - `wdio.conf.mts` + [wdio-obsidian-service](https://github.com/jesse-r-s-hines/wdio-obsidian-service).
   Obsidian is downloaded to `.obsidian-cache/`. On Linux tests run under `xvfb-run`
   (no window); `E2E_HEADED=1` shows the window.
+- **Parallel windows.** Two workers run at once (`E2E_MAX_INSTANCES`) on one xvfb screen, so
+  their Obsidian windows cover each other. Old Obsidian (installer 1.5.8) marks a covered
+  window hidden and stops rendering in it, and its test times out ("checking for animations
+  on an inactive tab", DOM never updating); `wdio.conf.mts` passes
+  `--disable-backgrounding-occluded-windows` to prevent that.
 - **Obsidian versions.** Pull requests run on `minAppVersion` and on the version pinned in
   `PINNED_OBSIDIAN` (`wdio.conf.mts`), so a new Obsidian release cannot fail unrelated pull
   requests. The scheduled *E2E on latest Obsidian* workflow (`.github/workflows/e2e-latest.yml`,

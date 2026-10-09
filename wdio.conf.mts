@@ -40,6 +40,12 @@ export const config: WebdriverIO.Config = {
       plugins: ['./dist'],
       vault: 'tests/e2e/vaults/basic',
     },
+    'goog:chromeOptions': {
+      // Parallel workers share one xvfb screen and their windows cover each other. Old
+      // Obsidian (Electron of installer 1.5.8) then marks the covered window hidden and stops
+      // rendering in it, so its test times out.
+      args: ['--disable-backgrounding-occluded-windows'],
+    },
   })),
 
   services: ['obsidian'],
