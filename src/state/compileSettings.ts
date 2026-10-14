@@ -1,5 +1,6 @@
 import { FRONTMATTER_KEY } from 'src/constants';
 import {
+  defaultDateSyntax,
   defaultDateTrigger,
   defaultMetadataPosition,
   defaultTimeTrigger,
@@ -38,17 +39,20 @@ export function compileSettings(
   const dateFormat = raw('date-format') || defaults.dateFormat;
   const dateDisplayFormat = raw('date-display-format') || dateFormat;
   const timeFormat = raw('time-format') || defaults.timeFormat;
+  const dateSyntax = raw('date-syntax') || defaultDateSyntax;
 
   return {
     [FRONTMATTER_KEY]: raw(FRONTMATTER_KEY) || 'board',
     'date-format': dateFormat,
     'date-display-format': dateDisplayFormat,
     'date-time-display-format': dateDisplayFormat + ' ' + timeFormat,
+    'date-syntax': dateSyntax,
     'date-trigger': raw('date-trigger') || defaultDateTrigger,
     'inline-metadata-position': raw('inline-metadata-position') || defaultMetadataPosition,
     'time-format': timeFormat,
     'time-trigger': raw('time-trigger') || defaultTimeTrigger,
-    'link-date-to-daily-note': raw('link-date-to-daily-note'),
+    // A tag date cannot be a link, so the daily note link only applies to `@{…}` dates.
+    'link-date-to-daily-note': dateSyntax === 'tag' ? false : raw('link-date-to-daily-note'),
     'move-dates': raw('move-dates'),
     'move-tags': raw('move-tags'),
     'move-task-metadata': raw('move-task-metadata'),

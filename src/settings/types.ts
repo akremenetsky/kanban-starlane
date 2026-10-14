@@ -3,6 +3,9 @@ import { DataKey, DateColor, LinkedLanes, TagColor, TagSort } from 'src/model/ty
 
 export type KanbanFormat = 'basic' | 'board' | 'table' | 'list';
 
+/** How card dates are written: `@{…}`/`@@{…}` triggers, or tags like `#26-10-14-13-25-20`. */
+export type DateSyntax = 'trigger' | 'tag';
+
 export interface KanbanSettings {
   [FRONTMATTER_KEY]?: KanbanFormat;
   'append-archive-date'?: boolean;
@@ -15,6 +18,7 @@ export interface KanbanSettings {
   'date-display-format'?: string;
   'date-format'?: string;
   'date-picker-week-start'?: number;
+  'date-syntax'?: DateSyntax;
   'date-time-display-format'?: string;
   'date-trigger'?: string;
   'full-list-lane-width'?: boolean;
@@ -66,6 +70,7 @@ export const settingKeyLookup: Set<keyof KanbanSettings> = new Set([
   'date-display-format',
   'date-format',
   'date-picker-week-start',
+  'date-syntax',
   'date-time-display-format',
   'date-trigger',
   'full-list-lane-width',
@@ -118,6 +123,7 @@ export function shouldRefreshBoard(oldSettings: KanbanSettings, newSettings: Kan
 
   const toCompare: Array<keyof KanbanSettings> = [
     'metadata-keys',
+    'date-syntax',
     'date-trigger',
     'time-trigger',
     'link-date-to-daily-note',
