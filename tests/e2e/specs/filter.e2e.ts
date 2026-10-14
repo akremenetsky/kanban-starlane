@@ -5,14 +5,7 @@
 import { browser, expect } from '@wdio/globals';
 import { obsidianPage } from 'wdio-obsidian-service';
 
-import {
-  cardTitles,
-  cls,
-  expectEventually,
-  openBoard,
-  readFile,
-  resetWorkspace,
-} from '../helpers';
+import { cardTitles, cls, expectEventually, openBoard, readFile, resetWorkspace } from '../helpers';
 
 const TAGGED = 'Boards/Tagged.md';
 const LINKED = 'Boards/Linked.md';
