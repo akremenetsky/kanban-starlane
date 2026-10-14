@@ -61,6 +61,7 @@ export function compileSettings(
     'show-view-as-markdown': raw('show-view-as-markdown') ?? true,
     'show-board-settings': raw('show-board-settings') ?? true,
     'show-search': raw('show-search') ?? true,
+    'show-filter': raw('show-filter') ?? true,
     'show-set-view': raw('show-set-view') ?? true,
     'tag-colors': raw('tag-colors') ?? [],
     'tag-sort': raw('tag-sort') ?? [],

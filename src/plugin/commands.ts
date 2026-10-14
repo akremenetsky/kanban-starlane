@@ -94,6 +94,17 @@ export function registerCommands(plugin: KanbanPlugin) {
   boardCommand('view-list', t('View as list'), (view) => view.setView('list'));
   boardCommand('open-board-settings', t('Open board settings'), (view) => view.getBoardSettings());
 
+  plugin.addCommand({
+    id: 'filter-cards',
+    name: t('Filter cards by tag'),
+    checkCallback: (checking) => {
+      const view = app.workspace.getActiveViewOfType(KanbanView);
+      if (!view || !plugin.stateManagers.get(view.file)?.getSetting('show-filter')) return false;
+      if (!checking) view.emitter.emit('openFilter', undefined);
+      return true;
+    },
+  });
+
   // Migration from the original obsidian-kanban plugin
   plugin.addCommand({
     id: 'convert-legacy-board',

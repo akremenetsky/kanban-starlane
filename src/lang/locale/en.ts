@@ -319,6 +319,14 @@ const en = {
   'No boards from the Kanban plugin found.': 'No boards from the Kanban plugin found.',
   'Settings imported from the Kanban plugin.': 'Settings imported from the Kanban plugin.',
   'Kanban plugin settings not found.': 'Kanban plugin settings not found.',
+
+  // FilterBar.tsx
+  Filter: 'Filter',
+  'Filter cards by tag': 'Filter cards by tag',
+  'Filter by tag...': 'Filter by tag...',
+  'Filter by board...': 'Filter by board...',
+  'Clear filter': 'Clear filter',
+  'This board': 'This board',
 };
 
 export type Lang = typeof en;

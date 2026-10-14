@@ -41,6 +41,8 @@ export class KanbanView extends TextFileView implements HoverParent {
   hoverPopover: HoverPopover | null;
   emitter: EventEmitter;
   actionButtons: Record<string, HTMLElement> = {};
+  /** Whether the board's tag/board filter hides cards; highlights the filter button. */
+  filterActive = false;
 
   previewCache: Map<string, BasicMarkdownRenderer>;
   previewQueue: PromiseQueue;
@@ -398,6 +400,13 @@ export class KanbanView extends TextFileView implements HoverParent {
         onClick: () => this.emitter.emit('hotkey', { commandId: 'editor:open-search' }),
       },
       {
+        setting: 'show-filter',
+        icon: 'lucide-filter',
+        label: t('Filter'),
+        onClick: () => this.emitter.emit('toggleFilter', undefined),
+        className: c('filter-button'),
+      },
+      {
         setting: 'show-view-as-markdown',
         icon: 'lucide-file-text',
         label: t('Open as markdown'),
@@ -420,6 +429,11 @@ export class KanbanView extends TextFileView implements HoverParent {
         className: c('ignore-click-outside'),
       },
     ];
+  }
+
+  setFilterActive(active: boolean) {
+    this.filterActive = active;
+    this.actionButtons['show-filter']?.toggleClass('is-active', active);
   }
 
   showViewMenu(evt: MouseEvent) {
@@ -464,6 +478,7 @@ export class KanbanView extends TextFileView implements HoverParent {
       if (shown && !existing) {
         const el = this.addAction(button.icon, button.label, button.onClick);
         if (button.className) el.addClass(button.className);
+        if (button.setting === 'show-filter') el.toggleClass('is-active', this.filterActive);
         this.actionButtons[button.setting] = el;
       } else if (!shown && existing) {
         existing.remove();

@@ -17,6 +17,7 @@ describe('compileSettings', () => {
       'time-trigger': '@@',
       'inline-metadata-position': 'body',
       'show-add-list': true,
+      'show-filter': true,
       'tag-action': 'obsidian',
       'tag-colors': [],
     });
@@ -37,5 +38,6 @@ describe('compileSettings', () => {
 
   it('keeps explicit false for boolean settings with a true default', () => {
     expect(compileSettings([{ 'show-search': false }], {}, defaults)['show-search']).toBe(false);
+    expect(compileSettings([], { 'show-filter': false }, defaults)['show-filter']).toBe(false);
   });
 });

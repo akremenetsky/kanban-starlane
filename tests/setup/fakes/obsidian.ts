@@ -151,6 +151,8 @@ export class Menu extends Stub {}
 export class Notice extends Stub {}
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class EditorSuggest<T> extends Stub {}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export class AbstractInputSuggest<T> extends Stub {}
 export class MarkdownView extends Stub {}
 export class WorkspaceLeaf extends Stub {}
 export class HoverPopover extends Stub {}
