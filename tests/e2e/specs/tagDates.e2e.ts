@@ -84,7 +84,8 @@ describe('tag dates', function () {
   it('shows a tag date as the card date once the board setting is switched', async function () {
     await createBoard(boardMd('- [ ] Task #26-10-14 #work', '{"kanban-starlane":"board"}'));
     await openBoard(BOARD);
-    await expectEventually(async () => (await cardTitles(0)).length, 1);
+    // Rendered as an ordinary tag first, so the absence of a date below means something.
+    await expectEventually(async () => (await cardTitles(0))[0], 'Task #26-10-14 #work');
     expect(await lane(0).$(cls('item-metadata-date')).isExisting()).toBe(false);
 
     await browser.executeObsidianCommand('kanban-starlane:open-board-settings');
@@ -133,6 +134,37 @@ describe('tag dates', function () {
     await waitForFile(BOARD, (md) => /- \[ \] Meet #26-10-14-00-00-00/.test(md));
   });
 
+  it('replaces the date of a card that has one when the trigger is typed', async function () {
+    await createBoard(boardMd('- [ ] Existing'));
+    await openBoard(BOARD);
+    await expectEventually(async () => (await cardTitles(0)).length, 1);
+
+    await startNewCard('Call #26-10-14-09-30-00 @');
+    await pickToday();
+    const expected = await today('YY-MM-DD');
+    await expectEventually(editorText, `Call #${expected}-09-30-00 `);
+    await suggestionClosed();
+    await browser.keys('Enter');
+
+    await waitForFile(BOARD, (md) => md.includes(`- [ ] Call #${expected}-09-30-00`));
+  });
+
+  it('adds today with the time when the card has no date', async function () {
+    await createBoard(boardMd('- [ ] Existing'));
+    await openBoard(BOARD);
+    await expectEventually(async () => (await cardTitles(0)).length, 1);
+
+    await startNewCard('Ping @@');
+    await browser.$('.suggestion-item').waitForDisplayed();
+    await browser.keys('Enter');
+    const expected = await today('YY-MM-DD');
+    await expectEventually(editorText, `Ping #${expected}-00-00-00 `);
+    await suggestionClosed();
+    await browser.keys('Enter');
+
+    await waitForFile(BOARD, (md) => md.includes(`- [ ] Ping #${expected}-00-00-00`));
+  });
+
   it('changes the date in place from the card and keeps the time', async function () {
     await createBoard(
       boardMd(
@@ -159,5 +191,15 @@ describe('tag dates', function () {
     await clickFirstCardMenuItem('Remove time');
 
     await waitForFile(BOARD, (md) => /- \[ \] Task #26-10-14( \^\w+)?\n/.test(md));
+  });
+
+  it('removes the date from the card menu', async function () {
+    await createBoard(boardMd('- [ ] Task #26-10-14 #work'));
+    await openBoard(BOARD);
+    await lane(0).$(cls('item-metadata-date')).waitForExist();
+
+    await clickFirstCardMenuItem('Remove date');
+
+    await waitForFile(BOARD, (md) => /- \[ \] Task #work( \^\w+)?\n/.test(md));
   });
 });

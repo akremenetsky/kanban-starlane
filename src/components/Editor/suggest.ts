@@ -9,12 +9,18 @@ import {
 } from 'obsidian';
 import { buildTimeArray } from 'src/components/Item/pickers';
 import { c } from 'src/components/helpers';
-import { findTagDate, formatTagDate, withTimeOf } from 'src/parsers/tagDate';
+import { formatTagDate, withTimeOf } from 'src/parsers/tagDate';
 import KanbanPlugin from 'src/plugin/KanbanPlugin';
-import { Moment, moment } from 'src/shared/moment';
+import { moment } from 'src/shared/moment';
 import { escapeRegExpStr } from 'src/shared/util';
 
-import { applyDate, constructDatePicker, toNextMonth, toPreviousMonth } from './datepicker';
+import {
+  applyDate,
+  constructDatePicker,
+  toNextMonth,
+  toPreviousMonth,
+  writeTagDate,
+} from './datepicker';
 import { Instance } from './flatpickr/types/instance';
 
 export function matchTimeTrigger(timeTrigger: string, editor: Editor, cursor: EditorPosition) {
@@ -27,29 +33,6 @@ export function matchDateTrigger(dateTrigger: string, editor: Editor, cursor: Ed
   const textCtx = (editor.getLine(cursor.line) || '').slice(0, cursor.ch);
   const dateTriggerRegex = new RegExp(`(?:^|\\s)${escapeRegExpStr(dateTrigger)}{?([^}]*)$`);
   return textCtx.match(dateTriggerRegex);
-}
-
-/** Drops the time trigger and puts the time into the card's tag date (today's date if it has none). */
-function applyTagTime(context: EditorSuggestContext, time: Moment) {
-  const { editor } = context;
-
-  editor.replaceRange('', context.start, context.end);
-  const triggerOffset = editor.posToOffset(context.start);
-  const found = findTagDate(editor.getValue());
-
-  if (found) {
-    const tag = formatTagDate(withTimeOf(found.date, time), true);
-    const end = found.index + found.text.length;
-    editor.replaceRange(tag, editor.offsetToPos(found.index), editor.offsetToPos(end));
-    const shift = found.index < triggerOffset ? tag.length - found.text.length : 0;
-    editor.setCursor(editor.offsetToPos(triggerOffset + shift));
-  } else {
-    const tag = `${formatTagDate(withTimeOf(moment(), time), true)} `;
-    editor.replaceRange(tag, context.start);
-    editor.setCursor(editor.offsetToPos(triggerOffset + tag.length));
-  }
-
-  editor.focus();
 }
 
 export class DateSuggest extends EditorSuggest<[]> {
@@ -228,7 +211,11 @@ export class TimeSuggest extends EditorSuggest<string> {
     if (!stateManager) return;
 
     if (stateManager.getSetting('date-syntax') === 'tag') {
-      applyTagTime(context, moment(value, stateManager.getSetting('time-format')));
+      const time = moment(value, stateManager.getSetting('time-format'));
+      // The time goes into the card's tag date, or with today's date when it has none.
+      writeTagDate(context, (found) =>
+        formatTagDate(withTimeOf(found?.date ?? moment(), time), true)
+      );
       return;
     }
 

@@ -30,13 +30,45 @@ export function formatTagDate(date: Moment, withTime: boolean) {
   return date.format(withTime ? TAG_DATE_FORMAT + TAG_TIME_FORMAT : TAG_DATE_FORMAT);
 }
 
-/** The first tag in the text that is a tag date — the one that sets the card's date. */
-export function findTagDate(text: string): (TagDate & { text: string; index: number }) | null {
-  for (const match of text.matchAll(new RegExp(tagSource, 'g'))) {
+export type FoundTagDate = TagDate & { text: string; index: number };
+
+// Code spans and fenced blocks: a `#` in them is not a tag for the parser either.
+const codeRegEx = /(`+)[\s\S]*?\1|~~~[\s\S]*?~~~/g;
+
+// Keeps offsets; the filler is neither whitespace nor `#`, so no tag starts in or right after code.
+function maskCode(text: string) {
+  return text.replace(codeRegEx, (code) => code.replace(/[^\n]/g, '\0'));
+}
+
+/** The first tag in the text that is a tag date — the one the parser makes the card's date. */
+export function findTagDate(text: string): FoundTagDate | null {
+  for (const match of maskCode(text).matchAll(new RegExp(tagSource, 'g'))) {
     const parsed = parseTagDate(match[0]);
     if (parsed) return { ...parsed, text: match[0], index: match.index };
   }
   return null;
+}
+
+// A card starts with an unindented list item; a heading ends a lane.
+const cardBoundaryRegEx = /^(?:[-*+] |#{1,6} )/gm;
+
+/**
+ * The tag date of the card around `offset`. In a card editor the text is one card; in a board
+ * file it is the list item containing `offset`. The index is in the whole text.
+ */
+export function findTagDateInCard(text: string, offset: number): FoundTagDate | null {
+  let start = 0;
+  let end = text.length;
+  for (const match of text.matchAll(cardBoundaryRegEx)) {
+    if (match.index > offset) {
+      end = match.index;
+      break;
+    }
+    start = match.index;
+  }
+
+  const found = findTagDate(text.slice(start, end));
+  return found && { ...found, index: found.index + start };
 }
 
 function replaceAt(text: string, index: number, length: number, replacement: string) {

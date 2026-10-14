@@ -299,6 +299,40 @@ describe('tag dates', () => {
     expect(title).toContain('#work');
   });
 
+  it('shows a later tag date as a tag when dates move to the footer', async () => {
+    const item = await firstItem(
+      tagBoard('- [ ] Task #26-10-14 #26-12-01', { 'move-dates': true, 'move-tags': false })
+    );
+
+    expect(item.data.metadata.date?.format('YYYY-MM-DD')).toBe('2026-10-14');
+    expect(item.data.title).toBe('Task #26-12-01');
+  });
+
+  it('ignores tag dates inside code', async () => {
+    const item = await firstItem(tagBoard('- [ ] Task `see #26-01-01` #26-10-14'));
+
+    expect(item.data.metadata.date?.format('YYYY-MM-DD')).toBe('2026-10-14');
+    expect(item.data.title).toContain('`see #26-01-01`');
+    expect(item.data.title.match(/<span data-date/g)).toHaveLength(1);
+  });
+
+  it('drops the date and time when the file loses them', async () => {
+    const md = tagBoard('- [ ] Task #26-10-14-09-30-00');
+    const { stateManager, view } = await loadBoard(md);
+
+    view.data = md.replace('#26-10-14-09-30-00', '#26-10-14');
+    await stateManager.reparseBoardFromMd();
+    let { metadata } = stateManager.state.children[0].children[0].data;
+    expect(metadata.date?.format('YYYY-MM-DD')).toBe('2026-10-14');
+    expect(metadata.time).toBeUndefined();
+
+    view.data = md.replace(' #26-10-14-09-30-00', '');
+    await stateManager.reparseBoardFromMd();
+    ({ metadata } = stateManager.state.children[0].children[0].data);
+    expect(metadata.date).toBeUndefined();
+    expect(metadata.time).toBeUndefined();
+  });
+
   it('finds the card by its date in search', async () => {
     const item = await firstItem(tagBoard('- [ ] Task #26-10-14'));
 

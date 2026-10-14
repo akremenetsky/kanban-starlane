@@ -41,7 +41,9 @@ export function preprocessTitle(stateManager: StateManager, title: string) {
   };
 
   if (stateManager.getSetting('date-syntax') === 'tag') {
-    const found = findTagDate(title);
+    // With dates in the footer the parser has already cut the card's date out of the title;
+    // any later tag date is an ordinary tag.
+    const found = stateManager.getSetting('move-dates') ? null : findTagDate(title);
     if (!found) return title;
 
     dateColor = getDateColor(found.date);
@@ -120,12 +122,11 @@ export function hydrateItem(stateManager: StateManager, item: Item) {
   const { dateStr, timeStr, fileAccessor } = item.data.metadata;
 
   if (stateManager.getSetting('date-syntax') === 'tag') {
-    // Both strings hold the same tag; the date carries the time when the tag has one.
+    // Both strings hold the same tag; the date carries the time when the tag has one. Always
+    // assigned: re-parsing a changed file keeps generated keys like these otherwise.
     const tagDate = dateStr ? parseTagDate(dateStr) : null;
-    if (tagDate) {
-      item.data.metadata.date = tagDate.date;
-      if (tagDate.hasTime) item.data.metadata.time = tagDate.date.clone();
-    }
+    item.data.metadata.date = tagDate?.date;
+    item.data.metadata.time = tagDate?.hasTime ? tagDate.date.clone() : undefined;
   } else if (dateStr) {
     item.data.metadata.date = moment(dateStr, stateManager.getSetting('date-format'));
   }

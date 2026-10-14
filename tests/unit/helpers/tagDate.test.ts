@@ -1,5 +1,6 @@
 import {
   findTagDate,
+  findTagDateInCard,
   formatTagDate,
   parseTagDate,
   removeTagDate,
@@ -53,9 +54,34 @@ describe('findTagDate', () => {
     expect(found?.index).toBe(8);
   });
 
+  it('skips tags inside inline code and code blocks', () => {
+    expect(findTagDate('a `x #26-01-01` #26-10-14')?.text).toBe('#26-10-14');
+    expect(findTagDate('a ``x ` #26-01-01`` #26-10-14')?.text).toBe('#26-10-14');
+    expect(findTagDate('a\n```\n#26-01-01\n```\n#26-10-14')?.text).toBe('#26-10-14');
+    expect(removeTagDate('Task `#26-01-01` #26-10-14')).toBe('Task `#26-01-01`');
+  });
+
   it('ignores a date pattern that is not a tag', () => {
     expect(findTagDate('a#26-10-14 x')).toBeNull();
     expect(findTagDate('#26-10-14x')).toBeNull();
+  });
+});
+
+describe('findTagDateInCard', () => {
+  const md = '## L\n\n- [ ] One #26-01-01\n- [ ] Two\n\tmore #26-02-02\n- [ ] Three @@';
+
+  it('looks only at the card around the offset in a board file', () => {
+    expect(findTagDateInCard(md, md.indexOf('Two'))?.text).toBe('#26-02-02');
+    expect(findTagDateInCard(md, md.indexOf('more'))?.text).toBe('#26-02-02');
+    expect(findTagDateInCard(md, md.length)).toBeNull();
+  });
+
+  it('returns the position in the whole text', () => {
+    expect(findTagDateInCard(md, md.indexOf('Two'))?.index).toBe(md.indexOf('#26-02-02'));
+  });
+
+  it('looks at the whole text of a card editor', () => {
+    expect(findTagDateInCard('Task #26-01-01\nsecond line', 20)?.text).toBe('#26-01-01');
   });
 });
 
