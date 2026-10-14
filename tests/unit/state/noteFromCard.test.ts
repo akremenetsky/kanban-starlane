@@ -51,6 +51,15 @@ describe('new note from card', () => {
     ).toBe('[[Call the supplier]] @{2026-09-30} @@{14:30}');
   });
 
+  it('treats tag dates like other tags', () => {
+    expect(noteNameFromCardTitle('Call #26-10-14-13-25-20 the supplier', triggers)).toBe(
+      'Call the supplier'
+    );
+    expect(
+      linkCardTitleToNote('Call #26-10-14-13-25-20 the supplier', '[[Call the supplier]]', triggers)
+    ).toBe('[[Call the supplier]] #26-10-14-13-25-20');
+  });
+
   it('keeps the lines after the first one', () => {
     expect(linkCardTitleToNote('Demo #sales\nsecond line #x', '[[Demo]]', triggers)).toBe(
       '[[Demo]] #sales\nsecond line #x'

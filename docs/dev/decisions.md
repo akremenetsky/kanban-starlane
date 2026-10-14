@@ -3,6 +3,25 @@
 Short records of decisions that shape the project. Newest first. Add an entry when a
 decision is not obvious from the code (format changes, dependencies, trade-offs).
 
+## 2026-10-14 — Dates as tags (issue #16)
+
+A user marks notes with date tags (`#26-10-14-13-25-20`, nested `#26/10/14/...`) and finds
+`@{…}` noise that only this plugin understands.
+
+- **A second syntax, not a second source.** The `date-syntax` setting (`trigger` default,
+  `tag`) picks one syntax per board; the other is plain text. Reading both at once would make
+  every date feature handle two sources and two dates per card. Switching does not rewrite
+  files (a converter was considered and postponed: mass rewrites are risky and lossy, e.g.
+  time without a date, daily-note links).
+- **Two-part format**: date `#YY-MM-DD`, optional time `-HH-mm-ss`. A date without a time is a
+  shorter tag, so an explicit midnight (`-00-00-00`) stays distinguishable and nothing fake is
+  written. Rejected: always writing the time with a trailing `-` meaning "no time" (two tags
+  for one date in Obsidian's tag pane, breaks nested-tag counting).
+- Strict parsing so tags like `#v1-2-3` never become dates. A custom format is a later step:
+  it needs validation, as `.`, `:`, `,` and spaces end an Obsidian tag.
+- Pickers and the card menu edit the first tag date in place; daily-note links are off in tag
+  mode (a tag cannot be a link).
+
 ## 2026-10-05 — Lane descriptions
 
 The product owner wants an optional short description under a list's title (like GitHub
