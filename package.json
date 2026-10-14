@@ -1,6 +1,6 @@
 {
   "name": "kanban-starlane",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Manage tasks and projects on Kanban boards stored as plain markdown",
   "main": "main.js",
   "scripts": {
