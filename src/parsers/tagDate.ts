@@ -43,7 +43,8 @@ function replaceAt(text: string, index: number, length: number, replacement: str
   return text.slice(0, index) + replacement + text.slice(index + length);
 }
 
-function withTimeOf(date: Moment, time: Moment) {
+/** `date` with the time of day taken from `time`. */
+export function withTimeOf(date: Moment, time: Moment) {
   return date.clone().hour(time.hour()).minute(time.minute()).second(time.second());
 }
 

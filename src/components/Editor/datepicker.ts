@@ -1,5 +1,6 @@
 import { EditorSuggestContext } from 'obsidian';
 import { buildLinkToDailyNote } from 'src/integrations/dailyNotes';
+import { formatTagDate } from 'src/parsers/tagDate';
 import { Moment, moment } from 'src/shared/moment';
 import { StateManager } from 'src/state/StateManager';
 
@@ -8,6 +9,15 @@ import flatpickr from './flatpickr';
 import { Instance } from './flatpickr/types/instance';
 
 export function applyDate(ctx: EditorSuggestContext, stateManager: StateManager, date: Date) {
+  if (stateManager.getSetting('date-syntax') === 'tag') {
+    // The trigger is only a shortcut here: it is replaced by the tag.
+    const tag = `${formatTagDate(moment(date), false)} `;
+    ctx.editor.replaceRange(tag, ctx.start, ctx.end);
+    ctx.editor.setCursor({ line: ctx.start.line, ch: ctx.start.ch + tag.length });
+    ctx.editor.focus();
+    return;
+  }
+
   const dateFormat = stateManager.getSetting('date-format');
   const dateTrigger = stateManager.getSetting('date-trigger');
   const shouldLinkDates = stateManager.getSetting('link-date-to-daily-note');
