@@ -92,7 +92,8 @@ The funnel button in the board header opens a filter row under it:
 
 Selected tags and boards appear as chips; click × on a chip to remove it, or press
 Backspace in an empty field. Lists without matching cards collapse while the filter is on,
-and the filter works together with the text search.
+and the filter works together with the text search. As with search, *Add a card* is hidden
+while the filter is on — a new card without the selected tags would disappear at once.
 
 Click the funnel again (or × at the end of the row) to close the row and reset the filter.
 The filter is never saved to the board file and resets when the tab is closed. On phones,

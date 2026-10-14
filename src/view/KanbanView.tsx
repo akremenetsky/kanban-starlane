@@ -41,7 +41,7 @@ export class KanbanView extends TextFileView implements HoverParent {
   hoverPopover: HoverPopover | null;
   emitter: EventEmitter;
   actionButtons: Record<string, HTMLElement> = {};
-  /** Whether the board's tag/board filter hides cards; highlights the filter button. */
+  /** Whether the filter row is open; highlights the filter button (a click then resets it). */
   filterActive = false;
 
   previewCache: Map<string, BasicMarkdownRenderer>;

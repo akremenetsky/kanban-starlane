@@ -19,6 +19,10 @@ const LINKED = 'Boards/Linked.md';
 
 const filterButton = () => browser.$('.view-action[aria-label="Filter"]');
 
+async function isButtonActive() {
+  return (await filterButton().getAttribute('class')).includes('is-active');
+}
+
 /** Pick a suggestion of the focused filter input by its label. */
 async function pickSuggestion(label: string) {
   let item: WebdriverIO.Element | undefined;
@@ -72,7 +76,7 @@ describe('filter', function () {
 
     await filterButton().click();
     await browser.$(cls('filter-bar')).waitForExist();
-    expect(await filterButton().getAttribute('class')).toContain('is-active');
+    await expectEventually(isButtonActive, true);
 
     await pickSuggestion('#work');
     // Nested tags match their parent; #workshop-like prefixes do not.
@@ -90,7 +94,7 @@ describe('filter', function () {
 
     await filterButton().click();
     await browser.$(cls('filter-bar')).waitForExist({ reverse: true });
-    expect(await filterButton().getAttribute('class')).not.toContain('is-active');
+    await expectEventually(isButtonActive, false);
     await expectEventually(() => names(0), ['Alpha', 'Beta', 'Gamma', 'Delta']);
 
     // The filter never touches the file.
@@ -138,6 +142,20 @@ describe('filter', function () {
 
     await expectEventually(chips, ['#home']);
     await expectEventually(() => names(0), ['Beta']);
+  });
+
+  it('searches the text on a tag click when the filter button is off', async function () {
+    await setBoardSettings(
+      TAGGED,
+      '{"kanban-starlane":"board","tag-action":"kanban","show-filter":false}'
+    );
+    await openBoard(TAGGED);
+    await expectEventually(async () => (await cardTitles(0)).length, 4);
+
+    await browser.$(`${cls('lane')} a.tag[href="#home"]`).click();
+
+    await expectEventually(() => browser.$(cls('filter-input')).getValue(), '#home');
+    expect(await browser.$(cls('filter-bar')).isExisting()).toBe(false);
   });
 
   it('has no filter button when the setting is off', async function () {

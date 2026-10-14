@@ -57,6 +57,9 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [filter, setFilter] = useState<BoardFilter>(emptyFilter);
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
+  // Read by the toggle handler, so two quick toggles see each other's result.
+  const isFilterOpenRef = useRef(false);
+  isFilterOpenRef.current = isFilterOpen;
   // Bumped to focus the tag input and open its suggestions.
   const [filterFocusKey, setFilterFocusKey] = useState<number>(0);
 
@@ -139,8 +142,10 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
 
   useEffect(() => {
     const toggleFilter = () => {
-      if (isFilterOpen) closeFilter();
-      else openFilter();
+      const open = !isFilterOpenRef.current;
+      isFilterOpenRef.current = open;
+      if (open) openFilter();
+      else closeFilter();
     };
     const filterTag = (tag: string) => {
       setIsFilterOpen(true);
@@ -156,7 +161,7 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
       view.emitter.off('openFilter', openFilter);
       view.emitter.off('filterTag', filterTag);
     };
-  }, [view, isFilterOpen, closeFilter, openFilter]);
+  }, [view, closeFilter, openFilter]);
 
   // A filter belongs to one board: reset it when the view opens another file or the
   // filter is switched off in the settings.

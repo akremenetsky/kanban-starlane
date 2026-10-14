@@ -22,6 +22,8 @@ class FilterSuggest extends AbstractInputSuggest<FilterOption> {
     onPick: (option: FilterOption) => void
   ) {
     super(app, inputEl);
+    // Show every tag of the board, not only the first 100.
+    this.limit = 0;
     this.onSelect((option) => {
       onPick(option);
       this.setValue('');
