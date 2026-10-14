@@ -11,7 +11,6 @@ import { Sortable } from 'src/dnd/components/Sortable';
 import { createHTMLDndHandlers } from 'src/dnd/managers/DragManager';
 import { t } from 'src/lang/helpers';
 import { DataTypes } from 'src/model/types';
-import { getBoardColor } from 'src/shared/colors';
 import { StateManager } from 'src/state/StateManager';
 import { BoardFilter, addFilterTag, collectTags, emptyFilter } from 'src/state/boardFilter';
 import { getBoardModifiers } from 'src/state/boardModifiers';
@@ -71,7 +70,6 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
   const tagColors = stateManager.useSetting('tag-colors');
   const boardView = view.useViewState(FRONTMATTER_KEY);
   const showFilter = stateManager.useSetting('show-filter');
-  const boardColor = stateManager.useSetting('board-color');
   const linkedLanes = useLinkedBoards(view, stateManager);
 
   const closeFilter = useCallback(() => {
@@ -246,10 +244,11 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
     if (!linked.length) return [];
     const name = (path: string) => path.split('/').pop().replace(/\.md$/i, '');
     return [
-      { value: filePath, label: name(filePath), color: getBoardColor(filePath, boardColor) },
+      // Own cards carry no board stripe, so this board gets no color dot either.
+      { value: filePath, label: t('This board') },
       ...linked.map((b) => ({ value: b.file, label: name(b.file), color: b.color })),
     ];
-  }, [linkedLanes, filePath, boardColor]);
+  }, [linkedLanes, filePath]);
 
   const html5DragHandlers = createHTMLDndHandlers(stateManager);
 

@@ -100,6 +100,8 @@ function FilterInput({
       type="text"
       className={className}
       placeholder={placeholder}
+      // The suggestions open on input; a click into the already focused field should too.
+      onClick={(e) => (e.target as HTMLInputElement).dispatchEvent(new Event('input'))}
       onKeyDown={(e) => {
         const input = e.target as HTMLInputElement;
         if (input.value) return;
