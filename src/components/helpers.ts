@@ -5,6 +5,8 @@ import { Board, DataKey, DateColor, Item, Lane, PageData, TagColor } from 'src/m
 import { InlineField } from 'src/parsers/helpers/inlineMetadata';
 import { getDateColorFn, getTagColorFn } from 'src/shared/colors';
 import { StateManager } from 'src/state/StateManager';
+import { BoardFilter, isFilterActive, itemPassesFilter } from 'src/state/boardFilter';
+import { LaneEntry } from 'src/state/linkedLanes';
 
 import { SearchContextProps } from './context';
 import { LinkedLanesContextProps, getLaneEntries } from './linkedLanes';
@@ -89,6 +91,8 @@ export function useOnMount(refs: RefObject<HTMLElement>[], cb: () => void, onUnm
 export function useSearchValue(
   board: Board,
   query: string,
+  filter: BoardFilter,
+  filePath: string,
   setSearchQuery: Dispatch<StateUpdater<string>>,
   setDebouncedSearchQuery: Dispatch<StateUpdater<string>>,
   setIsSearching: Dispatch<StateUpdater<boolean>>,
@@ -99,18 +103,20 @@ export function useSearchValue(
 
     const lanes = new Set<Lane>();
     const items = new Set<Item>();
+    const filterActive = isFilterActive(filter);
+    const isFiltering = !!query || filterActive;
 
-    if (query) {
+    if (isFiltering) {
       board.children.forEach((lane) => {
         let laneMatched = false;
-        const linkedItems = linkedLanes
-          ? (getLaneEntries(lane, linkedLanes)?.map((e) => e.item) ?? lane.children)
-          : lane.children;
-        linkedItems.forEach((item) => {
-          if (item.data.titleSearch.includes(query)) {
-            laneMatched = true;
-            items.add(item);
-          }
+        const entries: LaneEntry[] =
+          (linkedLanes && getLaneEntries(lane, linkedLanes)) ??
+          lane.children.map((item): LaneEntry => ({ source: null, item }));
+        entries.forEach(({ source, item }) => {
+          if (query && !item.data.titleSearch.includes(query)) return;
+          if (filterActive && !itemPassesFilter(item, source ?? filePath, filter)) return;
+          laneMatched = true;
+          items.add(item);
         });
         if (laneMatched) lanes.add(lane);
       });
@@ -120,6 +126,8 @@ export function useSearchValue(
       lanes,
       items,
       query,
+      filter,
+      isFiltering,
       search: (query, immediate) => {
         if (!query) {
           setIsSearching(false);
@@ -135,5 +143,5 @@ export function useSearchValue(
         }
       },
     };
-  }, [board, query, setSearchQuery, setDebouncedSearchQuery, linkedLanes]);
+  }, [board, query, filter, filePath, setSearchQuery, setDebouncedSearchQuery, linkedLanes]);
 }

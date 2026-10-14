@@ -106,6 +106,16 @@ A lane can show the cards of lanes on other boards (`linked-lanes` setting, see
 - **Renames** (`plugin/linkedBoards.ts`): renaming a board file or (through the plugin) a
   lane updates the `linked-lanes` of every board that links to it.
 
+## Search and filter
+
+Both only hide cards; nothing is written. `Kanban.tsx` keeps the text query and the
+tag/board filter (`state/boardFilter.ts`) as view state, and `useSearchValue`
+(`components/helpers.ts`) turns them into `SearchContext`: the visible `items` and `lanes`
+and `isFiltering`. Hidden cards keep their real index, so drag and drop works while
+filtering. The table filters its rows by the filter's tags itself. The header button
+(`show-filter`) and tag clicks talk to the component through `view.emitter`
+(`toggleFilter`, `openFilter`, `filterTag`).
+
 ## Card history
 
 `state/cardHistory.ts`. `StateManager.setState` (only for changes that are saved, i.e. made

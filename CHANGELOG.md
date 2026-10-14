@@ -5,6 +5,18 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 
 ## Unreleased
 
+### Added
+- **Filter by tags and boards.** A funnel button in the board header opens a filter row:
+  pick tags from those on the board (each with its number of cards) to show only the cards
+  that have any of them, and — on boards with linked lists — pick the boards whose cards to
+  show. Selected values show as chips with ×; clicking the funnel again resets the filter.
+  The filter is not saved to the board file. It can be hidden in *Board header buttons*,
+  and the command *Filter cards by tag* opens it from the command palette.
+
+### Changed
+- With *Tag click action* set to *Search Kanban Board*, clicking a tag adds it to the filter
+  (it still searches the board's text when the filter button is turned off).
+
 ## 0.1.5 — 2026-10-09
 
 ### Changed

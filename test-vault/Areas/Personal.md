@@ -6,7 +6,7 @@ kanban-starlane: board
 
 ## Todo
 
-- [ ] Book a dentist appointment
+- [ ] Book a dentist appointment #health #urgent
 - [ ] Buy a birthday present for Anna
 
 
@@ -18,7 +18,7 @@ kanban-starlane: board
 
 ## In progress
 
-- [ ] Read "Designing Data-Intensive Applications"
+- [ ] Read "Designing Data-Intensive Applications" #books
 
 
 ## Done

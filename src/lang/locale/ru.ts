@@ -263,6 +263,14 @@ const lang: Partial<Lang> = {
   'No boards from the Kanban plugin found.': 'Доски плагина Kanban не найдены.',
   'Settings imported from the Kanban plugin.': 'Настройки импортированы из плагина Kanban.',
   'Kanban plugin settings not found.': 'Настройки плагина Kanban не найдены.',
+
+  // FilterBar.tsx
+  Filter: 'Фильтр',
+  'Filter cards by tag': 'Фильтр карточек по тегу',
+  'Filter by tag...': 'Фильтр по тегу...',
+  'Filter by board...': 'Фильтр по доске...',
+  'Clear filter': 'Сбросить фильтр',
+  'This board': 'Эта доска',
 };
 
 export default lang;

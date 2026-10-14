@@ -217,7 +217,7 @@ export const Items = memo(function Items({
       <>
         {entries.map((entry, i) => {
           const ownPath = entry.source ? null : [laneIndex, ownIndex++];
-          if (search?.query && !search.items.has(entry.item)) return null;
+          if (search?.isFiltering && !search.items.has(entry.item)) return null;
 
           return entry.source ? (
             <LinkedEntry
@@ -244,7 +244,7 @@ export const Items = memo(function Items({
   return (
     <>
       {items.map((item, i) => {
-        return search?.query && !search.items.has(item) ? null : (
+        return search?.isFiltering && !search.items.has(item) ? null : (
           <DraggableItem
             key={boardView + item.id}
             item={item}

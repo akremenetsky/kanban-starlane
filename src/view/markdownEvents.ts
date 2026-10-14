@@ -103,7 +103,9 @@ export function bindMarkdownEvents(view: KanbanView) {
     const stateManager = view.plugin.getStateManager(view.file);
     const tagAction = stateManager.getSetting('tag-action');
 
-    if (tagAction === 'kanban') {
+    if (tagAction === 'kanban' && stateManager.getSetting('show-filter')) {
+      view.emitter.emit('filterTag', tag);
+    } else if (tagAction === 'kanban') {
       view.emitter.emit('hotkey', { commandId: 'editor:open-search', data: tag });
     } else if (searchPlugin) {
       searchPlugin.instance.openGlobalSearch(`tag:${tag}`);

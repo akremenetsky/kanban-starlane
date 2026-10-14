@@ -267,6 +267,108 @@ button.kanban-starlane__search-cancel-button .kanban-starlane__icon {
   display: flex;
 }
 
+.kanban-starlane__filter-bar {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  left: 0;
+  padding-block: 8px;
+  padding-inline: 13px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  z-index: 2;
+  background-color: var(--background-primary);
+}
+
+.kanban-starlane__search-wrapper + .kanban-starlane__filter-bar {
+  padding-block-start: 0;
+}
+
+.kanban-starlane__filter-bar-icon {
+  display: flex;
+  color: var(--text-muted);
+}
+
+.kanban-starlane__filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 3px 6px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--input-radius);
+  background: var(--background-modifier-form-field);
+}
+
+.kanban-starlane__filter-group:focus-within {
+  border-color: var(--interactive-accent);
+}
+
+.kanban-starlane__filter-group input[type='text'] {
+  flex: 1 1 100px;
+  min-width: 80px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 2px;
+  height: auto;
+}
+
+.kanban-starlane__filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding-block: 1px;
+  padding-inline: 8px 2px;
+  border-radius: var(--tag-radius, 2em);
+  background: var(--tag-background);
+  color: var(--tag-color);
+  font-size: var(--font-ui-small);
+  white-space: nowrap;
+}
+
+.kanban-starlane__filter-chip-remove {
+  display: flex;
+  padding: 2px;
+  --icon-size: 12px;
+}
+
+.kanban-starlane__filter-board-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.kanban-starlane__filter-clear {
+  display: flex;
+  padding: 6px;
+}
+
+.kanban-starlane__filter-suggestion {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kanban-starlane__filter-suggestion-label {
+  flex: 1;
+}
+
+.kanban-starlane__filter-suggestion-count {
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+}
+
+.view-action.kanban-starlane__filter-button.is-active {
+  color: var(--interactive-accent);
+}
+
 .kanban-starlane__icon {
   display: inline-block;
   line-height: 1;

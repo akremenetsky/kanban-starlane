@@ -20,6 +20,7 @@ import { Board, Lane, PageData, PageDataValue } from 'src/model/types';
 import { InlineField, lableToName, taskFields } from 'src/parsers/helpers/inlineMetadata';
 import { defaultSort } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
+import { itemPassesFilter } from 'src/state/boardFilter';
 
 import { DateCell, ItemCell, LaneCell } from './Cells';
 import { TableData, TableItem } from './types';
@@ -427,5 +428,13 @@ export function useTableColumns(boardData: Board, stateManager: StateManager) {
     return columns;
   }, [withInlineMetadata, ...fileMetadata, ...metadataLabels.values()]);
 
-  return { data: items, columns: withFileMetadata, state, setSorting };
+  // The table shows only this board's cards, so only the tags of the filter apply.
+  const filterTags = search?.filter.tags;
+  const data = useMemo(() => {
+    if (!filterTags?.length) return items;
+    const byTags = { tags: filterTags, boards: [] as string[] };
+    return items.filter((row) => itemPassesFilter(row.item, '', byTags));
+  }, [items, filterTags]);
+
+  return { data, columns: withFileMetadata, state, setSorting };
 }

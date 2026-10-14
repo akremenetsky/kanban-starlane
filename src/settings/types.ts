@@ -37,6 +37,7 @@ export interface KanbanSettings {
   'show-archive-all'?: boolean;
   'show-board-settings'?: boolean;
   'show-checkboxes'?: boolean;
+  'show-filter'?: boolean;
   'show-relative-date'?: boolean;
   'show-search'?: boolean;
   'show-set-view'?: boolean;
@@ -86,6 +87,7 @@ export const settingKeyLookup: Set<keyof KanbanSettings> = new Set([
   'show-archive-all',
   'show-board-settings',
   'show-checkboxes',
+  'show-filter',
   'show-relative-date',
   'show-search',
   'show-set-view',

@@ -7,6 +7,8 @@ Hide any of the buttons shown in a board's header. All are on by default:
 - **Open as markdown**
 - **Open board settings**
 - **Search…**
+- **Filter** — filter cards by tags and boards, see
+  [Filtering by tags and boards](../guide/cards-and-lists.md#filtering-by-tags-and-boards)
 - **Board view**
 
 Default header:

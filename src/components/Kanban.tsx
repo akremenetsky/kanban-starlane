@@ -12,16 +12,18 @@ import { createHTMLDndHandlers } from 'src/dnd/managers/DragManager';
 import { t } from 'src/lang/helpers';
 import { DataTypes } from 'src/model/types';
 import { StateManager } from 'src/state/StateManager';
+import { BoardFilter, addFilterTag, collectTags, emptyFilter } from 'src/state/boardFilter';
 import { getBoardModifiers } from 'src/state/boardModifiers';
 import { KanbanView } from 'src/view/KanbanView';
 
+import { FilterBar, FilterOption } from './FilterBar';
 import { Icon } from './Icon/Icon';
 import { Lanes } from './Lane/Lane';
 import { LaneForm } from './Lane/LaneForm';
 import { TableView } from './Table/Table';
 import { KanbanContext, SearchContext } from './context';
 import { baseClassName, c, useSearchValue } from './helpers';
-import { LinkedLanesContext, useLinkedBoards } from './linkedLanes';
+import { LinkedLanesContext, getLaneEntries, useLinkedBoards } from './linkedLanes';
 
 const boardScrollTiggers = [DataTypes.Item, DataTypes.Lane];
 const boardAccepts = [DataTypes.Lane];
@@ -53,6 +55,13 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>('');
   const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [filter, setFilter] = useState<BoardFilter>(emptyFilter);
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
+  // Read by the toggle handler, so two quick toggles see each other's result.
+  const isFilterOpenRef = useRef(false);
+  isFilterOpenRef.current = isFilterOpen;
+  // Bumped to focus the tag input and open its suggestions.
+  const [filterFocusKey, setFilterFocusKey] = useState<number>(0);
 
   const [isLaneFormVisible, setIsLaneFormVisible] = useState<boolean>(
     boardData?.children.length === 0
@@ -63,7 +72,18 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
   const dateColors = stateManager.useSetting('date-colors');
   const tagColors = stateManager.useSetting('tag-colors');
   const boardView = view.useViewState(FRONTMATTER_KEY);
+  const showFilter = stateManager.useSetting('show-filter');
   const linkedLanes = useLinkedBoards(view, stateManager);
+
+  const closeFilter = useCallback(() => {
+    setFilter(emptyFilter);
+    setIsFilterOpen(false);
+  }, []);
+
+  const openFilter = useCallback(() => {
+    setIsFilterOpen(true);
+    setFilterFocusKey((key) => key + 1);
+  }, []);
 
   const closeLaneForm = useCallback(() => {
     if (boardData?.children.length > 0) {
@@ -121,6 +141,43 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
   }, [view]);
 
   useEffect(() => {
+    const toggleFilter = () => {
+      const open = !isFilterOpenRef.current;
+      isFilterOpenRef.current = open;
+      if (open) openFilter();
+      else closeFilter();
+    };
+    const filterTag = (tag: string) => {
+      setIsFilterOpen(true);
+      setFilter((f) => addFilterTag(f, tag));
+    };
+
+    view.emitter.on('toggleFilter', toggleFilter);
+    view.emitter.on('openFilter', openFilter);
+    view.emitter.on('filterTag', filterTag);
+
+    return () => {
+      view.emitter.off('toggleFilter', toggleFilter);
+      view.emitter.off('openFilter', openFilter);
+      view.emitter.off('filterTag', filterTag);
+    };
+  }, [view, closeFilter, openFilter]);
+
+  // A filter belongs to one board: reset it when the view opens another file or the
+  // filter is switched off in the settings.
+  useEffect(() => {
+    closeFilter();
+  }, [filePath, closeFilter]);
+
+  useEffect(() => {
+    if (!showFilter) closeFilter();
+  }, [showFilter, closeFilter]);
+
+  useEffect(() => {
+    view.setFilterActive(isFilterOpen);
+  }, [view, isFilterOpen]);
+
+  useEffect(() => {
     if (isSearching) {
       searchRef.current?.focus();
     }
@@ -175,6 +232,29 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
     };
   }, [view, stateManager, boardModifiers, filePath, dateColors, tagColors]);
 
+  // Tags of the cards the view shows: the table has no linked cards.
+  const filterTags = useMemo(() => {
+    if (!boardData || !isFilterOpen) return [];
+    return collectTags(
+      boardData.children.flatMap((lane) =>
+        boardView === 'table'
+          ? lane.children
+          : (getLaneEntries(lane, linkedLanes)?.map((e) => e.item) ?? lane.children)
+      )
+    );
+  }, [boardData, linkedLanes, isFilterOpen, boardView]);
+
+  const filterBoards = useMemo<FilterOption[]>(() => {
+    const linked = Array.from(linkedLanes.boards.values());
+    if (!linked.length) return [];
+    const name = (path: string) => path.split('/').pop().replace(/\.md$/i, '');
+    return [
+      // Own cards carry no board stripe, so this board gets no color dot either.
+      { value: filePath, label: t('This board') },
+      ...linked.map((b) => ({ value: b.file, label: name(b.file), color: b.color })),
+    ];
+  }, [linkedLanes, filePath]);
+
   const html5DragHandlers = createHTMLDndHandlers(stateManager);
 
   if (boardData === null || boardData === undefined)
@@ -204,6 +284,8 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
   const searchValue = useSearchValue(
     boardData,
     debouncedSearchQuery,
+    filter,
+    filePath,
     setSearchQuery,
     setDebouncedSearchQuery,
     setIsSearching,
@@ -261,6 +343,17 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
                     <Icon name="lucide-x" />
                   </a>
                 </div>
+              )}
+              {showFilter && isFilterOpen && (
+                <FilterBar
+                  app={view.app}
+                  filter={filter}
+                  setFilter={setFilter}
+                  tags={filterTags}
+                  boards={boardView === 'table' ? [] : filterBoards}
+                  focusKey={filterFocusKey}
+                  onClose={closeFilter}
+                />
               )}
               {boardView === 'table' ? (
                 <TableView boardData={boardData} stateManager={stateManager} />

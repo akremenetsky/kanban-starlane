@@ -389,6 +389,7 @@ function renderHeaderButtons(ctx: SettingsContext) {
     ['show-view-as-markdown', t('Open as markdown')],
     ['show-board-settings', t('Open board settings')],
     ['show-search', t('Search...')],
+    ['show-filter', t('Filter')],
     ['show-set-view', t('Board view')],
   ];
 

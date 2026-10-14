@@ -2,6 +2,7 @@ import { createContext } from 'preact/compat';
 import { IntersectionObserverHandler } from 'src/dnd/managers/ScrollManager';
 import { Item, Lane, LaneSort } from 'src/model/types';
 import { StateManager } from 'src/state/StateManager';
+import { BoardFilter } from 'src/state/boardFilter';
 import { BoardModifiers } from 'src/state/boardModifiers';
 import { KanbanView } from 'src/view/KanbanView';
 
@@ -16,6 +17,10 @@ export const KanbanContext = createContext<KanbanContextProps>(null);
 
 export interface SearchContextProps {
   query: string;
+  /** Tag/board filter of the view. */
+  filter: BoardFilter;
+  /** Whether the text search or the filter hides cards (`items`/`lanes` then hold the visible ones). */
+  isFiltering: boolean;
   items: Set<Item>;
   lanes: Set<Lane>;
   search: (query: string, immediate?: boolean) => void;

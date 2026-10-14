@@ -9,7 +9,9 @@ By default, tags stay in the card's body and clicking one searches the whole vau
 
 - Move tags to the card's footer instead of the body —
   [Move tags to card footer](../settings/tags.md#move-tags-to-card-footer).
-- Make clicking a tag search the board instead of the vault —
+- Show only the cards with some tags — the
+  [filter](cards-and-lists.md#filtering-by-tags-and-boards) in the board header.
+- Make clicking a tag filter the board instead of searching the vault —
   [Tag click action](../settings/tags.md#tag-click-action).
 - Give specific tags a color, or control how lists are sorted by tag —
   see [Tags settings](../settings/tags.md).

@@ -79,3 +79,24 @@ Search a board like any other note — the default hotkey is `Ctrl`/`Cmd` + `F`.
 
 Whether clicking a tag searches the board or the whole vault is controlled by
 [Tag click action](../settings/tags.md#tag-click-action).
+
+## Filtering by tags and boards
+
+The funnel button in the board header opens a filter row under it:
+
+- **Tags.** Click the field to see every tag on the board with the number of its cards, or
+  type to narrow the list. Pick as many as you like: the board shows cards that have *any*
+  of the selected tags. Picking `#work` also shows `#work/urgent`; case does not matter.
+- **Boards.** On a board with [linked lists](linked-lists.md), a second field picks the
+  boards whose cards to show (*This board* is the board you are looking at).
+
+Selected tags and boards appear as chips; click × on a chip to remove it, or press
+Backspace in an empty field. Lists without matching cards collapse while the filter is on,
+and the filter works together with the text search. As with search, *Add a card* is hidden
+while the filter is on — a new card without the selected tags would disappear at once.
+
+Click the funnel again (or × at the end of the row) to close the row and reset the filter.
+The filter is never saved to the board file and resets when the tab is closed. On phones,
+where the header buttons are hidden, use the command **Filter cards by tag**.
+
+The button can be hidden in [Board header buttons](../settings/board-header-buttons.md).
