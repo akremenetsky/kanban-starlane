@@ -9,6 +9,7 @@ import { escapeRegExpStr } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 
 import { getSearchValue } from './search';
+import { findTagDate, parseTagDate } from './tagDate';
 
 export function hydrateLane(stateManager: StateManager, lane: Lane) {
   return lane;
@@ -38,6 +39,23 @@ export function preprocessTitle(stateManager: StateManager, title: string) {
     }
     return { wrapperClass: baseClass, wrapperStyle };
   };
+
+  if (stateManager.getSetting('date-syntax') === 'tag') {
+    const found = findTagDate(title);
+    if (!found) return title;
+
+    dateColor = getDateColor(found.date);
+    const iso = found.date.toISOString();
+    const dateWrapper = getWrapperStyles(c('preview-date-wrapper'));
+    let rendered = `<span data-date="${iso}" class="${dateWrapper.wrapperClass} ${c('date')}"${dateWrapper.wrapperStyle}><span class="${c('preview-date')} ${c('item-metadata-date')}">${found.date.format(dateDisplayFormat)}</span></span>`;
+
+    if (found.hasTime) {
+      const timeWrapper = getWrapperStyles(c('preview-time-wrapper'));
+      rendered += ` <span data-date="${iso}" class="${timeWrapper.wrapperClass} ${c('date')}"${timeWrapper.wrapperStyle}><span class="${c('preview-time')} ${c('item-metadata-time')}">${found.date.format(timeFormat)}</span></span>`;
+    }
+
+    return title.slice(0, found.index) + rendered + title.slice(found.index + found.text.length);
+  }
 
   title = title.replace(
     new RegExp(`(^|\\s)${escapeRegExpStr(dateTrigger)}\\[\\[([^\\]]+)\\]\\]`, 'g'),
@@ -101,11 +119,18 @@ export function preprocessTitle(stateManager: StateManager, title: string) {
 export function hydrateItem(stateManager: StateManager, item: Item) {
   const { dateStr, timeStr, fileAccessor } = item.data.metadata;
 
-  if (dateStr) {
+  if (stateManager.getSetting('date-syntax') === 'tag') {
+    // Both strings hold the same tag; the date carries the time when the tag has one.
+    const tagDate = dateStr ? parseTagDate(dateStr) : null;
+    if (tagDate) {
+      item.data.metadata.date = tagDate.date;
+      if (tagDate.hasTime) item.data.metadata.time = tagDate.date.clone();
+    }
+  } else if (dateStr) {
     item.data.metadata.date = moment(dateStr, stateManager.getSetting('date-format'));
   }
 
-  if (timeStr) {
+  if (timeStr && stateManager.getSetting('date-syntax') !== 'tag') {
     let time = moment(timeStr, stateManager.getSetting('time-format'));
 
     if (item.data.metadata.date) {

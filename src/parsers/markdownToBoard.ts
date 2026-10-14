@@ -42,6 +42,7 @@ import { isHistoryBlockStart } from './history';
 import { hydrateItem, preprocessTitle } from './hydrate';
 import { isArchiveHeadingText, isCompleteMarkerText, isSettingsBlockStart } from './markers';
 import { parseFragment } from './parseMarkdown';
+import { parseTagDate } from './tagDate';
 
 interface TaskItem extends ListItem {
   checkChar?: string;
@@ -63,6 +64,7 @@ function startsWithCodeFence(node: object | undefined): boolean {
 export function listItemToItemData(stateManager: StateManager, md: string, item: TaskItem) {
   const moveTags = stateManager.getSetting('move-tags');
   const moveDates = stateManager.getSetting('move-dates');
+  const tagDates = stateManager.getSetting('date-syntax') === 'tag';
 
   const startNode = item.children.first();
   const endNode = item.children.last();
@@ -136,6 +138,30 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
         // The id is written at the end of the first line, so in a multi-line card it sits
         // inside the item boundary and would be rendered as text.
         if (node.position.end.offset <= itemBoundary.end) {
+          title = markRangeForDeletion(title, {
+            start: node.position.start.offset - itemBoundary.start,
+            end: node.position.end.offset - itemBoundary.start,
+          });
+        }
+        return true;
+      }
+
+      const tag = genericNode.type === 'hashtag' ? '#' + genericNode.value : null;
+      const tagDate =
+        tag &&
+        tagDates &&
+        !itemData.metadata.dateStr &&
+        !startsWithCodeFence(parent.children.first())
+          ? parseTagDate(tag)
+          : null;
+
+      if (tagDate) {
+        // The first tag date is the card's date (the one menus and pickers edit); hydrateItem
+        // parses both strings with the tag format.
+        itemData.metadata.dateStr = tag;
+        if (tagDate.hasTime) itemData.metadata.timeStr = tag;
+
+        if (moveDates) {
           title = markRangeForDeletion(title, {
             start: node.position.start.offset - itemBoundary.start,
             end: node.position.end.offset - itemBoundary.start,

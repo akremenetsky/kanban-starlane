@@ -232,6 +232,81 @@ describe('move-* settings', () => {
   });
 });
 
+describe('tag dates', () => {
+  const tagBoard = (body: string, settings: Record<string, unknown> = {}) =>
+    board(
+      'kanban-starlane: board',
+      `## L\n\n${body}`,
+      JSON.stringify({ 'kanban-starlane': 'board', 'date-syntax': 'tag', ...settings })
+    );
+  const firstItem = async (md: string) => (await loadBoard(md)).board.children[0].children[0];
+
+  it('reads the date and time from a tag', async () => {
+    const item = await firstItem(tagBoard('- [ ] Task #26-10-14-13-25-20 #work'));
+    const { metadata } = item.data;
+
+    expect(metadata.dateStr).toBe('#26-10-14-13-25-20');
+    expect(metadata.date?.format('YYYY-MM-DD')).toBe('2026-10-14');
+    expect(metadata.time?.format('YYYY-MM-DD HH:mm:ss')).toBe('2026-10-14 13:25:20');
+    expect(metadata.tags).toEqual(['#work']);
+  });
+
+  it('reads a date without a time', async () => {
+    const { metadata } = (await firstItem(tagBoard('- [ ] Task #26-10-14'))).data;
+
+    expect(metadata.date?.format('YYYY-MM-DD')).toBe('2026-10-14');
+    expect(metadata.time).toBeUndefined();
+  });
+
+  it('uses the first tag date and keeps later ones as tags', async () => {
+    const { metadata } = (await firstItem(tagBoard('- [ ] Task #26-10-14 #26-10-15'))).data;
+
+    expect(metadata.date?.format('YYYY-MM-DD')).toBe('2026-10-14');
+    expect(metadata.tags).toEqual(['#26-10-15']);
+  });
+
+  it('keeps @{…} dates as plain text', async () => {
+    const item = await firstItem(tagBoard('- [ ] Task @{2024-03-05} @@{10:30}'));
+
+    expect(item.data.metadata.date).toBeUndefined();
+    expect(item.data.metadata.time).toBeUndefined();
+    expect(item.data.title).toBe('Task @{2024-03-05} @@{10:30}');
+  });
+
+  it('leaves tag dates as tags with the default syntax', async () => {
+    const item = await firstItem(board('kanban-starlane: board', '## L\n\n- [ ] Task #26-10-14'));
+
+    expect(item.data.metadata.date).toBeUndefined();
+    expect(item.data.metadata.tags).toEqual(['#26-10-14']);
+  });
+
+  it('removes the tag date from the title when dates move to the footer', async () => {
+    const item = await firstItem(
+      tagBoard('- [ ] Task #26-10-14 #work', { 'move-dates': true, 'move-tags': false })
+    );
+
+    expect(item.data.title).toBe('Task #work');
+    expect(item.data.titleRaw).toBe('Task #26-10-14 #work');
+  });
+
+  it('renders the tag date in the title when dates stay in the body', async () => {
+    const { title } = (await firstItem(tagBoard('- [ ] Task #26-10-14-13-25-20 #work'))).data;
+
+    expect(title).toContain('data-date="2026-10-14T13:25:20.000Z"');
+    expect(title).toContain('kanban-starlane__item-metadata-date');
+    expect(title).toContain('kanban-starlane__item-metadata-time');
+    expect(title).not.toContain('#26-10-14');
+    expect(title).toContain('#work');
+  });
+
+  it('finds the card by its date in search', async () => {
+    const item = await firstItem(tagBoard('- [ ] Task #26-10-14'));
+
+    expect(item.data.titleSearch).toContain('#26-10-14');
+    expect(item.data.titleSearch).toContain('october 14, 2026');
+  });
+});
+
 describe('settings and frontmatter', () => {
   it('reads settings from the footer code block', async () => {
     const { board: b } = await loadBoard(readFixture('boards/full-featured.md'), {

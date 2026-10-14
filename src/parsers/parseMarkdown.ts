@@ -66,11 +66,19 @@ function extractSettingsFooter(md: string) {
 }
 
 function getExtensions(stateManager: StateManager) {
+  // With tag dates, `@{…}` is plain text: only one date syntax is active at a time.
+  const triggerDates =
+    stateManager.getSetting('date-syntax') === 'tag'
+      ? []
+      : [
+          genericWrappedExtension('date', `${stateManager.getSetting('date-trigger')}{`, '}'),
+          genericWrappedExtension('dateLink', `${stateManager.getSetting('date-trigger')}[[`, ']]'),
+          genericWrappedExtension('time', `${stateManager.getSetting('time-trigger')}{`, '}'),
+        ];
+
   return [
     gfmTaskListItem,
-    genericWrappedExtension('date', `${stateManager.getSetting('date-trigger')}{`, '}'),
-    genericWrappedExtension('dateLink', `${stateManager.getSetting('date-trigger')}[[`, ']]'),
-    genericWrappedExtension('time', `${stateManager.getSetting('time-trigger')}{`, '}'),
+    ...triggerDates,
     genericWrappedExtension('embedWikilink', '![[', ']]'),
     genericWrappedExtension('wikilink', '[[', ']]'),
     tagExtension(),
