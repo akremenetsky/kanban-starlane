@@ -20,6 +20,6 @@ and use `git checkout test-vault` to get the original notes back.
 | `Boards/Project.md` | Dates and times, tags, links to notes, metadata of linked notes |
 | `Boards/Legacy board.md` | A board from the original Kanban plugin: run **Convert board from the Kanban plugin** |
 | `Projects/*.md` | Notes the project board links to (their `status`/`owner` show on cards) |
-| `Areas/Personal.md` | **Linked lanes**: *In progress* and *Done* also show the cards of `Areas/Work.md` (blue stripe). Drag them between those lanes, reorder them among personal cards, check them — then open `Work.md` |
+| `Areas/Personal.md` | **Linked lanes**: *In progress* and *Done* also show the cards of `Areas/Work.md` (blue stripe). Drag them between those lanes, reorder them among personal cards, check them — then open `Work.md`. **Filter**: funnel button in the header → pick `#urgent` (a personal card and a Work card), add `#books`, remove a tag with ×; then pick *Work* in the board field; click the funnel again to reset |
 | `Areas/Work.md` | **Card history**: card menu (⋮) → *History* on "Fix the login bug" or "Ship release 2.3" (sample history). Move, edit, check a card, then open its history again; `Work.md` in markdown mode shows the history block (a hidden comment) at the end |
 | `Areas/Overview.md` | A board with no cards of its own: both lanes show Work (blue) and Personal (green). Lane menu → *Show cards from other boards* to change the links |

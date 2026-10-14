@@ -9,7 +9,9 @@ When on, tags are shown in the card's footer instead of inline in its body text.
 Controls what clicking a tag on a card does:
 
 - **Search Obsidian Vault** (default) — opens Obsidian's global search for that tag.
-- **Search Kanban Board** — searches within the current board instead.
+- **Search Kanban Board** — filters the current board by that tag instead (adds it to the
+  [filter](../guide/cards-and-lists.md#filtering-by-tags-and-boards); with the **Filter**
+  header button turned off, it searches the board's text).
 
 ## Tag sort
 

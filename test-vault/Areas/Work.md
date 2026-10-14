@@ -6,14 +6,14 @@ kanban-starlane: board
 
 ## Todo
 
-- [ ] Prepare the quarterly report
+- [ ] Prepare the quarterly report #urgent
 - [ ] Review the onboarding docs
 
 
 ## In progress
 
-- [ ] Fix the login bug ^w1bug7
-- [ ] Plan the team offsite
+- [ ] Fix the login bug #urgent ^w1bug7
+- [ ] Plan the team offsite #team
 
 
 ## Done
