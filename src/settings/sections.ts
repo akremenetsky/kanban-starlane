@@ -37,7 +37,12 @@ import {
   textSetting,
   toggleSetting,
 } from './controls';
-import { defaultDateTrigger, defaultMetadataPosition, defaultTimeTrigger } from './defaults';
+import {
+  defaultDateSyntax,
+  defaultDateTrigger,
+  defaultMetadataPosition,
+  defaultTimeTrigger,
+} from './defaults';
 import { createSearchSelect, getListOptions } from './searchSelect';
 import { KanbanSettings } from './types';
 
@@ -218,6 +223,18 @@ function renderDates(ctx: SettingsContext) {
     desc: t(
       "When toggled, dates will be displayed in the card's footer instead of the card's body."
     ),
+  });
+
+  dropdownSetting(ctx, 'date-syntax', {
+    name: t('Date syntax'),
+    desc: t(
+      'How card dates are written. Tags look like #26-10-14 or, with a time, #26-10-14-13-25-20. Dates written the other way stop being recognised; files are not changed. Tag dates do not link to daily notes.'
+    ),
+    options: [
+      ['trigger', t('@{date} @@{time}')],
+      ['tag', t('Tag: #YY-MM-DD-HH-mm-ss')],
+    ],
+    defaultValue: defaultDateSyntax,
   });
 
   textSetting(ctx, 'date-trigger', {

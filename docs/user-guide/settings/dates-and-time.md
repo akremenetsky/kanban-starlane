@@ -4,6 +4,22 @@
 
 When on, dates are shown in the card's footer instead of inline in its body text.
 
+## Date syntax
+
+How card dates are written into markdown:
+
+- **@{date} @@{time}** (default) — `@{2026-10-14}` and `@@{13:25}`, using the triggers and
+  formats below.
+- **Tag** — an Obsidian tag: `#26-10-14`, or `#26-10-14-13-25-20` with a time. The triggers
+  still open the pickers. [Date format](#date-format) and [Time format](#time-format) no
+  longer control what is written, but still control how dates and times are shown (unless
+  [Date display format](#date-display-format) is set). [Link dates to daily
+  notes](#link-dates-to-daily-notes) does not apply. See [Dates as
+  tags](../guide/dates-and-times.md#dates-as-tags).
+
+Dates written the other way are no longer recognised, but your files are not changed:
+switching back brings them back.
+
 ## Date trigger
 
 The character (or sequence of characters) that opens the [date

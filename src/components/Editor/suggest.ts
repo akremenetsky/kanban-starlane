@@ -9,11 +9,18 @@ import {
 } from 'obsidian';
 import { buildTimeArray } from 'src/components/Item/pickers';
 import { c } from 'src/components/helpers';
+import { formatTagDate, withTimeOf } from 'src/parsers/tagDate';
 import KanbanPlugin from 'src/plugin/KanbanPlugin';
 import { moment } from 'src/shared/moment';
 import { escapeRegExpStr } from 'src/shared/util';
 
-import { applyDate, constructDatePicker, toNextMonth, toPreviousMonth } from './datepicker';
+import {
+  applyDate,
+  constructDatePicker,
+  toNextMonth,
+  toPreviousMonth,
+  writeTagDate,
+} from './datepicker';
 import { Instance } from './flatpickr/types/instance';
 
 export function matchTimeTrigger(timeTrigger: string, editor: Editor, cursor: EditorPosition) {
@@ -202,6 +209,15 @@ export class TimeSuggest extends EditorSuggest<string> {
     const { context, plugin } = this;
     const stateManager = plugin.getStateManager(context.file);
     if (!stateManager) return;
+
+    if (stateManager.getSetting('date-syntax') === 'tag') {
+      const time = moment(value, stateManager.getSetting('time-format'));
+      // The time goes into the card's tag date, or with today's date when it has none.
+      writeTagDate(context, (found) =>
+        formatTagDate(withTimeOf(found?.date ?? moment(), time), true)
+      );
+      return;
+    }
 
     const timeTrigger = stateManager.getSetting('time-trigger');
     const replacement = `${timeTrigger}{${value}} `;

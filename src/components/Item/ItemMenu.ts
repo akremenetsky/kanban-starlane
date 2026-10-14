@@ -7,6 +7,7 @@ import { moveEntity } from 'src/dnd/util/data';
 import { applyTemplate } from 'src/integrations/templates';
 import { t } from 'src/lang/helpers';
 import { EditState, Item } from 'src/model/types';
+import { removeTagDate, removeTagTime } from 'src/parsers/tagDate';
 import { generateInstanceId } from 'src/shared/ids';
 import { escapeRegExpStr } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
@@ -233,6 +234,12 @@ export function useItemMenu({
           i.setIcon('lucide-x')
             .setTitle(t('Remove date'))
             .onClick(() => {
+              if (stateManager.getSetting('date-syntax') === 'tag') {
+                const titleRaw = removeTagDate(item.data.titleRaw);
+                boardModifiers.updateItem(path, stateManager.updateItemContent(item, titleRaw));
+                return;
+              }
+
               const shouldLinkDates = stateManager.getSetting('link-date-to-daily-note');
               const dateTrigger = stateManager.getSetting('date-trigger');
               const contentMatch = shouldLinkDates
@@ -271,6 +278,12 @@ export function useItemMenu({
             i.setIcon('lucide-x')
               .setTitle(t('Remove time'))
               .onClick(() => {
+                if (stateManager.getSetting('date-syntax') === 'tag') {
+                  const titleRaw = removeTagTime(item.data.titleRaw);
+                  boardModifiers.updateItem(path, stateManager.updateItemContent(item, titleRaw));
+                  return;
+                }
+
                 const timeTrigger = stateManager.getSetting('time-trigger');
                 const timeRegEx = new RegExp(`(^|\\s)${escapeRegExpStr(timeTrigger)}{([^}]+)}`);
 

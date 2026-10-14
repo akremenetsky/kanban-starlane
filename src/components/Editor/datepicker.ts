@@ -1,5 +1,6 @@
 import { EditorSuggestContext } from 'obsidian';
 import { buildLinkToDailyNote } from 'src/integrations/dailyNotes';
+import { FoundTagDate, findTagDateInCard, formatTagDate, withTimeOf } from 'src/parsers/tagDate';
 import { Moment, moment } from 'src/shared/moment';
 import { StateManager } from 'src/state/StateManager';
 
@@ -7,7 +8,45 @@ import { getDefaultLocale } from './datePickerLocale';
 import flatpickr from './flatpickr';
 import { Instance } from './flatpickr/types/instance';
 
+/**
+ * Drops the trigger typed in the editor and writes `toTag(found)` over the tag date of the card
+ * being edited, or at the trigger when the card has none. Only that card is searched: a board
+ * open as markdown has many cards in one editor.
+ */
+export function writeTagDate(
+  ctx: EditorSuggestContext,
+  toTag: (found: FoundTagDate | null) => string
+) {
+  const { editor } = ctx;
+
+  editor.replaceRange('', ctx.start, ctx.end);
+  const triggerOffset = editor.posToOffset(ctx.start);
+  const found = findTagDateInCard(editor.getValue(), triggerOffset);
+  const tag = toTag(found);
+
+  if (found) {
+    const end = found.index + found.text.length;
+    editor.replaceRange(tag, editor.offsetToPos(found.index), editor.offsetToPos(end));
+    const shift = found.index < triggerOffset ? tag.length - found.text.length : 0;
+    editor.setCursor(editor.offsetToPos(triggerOffset + shift));
+  } else {
+    editor.replaceRange(`${tag} `, ctx.start);
+    editor.setCursor(editor.offsetToPos(triggerOffset + tag.length + 1));
+  }
+
+  editor.focus();
+}
+
 export function applyDate(ctx: EditorSuggestContext, stateManager: StateManager, date: Date) {
+  if (stateManager.getSetting('date-syntax') === 'tag') {
+    writeTagDate(ctx, (found) =>
+      found?.hasTime
+        ? formatTagDate(withTimeOf(moment(date), found.date), true)
+        : formatTagDate(moment(date), false)
+    );
+    return;
+  }
+
   const dateFormat = stateManager.getSetting('date-format');
   const dateTrigger = stateManager.getSetting('date-trigger');
   const shouldLinkDates = stateManager.getSetting('link-date-to-daily-note');

@@ -103,6 +103,11 @@ const lang: Partial<Lang> = {
     'Когда включено, для каждой карточки будет показан флажок',
   'Reset to default': 'Сбросить настройки',
   'Date & Time': 'Дата и время',
+  'Date syntax': 'Способ записи даты',
+  'How card dates are written. Tags look like #26-10-14 or, with a time, #26-10-14-13-25-20. Dates written the other way stop being recognised; files are not changed. Tag dates do not link to daily notes.':
+    'Как записываются даты карточек. Тег выглядит как #26-10-14 или, со временем, #26-10-14-13-25-20. Даты, записанные другим способом, перестают распознаваться; файлы не меняются. Даты-теги не связываются с ежедневными заметками.',
+  '@{date} @@{time}': '@{дата} @@{время}',
+  'Tag: #YY-MM-DD-HH-mm-ss': 'Тег: #ГГ-ММ-ДД-чч-мм-сс',
   'Date trigger': 'Триггер даты',
   'When this is typed, it will trigger the date selector': 'Ввод активирует выбор даты',
   'Time trigger': 'Триггер времени',

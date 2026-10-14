@@ -13,6 +13,7 @@ describe('compileSettings', () => {
       'date-display-format': 'YYYY-MM-DD',
       'date-time-display-format': 'YYYY-MM-DD HH:mm',
       'archive-date-format': 'YYYY-MM-DD HH:mm',
+      'date-syntax': 'trigger',
       'date-trigger': '@',
       'time-trigger': '@@',
       'inline-metadata-position': 'body',
@@ -34,6 +35,15 @@ describe('compileSettings', () => {
     expect(s['time-format']).toBe('h a');
     expect(s['date-trigger']).toBe('!');
     expect(s['date-time-display-format']).toBe('DD.MM h a');
+  });
+
+  it('turns daily note links off for tag dates', () => {
+    const global = { 'link-date-to-daily-note': true };
+
+    expect(compileSettings([], global, defaults)['link-date-to-daily-note']).toBe(true);
+    expect(
+      compileSettings([{ 'date-syntax': 'tag' }], global, defaults)['link-date-to-daily-note']
+    ).toBe(false);
   });
 
   it('keeps explicit false for boolean settings with a true default', () => {

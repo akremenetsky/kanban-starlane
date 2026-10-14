@@ -6,6 +6,7 @@ import { c } from 'src/components/helpers';
 import { Path } from 'src/dnd/types';
 import { buildLinkToDailyNote } from 'src/integrations/dailyNotes';
 import { Item } from 'src/model/types';
+import { setTagDate, setTagTime } from 'src/parsers/tagDate';
 import { Moment, moment } from 'src/shared/moment';
 import { escapeRegExpStr } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
@@ -89,6 +90,13 @@ export function constructMenuDatePickerOnChange({
   hasDate,
   path,
 }: ConstructMenuDatePickerOnChangeParams) {
+  if (stateManager.getSetting('date-syntax') === 'tag') {
+    return (dates: Date[]) => {
+      const titleRaw = setTagDate(item.data.titleRaw, moment(dates[0]));
+      boardModifiers.updateItem(path, stateManager.updateItemContent(item, titleRaw));
+    };
+  }
+
   const dateFormat = stateManager.getSetting('date-format');
   const shouldLinkDates = stateManager.getSetting('link-date-to-daily-note');
   const dateTrigger = stateManager.getSetting('date-trigger');
@@ -240,6 +248,14 @@ export function constructMenuTimePickerOnChange({
   hasTime,
   path,
 }: ConstructMenuTimePickerOnChangeParams) {
+  if (stateManager.getSetting('date-syntax') === 'tag') {
+    return (time: string) => {
+      const parsed = moment(time, stateManager.getSetting('time-format'));
+      const titleRaw = setTagTime(item.data.titleRaw, parsed, moment());
+      boardModifiers.updateItem(path, stateManager.updateItemContent(item, titleRaw));
+    };
+  }
+
   const timeTrigger = stateManager.getSetting('time-trigger');
   const timeRegEx = new RegExp(`(^|\\s)${escapeRegExpStr(timeTrigger)}{([^}]+)}`);
 

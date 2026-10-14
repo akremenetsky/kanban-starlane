@@ -70,7 +70,8 @@ function decorate(type: 'date' | 'time') {
     view: EditorView
   ) => {
     const stateManager = view.state.field(stateManagerField);
-    if (!stateManager) return;
+    // Tag dates stay as text; `@{…}` is not a date then.
+    if (!stateManager || stateManager.getSetting('date-syntax') === 'tag') return;
 
     const dateStr = match[1];
     const parsed = moment(

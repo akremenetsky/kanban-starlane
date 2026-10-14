@@ -108,6 +108,11 @@ const en = {
     'When toggled, a checkbox will be displayed with each card',
   'Reset to default': 'Reset to default',
   'Date & Time': 'Date & Time',
+  'Date syntax': 'Date syntax',
+  'How card dates are written. Tags look like #26-10-14 or, with a time, #26-10-14-13-25-20. Dates written the other way stop being recognised; files are not changed. Tag dates do not link to daily notes.':
+    'How card dates are written. Tags look like #26-10-14 or, with a time, #26-10-14-13-25-20. Dates written the other way stop being recognised; files are not changed. Tag dates do not link to daily notes.',
+  '@{date} @@{time}': '@{date} @@{time}',
+  'Tag: #YY-MM-DD-HH-mm-ss': 'Tag: #YY-MM-DD-HH-mm-ss',
   'Date trigger': 'Date trigger',
   'When this is typed, it will trigger the date selector':
     'When this is typed, it will trigger the date selector',

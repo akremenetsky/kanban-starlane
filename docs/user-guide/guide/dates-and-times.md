@@ -22,6 +22,25 @@ A card that already has a date can also get a time from its `⋮` menu.
 
 ![Adding a time from the card menu](../assets/add-time-context-menu.png)
 
+## Dates as tags
+
+If you already mark notes with date tags, switch [Date syntax](../settings/dates-and-time.md#date-syntax)
+to **Tag**. A card's date is then written as an ordinary Obsidian tag:
+
+| Tag | Meaning |
+|---|---|
+| `#26-10-14` | 14 October 2026, no time |
+| `#26-10-14-13-25-20` | 14 October 2026, 13:25:20 |
+| `#26-10-14-00-00-00` | 14 October 2026, midnight |
+
+The tags show up in Obsidian's tag pane and search like any other tag. On the card they look
+and work like any other date: colours, sorting, search, the calendar on click. The date
+trigger writes the tag, and the time trigger adds the time to the card's date tag (or to
+today's date if the card has none). If a card has several date tags, the first one is its date.
+
+Only one syntax works at a time. With **Tag**, `@{…}` dates are plain text, and with the
+default syntax, date tags are ordinary tags. Switching does not change your files.
+
 ## Formatting and display
 
 - [Date format](../settings/dates-and-time.md#date-format) and

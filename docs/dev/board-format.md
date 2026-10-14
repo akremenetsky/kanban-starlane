@@ -65,6 +65,7 @@ Work for this week
 | Block id | ` ^id` at the end of the first line | Stored separately and re-appended. |
 | Date | `@{date}` or `@[[date]]` | Trigger and format are settings (`date-trigger`, `date-format`). |
 | Time | `@@{time}` | `time-trigger`, `time-format`. |
+| Tag date | `#YY-MM-DD` or `#YY-MM-DD-HH-mm-ss` | Only with the `date-syntax: "tag"` setting; then `@{…}`/`@@{…}` are plain text. The first tag that parses strictly (`parsers/tagDate.ts`) is the card's date (with a time when it has the time part); later ones stay tags. With the default syntax these are ordinary tags. |
 | Archive | `***` then `## Archive` then a list | Must be preceded by a thematic break. |
 | Card history | `%% kanban-starlane:history` + fenced JSON + `%%` before the settings block | Only written when some card has history. See *Card history* below. |
 | Settings | `%% kanban-starlane:settings` + fenced JSON + `%%` at the end of the file | Board-level overrides. Frontmatter value of the view key wins over the JSON. |

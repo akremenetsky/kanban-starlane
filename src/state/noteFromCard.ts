@@ -1,3 +1,4 @@
+import { tagSource } from 'src/parsers/tagDate';
 import { escapeRegExpStr } from 'src/shared/util';
 
 interface Triggers {
@@ -9,7 +10,6 @@ const illegalCharsRegEx = /[\\/:"*?<>|]+/g;
 const embedRegEx = /!?\[\[([^\]]*)\.[^\]]+\]\]/g;
 const wikilinkRegEx = /!?\[\[([^\]]*)\]\]/g;
 const mdLinkRegEx = /!?\[([^\]]*)\]\([^)]*\)/g;
-const tagSource = `(?<=^|\\s)#[^\\u2000-\\u206F\\u2E00-\\u2E7F'!"#$%&()*+,.:;<=>?@^\`{|}~[\\]\\\\\\s]+`;
 const whiteSpaceRegEx = /\s+/g;
 
 // Time is tried first: with the default triggers `@@{…}` also starts with the date trigger.
