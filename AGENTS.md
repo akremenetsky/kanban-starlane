@@ -136,6 +136,7 @@ other agents: read the file when the task matches).
 
 | Playbook | Use when |
 |---|---|
+| `evaluate-idea` | The product owner shares an idea to assess before building (no code) |
 | `implement-feature` | Any feature or behaviour change requested by the product owner |
 | `fix-bug` | A bug report |
 | `add-setting` | Adding a global/board setting |
