@@ -13,6 +13,7 @@ import { FRONTMATTER_KEY, VIEW_ICON, VIEW_TYPE } from 'src/constants';
 import { t } from 'src/lang/helpers';
 import { basicFrontmatter } from 'src/parsers/markers';
 import { KanbanSettingsTab } from 'src/settings/SettingsTab';
+import { applyDefaultTags } from 'src/settings/defaults';
 import { KanbanSettings } from 'src/settings/types';
 import { StateManager } from 'src/state/StateManager';
 import { renameLinkedSourceLane } from 'src/state/linkedLanes';
@@ -69,6 +70,12 @@ export default class KanbanPlugin extends Plugin {
 
   async loadSettings() {
     this.settings = Object.assign({}, (await this.loadData()) as KanbanSettings | null);
+
+    const withDefaults = applyDefaultTags(this.settings);
+    if (withDefaults) {
+      this.settings = withDefaults;
+      await this.saveSettings();
+    }
   }
 
   async saveSettings() {

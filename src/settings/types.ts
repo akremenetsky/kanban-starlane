@@ -21,6 +21,8 @@ export interface KanbanSettings {
   'date-syntax'?: DateSyntax;
   'date-time-display-format'?: string;
   'date-trigger'?: string;
+  /** Global only: the last version of the ready-made tags (`applyDefaultTags`) added. */
+  'defaults-version'?: number;
   'full-list-lane-width'?: boolean;
   'hide-card-count'?: boolean;
   'inline-metadata-position'?: 'body' | 'footer' | 'metadata-table';

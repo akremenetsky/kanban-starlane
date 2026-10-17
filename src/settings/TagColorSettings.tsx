@@ -21,7 +21,7 @@ interface ItemProps {
   defaultColors: { color: string; backgroundColor: string };
   deleteKey: () => void;
   tagColorKey: TagColor;
-  updateKey: (tagKey: string, color: string, backgroundColor: string) => void;
+  updateKey: (changes: Partial<TagColor>) => void;
 }
 
 export function colorToRgbaString(color: string) {
@@ -107,11 +107,7 @@ function Item({ tagColorKey, deleteKey, updateKey, defaultColors }: ItemProps) {
                 value={tagColorKey.tagKey}
                 onChange={(e) => {
                   const val = e.currentTarget.value;
-                  updateKey(
-                    val[0] === '#' ? val : '#' + val,
-                    tagColorKey.color,
-                    tagColorKey.backgroundColor
-                  );
+                  updateKey({ tagKey: val[0] === '#' ? val : '#' + val });
                 }}
               />
             </div>
@@ -120,7 +116,7 @@ function Item({ tagColorKey, deleteKey, updateKey, defaultColors }: ItemProps) {
               <ColorPickerInput
                 color={tagColorKey.backgroundColor}
                 setColor={(color) => {
-                  updateKey(tagColorKey.tagKey, tagColorKey.color, color);
+                  updateKey({ backgroundColor: color });
                 }}
                 defaultColor={defaultColors.backgroundColor}
               />
@@ -130,13 +126,21 @@ function Item({ tagColorKey, deleteKey, updateKey, defaultColors }: ItemProps) {
               <ColorPickerInput
                 color={tagColorKey.color}
                 setColor={(color) => {
-                  updateKey(tagColorKey.tagKey, color, tagColorKey.backgroundColor);
+                  updateKey({ color });
                 }}
                 defaultColor={defaultColors.color}
               />
             </div>
           </div>
           <div className={c('setting-toggle-wrapper')}>
+            <div>
+              <div
+                className={`checkbox-container ${tagColorKey.highlight ? 'is-enabled' : ''}`}
+                onClick={() => updateKey({ highlight: !tagColorKey.highlight || undefined })}
+                aria-label={t('Highlight card')}
+              />
+              <div className={c('setting-item-label')}>{t('Highlight card')}</div>
+            </div>
             <div>
               <div className={c('item-tags')}>
                 <a className={`tag ${c('item-tag')}`}>#tag1</a>
@@ -223,33 +227,22 @@ function TagSettings({ dataKeys, onChange }: TagSettingsProps) {
     );
   };
 
-  const updateTagColor =
-    (i: number) => (tagKey: string, color: string, backgroundColor: string) => {
-      updateKeys(
-        update(keys, {
-          [i]: {
-            data: {
-              tagKey: {
-                $set: tagKey,
-              },
-              color: {
-                $set: color,
-              },
-              backgroundColor: {
-                $set: backgroundColor,
-              },
-            },
-          },
-        })
-      );
-    };
+  const updateTagColor = (i: number) => (changes: Partial<TagColor>) => {
+    // A switched-off highlight drops the key, so the saved settings look as before the option.
+    const { highlight, ...rest } = { ...keys[i].data, ...changes };
+    updateKeys(
+      update(keys, { [i]: { data: { $set: highlight ? { ...rest, highlight } : rest } } })
+    );
+  };
 
   return (
     <div className={c('tag-color-input-wrapper')}>
       <div className="setting-item-info">
         <div className="setting-item-name">{t('Tag colors')}</div>
         <div className="setting-item-description">
-          {t('Set colors for tags displayed in cards.')}
+          {t(
+            'Set colors for tags displayed in cards. Highlight card colors the whole card and adds the tag to the card menu.'
+          )}
         </div>
       </div>
       <div>

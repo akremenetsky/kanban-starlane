@@ -18,6 +18,7 @@ import { Droppable, useNestedEntityPath } from 'src/dnd/components/Droppable';
 import { DndManagerContext, ExplicitPathContext } from 'src/dnd/components/context';
 import { useDragHandle } from 'src/dnd/managers/DragManager';
 import { EditState, EditingState, Item, isEditing } from 'src/model/types';
+import { getCardHighlightColor } from 'src/shared/colors';
 import { LaneEntry } from 'src/state/linkedLanes';
 
 import { ItemCheckbox } from './ItemCheckbox';
@@ -154,6 +155,13 @@ export const DraggableItem = memo(function DraggableItem(props: DraggableItemPro
 
   const isMatch = search?.query ? innerProps.item.data.titleSearch.includes(search.query) : false;
   const classModifiers: string[] = getItemClassModifiers(stateManager.app, innerProps.item);
+  const tagColors = stateManager.useSetting('tag-colors');
+  const tags = innerProps.item.data.metadata.tags;
+  const highlightColor = useMemo(() => getCardHighlightColor(tags, tagColors), [tags, tagColors]);
+
+  const style: Record<string, string> = {};
+  if (linkedColor) style[`--${c('board-color')}`] = linkedColor;
+  if (highlightColor) style[`--${c('card-highlight')}`] = highlightColor;
 
   return (
     <div
@@ -165,8 +173,12 @@ export const DraggableItem = memo(function DraggableItem(props: DraggableItemPro
     >
       <div
         ref={elementRef}
-        className={classcat([c('item'), { [c('item-linked')]: !!linkedColor }, ...classModifiers])}
-        style={linkedColor ? { [`--${c('board-color')}`]: linkedColor } : undefined}
+        className={classcat([
+          c('item'),
+          { [c('item-linked')]: !!linkedColor, [c('item-highlighted')]: !!highlightColor },
+          ...classModifiers,
+        ])}
+        style={linkedColor || highlightColor ? style : undefined}
       >
         {props.isStatic ? (
           <ItemInner

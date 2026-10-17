@@ -3,6 +3,30 @@
 Short records of decisions that shape the project. Newest first. Add an entry when a
 decision is not obvious from the code (format changes, dependencies, trade-offs).
 
+## 2026-10-17 — Highlighting cards by tag
+
+The product owner wants important or urgent cards to stand out. Evaluated against upstream
+requests (community-archive/obsidian-kanban #108, #739, #651, #999) and seven mock-ups.
+
+- **Importance is a tag**, not new card syntax: a *Highlight card* switch on a *Tag colors*
+  entry (`highlight: true`, written only when on). Tags already work with the filter, tag
+  sort and Obsidian search; nothing new is written into card lines.
+- **Left stripe + light tint** of the tag's color, made opaque for the stripe. Chosen over a
+  full fill (unreadable with some colors, hides link/date colors), a top strip or a border
+  (confused with the bottom stripe of linked cards) and an icon (hard to see from afar).
+- Several highlighting tags: the first in *Tag colors* wins (simplest; the list cannot be
+  reordered yet). Highlighting overdue cards and Tasks priorities is postponed.
+- **Works without setup, for everyone.** `#urgent` and `#important` are added to the global
+  *Tag colors* with highlight on, on new installs and updates alike (the project is young;
+  the product owner accepted that already-tagged cards change colour). An existing entry for
+  the tag keeps its colours and gets the highlight on. Done once per `defaults-version`
+  (global settings), so deleted tags don't come back and a future ready-made mark reaches
+  everyone once. Boards with their own *Tag colors* are not touched (that would rewrite board
+  files). The tags are English in every language, as they are written into files.
+- **Card menu → *Mark as*** submenu, one checkable item per highlighting tag, appended to the
+  card's first line. Named after the meaning, not "Add tag", and a submenu leaves room for more
+  kinds of marks later.
+
 ## 2026-10-14 — Dates as tags (issue #16)
 
 A user marks notes with date tags (`#26-10-14-13-25-20`, nested `#26/10/14/...`) and finds

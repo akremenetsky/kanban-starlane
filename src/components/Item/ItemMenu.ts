@@ -7,6 +7,7 @@ import { moveEntity } from 'src/dnd/util/data';
 import { applyTemplate } from 'src/integrations/templates';
 import { t } from 'src/lang/helpers';
 import { EditState, Item } from 'src/model/types';
+import { addTag, hasTag, removeTag } from 'src/parsers/cardTags';
 import { removeTagDate, removeTagTime } from 'src/parsers/tagDate';
 import { generateInstanceId } from 'src/shared/ids';
 import { escapeRegExpStr } from 'src/shared/util';
@@ -295,6 +296,46 @@ export function useItemMenu({
       }
 
       menu.addSeparator();
+
+      // Highlighting tags (Tag colors → Highlight card): mark a card without remembering the
+      // tag's name. A checked tag is on the card; picking it again takes it off.
+      const highlightTags: string[] = [];
+      for (const { tagKey, highlight } of stateManager.getSetting('tag-colors') ?? []) {
+        if (!highlight || !tagKey) continue;
+        if (!highlightTags.some((tag) => tag.toLowerCase() === tagKey.toLowerCase())) {
+          highlightTags.push(tagKey);
+        }
+      }
+
+      const addMarkOptions = (menu: Menu, prefix: string) => {
+        for (const tagKey of highlightTags) {
+          const has = hasTag(item.data.metadata.tags, tagKey);
+          menu.addItem((i) =>
+            i
+              .setIcon('lucide-flag')
+              .setChecked(has)
+              .setTitle(prefix + tagKey)
+              .onClick(() => {
+                const titleRaw = has
+                  ? removeTag(item.data.titleRaw, tagKey)
+                  : addTag(item.data.titleRaw, tagKey);
+                boardModifiers.updateItem(path, stateManager.updateItemContent(item, titleRaw));
+              })
+          );
+        }
+      };
+
+      if (highlightTags.length) {
+        if (Platform.isPhone) {
+          addMarkOptions(menu, `${t('Mark as')} `);
+        } else {
+          menu.addItem((i) => {
+            const submenu = i.setTitle(t('Mark as')).setIcon('lucide-flag').setSubmenu();
+            addMarkOptions(submenu, '');
+          });
+        }
+        menu.addSeparator();
+      }
 
       const addMoveToOptions = (menu: Menu) => {
         const lanes = stateManager.state.children;

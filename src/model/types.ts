@@ -55,6 +55,8 @@ export interface TagColor {
   tagKey: string;
   color: string;
   backgroundColor: string;
+  /** Mark whole cards with this tag (stripe + tint), not only the tag itself. */
+  highlight?: boolean;
 }
 
 export interface TagSort {

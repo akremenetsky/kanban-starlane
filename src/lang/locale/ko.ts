@@ -106,7 +106,6 @@ const lang: Partial<Lang> = {
     '이 구분자는 카드 제목과 보관된 날짜/시간을 구분하는데 사용됩니다.',
   'Archive date/time format': '보관된 카드의 날짜/시간 형식',
   'Tag colors': '태그 색상 표시',
-  'Set colors for tags displayed in cards.': '카드 제목 아래에 표시되는 태그의 색상을 설정합니다.',
   'Linked Page Metadata': '링크된 페이지 메타데이터',
   'Display metadata for the first note linked within a card. Specify which metadata keys to display below. An optional label can be provided, and labels can be hidden altogether.':
     '카드 내에서 첫 번째로 링크된 노트의 메타데이터를 표시합니다. 아래에 표시할 메타데이터 키를 지정합니다. 선택적으로 레이블을 제공할 수 있으며, 레이블을 완전히 숨길 수 있습니다.',

@@ -15,3 +15,17 @@ By default, tags stay in the card's body and clicking one searches the whole vau
   [Tag click action](../settings/tags.md#tag-click-action).
 - Give specific tags a color, or control how lists are sorted by tag —
   see [Tags settings](../settings/tags.md).
+
+## Highlighting important cards
+
+Cards tagged `#urgent` or `#important` stand out on the board with a colored stripe and tint.
+Type the tag in the card, or open the card menu (**⋮**) → **Mark as** and pick `#urgent` or
+`#important`. A checkmark shows the marks a card already has; pick one again to take it off.
+
+![Highlighted cards](../assets/card-highlight.png)
+
+![Card menu with the highlighting tags](../assets/card-menu-highlight.png)
+
+Both tags come ready in [Tag colors](../settings/tags.md#tag-colors). Any other tag can
+highlight cards the same way — switch on [Highlight card](../settings/tags.md#highlight-card)
+for it.

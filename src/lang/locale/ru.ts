@@ -141,7 +141,6 @@ const lang: Partial<Lang> = {
     'Будет использоваться для отделения даты/времени архивирования от заголовка',
   'Archive date/time format': 'Формат даты/времени архивирования',
   'Tag colors': 'Показывать цвета меток',
-  'Set colors for tags displayed in cards.': 'Установить цвета для меток под заголовками карточек.',
   'Linked Page Metadata': 'Метаданные связанных страниц',
   'Display metadata for the first note linked within a card. Specify which metadata keys to display below. An optional label can be provided, and labels can be hidden altogether.':
     'Отображение метаданных для первой заметки, связанной с карточкой. Ниже укажите, какие ключи метаданных отображать. Можно указать дополнительную метку, либо скрыть метки полностью.',
@@ -179,6 +178,11 @@ const lang: Partial<Lang> = {
   'Field contains markdown': 'Поле содержит markdown',
 
   // TagColorSettings.tsx
+  'Highlight card': 'Подсвечивать карточку',
+  'Add tag': 'Добавить метку',
+  'Mark as': 'Пометить как',
+  'Set colors for tags displayed in cards. Highlight card colors the whole card and adds the tag to the card menu.':
+    'Цвета меток на карточках. «Подсвечивать карточку» окрашивает всю карточку и добавляет метку в меню карточки.',
   'Add tag color': 'Добавить цвет метки',
 
   // components/Item/Item.tsx

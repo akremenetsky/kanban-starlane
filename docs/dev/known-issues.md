@@ -30,3 +30,4 @@ Fixed during the fork setup (see `CHANGELOG.md`): lost settings edits within one
 stale inline metadata after editing an open board, reset buttons showing the wrong state,
 duplicated mobile menu item, archive/complete markers depending on the UI language, a board
 failing to open when it embeds a missing note with markdown link syntax.
+| Card highlight | The table view does not show the *Highlight card* stripe and tint. If *Tag colors* has two entries for one tag, the tag takes the last one's colors and the highlight the first one's. | — |
