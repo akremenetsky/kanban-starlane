@@ -214,7 +214,7 @@ const en = {
 
   // TagColorSettings.tsx
   'Highlight card': 'Highlight card',
-  'Remove tag': 'Remove tag',
+  'Mark as': 'Mark as',
   'Set colors for tags displayed in cards. Highlight card colors the whole card and adds the tag to the card menu.':
     'Set colors for tags displayed in cards. Highlight card colors the whole card and adds the tag to the card menu.',
   'Add tag color': 'Add tag color',

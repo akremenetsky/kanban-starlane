@@ -20,9 +20,11 @@ requests (community-archive/obsidian-kanban #108, #739, #651, #999) and seven mo
   updates are left alone, so nobody's `#urgent` cards change colour. Earlier versions saved
   no plugin data until a setting was changed, so "no data" is not enough: a vault that already
   has boards (frontmatter key, checked once the metadata cache is indexed) is an update. The
-  decision is saved at once, so later changes to the defaults never reach existing users. The tags are English in every language, as they are written
-  into files. The card menu adds/removes every highlighting tag, appended to the card's first
-  line.
+  decision is saved at once, so later changes to the defaults never reach existing users.
+  The tags are English in every language, as they are written into files.
+- **Card menu → *Mark as*** submenu, one checkable item per highlighting tag, appended to the
+  card's first line. Named after the meaning, not "Add tag", and a submenu leaves room for more
+  kinds of marks later.
 
 ## 2026-10-14 — Dates as tags (issue #16)
 

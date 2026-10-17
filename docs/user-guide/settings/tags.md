@@ -35,8 +35,9 @@ their colors, switch the highlight off or delete them like any other entry. An u
 earlier version does not add them, so cards you already tagged `#urgent` don't change by
 themselves.
 
-Every tag with **Highlight card** on also appears in the card menu (**⋮**): **Add tag #urgent**
-adds the tag to the card, **Remove tag #urgent** takes it away.
+Every tag with **Highlight card** on also appears in the card menu (**⋮**) under **Mark as**:
+picking it adds the tag to the card; a checked tag is already there, and picking it again
+removes it.
 
 - If a card has several highlighting tags, the first one in the *Tag colors* list wins; to
   change the order, remove an entry and add it again.

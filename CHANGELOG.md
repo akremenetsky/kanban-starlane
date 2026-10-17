@@ -8,7 +8,7 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 ### Added
 - **Highlight important cards.** A new *Highlight card* switch in *Tag colors* makes cards
   with that tag stand out with a stripe on the left and a light tint of the tag's color. Every
-  such tag also appears in the card menu: *Add tag #urgent* / *Remove tag #urgent*. A new
+  such tag also appears in the card menu under *Mark as*, to add or remove it in one click. A new
   install comes with `#urgent` and `#important` ready, so no setup is needed; an update leaves
   your settings as they are — add the tags in *Tag colors* to use them. If a card has several
   highlighting tags, the first one in the list wins.

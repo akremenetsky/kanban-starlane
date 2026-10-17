@@ -180,7 +180,7 @@ const lang: Partial<Lang> = {
   // TagColorSettings.tsx
   'Highlight card': 'Подсвечивать карточку',
   'Add tag': 'Добавить метку',
-  'Remove tag': 'Убрать метку',
+  'Mark as': 'Пометить как',
   'Set colors for tags displayed in cards. Highlight card colors the whole card and adds the tag to the card menu.':
     'Цвета меток на карточках. «Подсвечивать карточку» окрашивает всю карточку и добавляет метку в меню карточки.',
   'Add tag color': 'Добавить цвет метки',

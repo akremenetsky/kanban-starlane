@@ -19,8 +19,8 @@ By default, tags stay in the card's body and clicking one searches the whole vau
 ## Highlighting important cards
 
 Cards tagged `#urgent` or `#important` stand out on the board with a colored stripe and tint.
-Type the tag in the card, or open the card menu (**⋮**) and choose **Add tag #urgent** or
-**Add tag #important**; the same menu removes it again.
+Type the tag in the card, or open the card menu (**⋮**) → **Mark as** and pick `#urgent` or
+`#important`. A checkmark shows the marks a card already has; pick one again to take it off.
 
 ![Highlighted cards](../assets/card-highlight.png)
 

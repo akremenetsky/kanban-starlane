@@ -31,11 +31,17 @@ async function createBoard(md: string) {
   );
 }
 
-async function clickCardMenuItem(title: string, menuItem: string) {
+/** Opens the card's Mark as submenu and picks `tag`; returns whether it was checked. */
+async function markAs(title: string, tag: string) {
   await (await card(0, title)).$(cls('item-postfix-button')).click();
-  const item = await browser.$(`.menu-item-title=${menuItem}`);
+  const parent = await browser.$('.menu-item-title=Mark as');
+  await parent.waitForDisplayed();
+  await parent.click();
+  const item = await browser.$(`.menu-item-title=${tag}`);
   await item.waitForDisplayed();
+  const checked = (await item.parentElement().getAttribute('class')).includes('mod-checked');
   await item.click();
+  return checked;
 }
 
 async function isHighlighted(title: string) {
@@ -111,16 +117,16 @@ describe('card highlight by tag', function () {
     expect(tags).toEqual(['#urgent:true', '#important:true']);
   });
 
-  it('adds and removes a highlighting tag from the card menu', async function () {
+  it('marks and unmarks a card from the card menu', async function () {
     // Card history gives the card a block id, so it may end with ` ^id`.
     await createBoard(boardMd(true, '- [ ] Plain'));
     await openBoard(BOARD);
 
-    await clickCardMenuItem('Plain', 'Add tag #urgent');
+    expect(await markAs('Plain', '#urgent')).toBe(false);
     await waitForFile(BOARD, (md) => /- \[ \] Plain #urgent( \^\w+)?\n/.test(md));
     await expectEventually(() => isHighlighted('Plain #urgent'), true);
 
-    await clickCardMenuItem('Plain #urgent', 'Remove tag #urgent');
+    expect(await markAs('Plain #urgent', '#urgent')).toBe(true);
     await waitForFile(BOARD, (md) => /- \[ \] Plain( \^\w+)?\n/.test(md));
     await expectEventually(() => isHighlighted('Plain'), false);
   });
