@@ -171,7 +171,6 @@ const en = {
   'This setting controls whether clicking the tags displayed below the card title opens the Obsidian search or the Kanban board search.':
     'This setting controls whether clicking the tags displayed below the card title opens the Obsidian search or the Kanban board search.',
   'Tag colors': 'Tag colors',
-  'Set colors for tags displayed in cards.': 'Set colors for tags displayed in cards.',
   'Linked Page Metadata': 'Linked Page Metadata',
   'Inline Metadata': 'Inline Metadata',
   'Display metadata for the first note linked within a card. Specify which metadata keys to display below. An optional label can be provided, and labels can be hidden altogether.':
@@ -215,6 +214,9 @@ const en = {
 
   // TagColorSettings.tsx
   'Highlight card': 'Highlight card',
+  'Remove tag': 'Remove tag',
+  'Set colors for tags displayed in cards. Highlight card colors the whole card and adds the tag to the card menu.':
+    'Set colors for tags displayed in cards. Highlight card colors the whole card and adds the tag to the card menu.',
   'Add tag color': 'Add tag color',
 
   // components/Table.tsx

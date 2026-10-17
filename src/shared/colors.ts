@@ -25,8 +25,10 @@ export function getCardHighlightColor(
 ) {
   if (!tags?.length || !tagColors?.length) return null;
 
+  // Obsidian treats tags case-insensitively, and so does the card menu that adds them.
+  const cardTags = new Set(tags.map((tag) => tag.toLowerCase()));
   for (const entry of tagColors) {
-    if (!entry.highlight || !entry.tagKey || !tags.includes(entry.tagKey)) continue;
+    if (!entry.highlight || !entry.tagKey || !cardTags.has(entry.tagKey.toLowerCase())) continue;
 
     const color = colord(entry.backgroundColor || entry.color || '');
     if (color.isValid()) return color.alpha(1).toRgbString();

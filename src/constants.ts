@@ -35,3 +35,9 @@ export const HISTORY_BLOCK_MARKER = '%% kanban-starlane:history';
 
 /** Settings block marker written by the original obsidian-kanban plugin. */
 export const LEGACY_SETTINGS_BLOCK_MARKER = '%% kanban:settings';
+
+/**
+ * Tags a new install highlights out of the box; the card menu adds and removes them. Written
+ * into cards, so they stay English in every language.
+ */
+export const DEFAULT_HIGHLIGHT_TAGS = { urgent: '#urgent', important: '#important' };

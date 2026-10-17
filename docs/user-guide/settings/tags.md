@@ -22,8 +22,24 @@ you want them to sort; cards without a listed tag sort after the ones that have 
 
 Give specific tags a background and text color, shown wherever that tag appears on a card.
 
+### Highlight card
+
 Switch on **Highlight card** for a tag to mark the whole card, not only the tag: cards with
 that tag get a stripe on the left and a light tint of the tag's background color (or its text
-color, if only that is set). Use it for tags like `#urgent` or `#important`. If a card has
-several highlighting tags, the first one in the *Tag colors* list wins; to change the order,
-remove an entry and add it again. The highlight shows on the board, not in the table view.
+color, if only that is set).
+
+![Tag colors with Highlight card switched on](../assets/tag-colors-highlight-setting.png)
+
+A new install comes with two such tags ready: `#urgent` (red) and `#important` (orange). Change
+their colors, switch the highlight off or delete them like any other entry. An update from an
+earlier version does not add them, so cards you already tagged `#urgent` don't change by
+themselves.
+
+Every tag with **Highlight card** on also appears in the card menu (**⋮**): **Add tag #urgent**
+adds the tag to the card, **Remove tag #urgent** takes it away.
+
+- If a card has several highlighting tags, the first one in the *Tag colors* list wins; to
+  change the order, remove an entry and add it again.
+- The highlight shows on the board, not in the table view.
+- Tag colors set in a board's own settings replace the global list for that board, the
+  ready-made tags included.

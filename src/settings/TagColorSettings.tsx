@@ -240,7 +240,9 @@ function TagSettings({ dataKeys, onChange }: TagSettingsProps) {
       <div className="setting-item-info">
         <div className="setting-item-name">{t('Tag colors')}</div>
         <div className="setting-item-description">
-          {t('Set colors for tags displayed in cards.')}
+          {t(
+            'Set colors for tags displayed in cards. Highlight card colors the whole card and adds the tag to the card menu.'
+          )}
         </div>
       </div>
       <div>

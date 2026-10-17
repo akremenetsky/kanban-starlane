@@ -13,7 +13,20 @@ By default, tags stay in the card's body and clicking one searches the whole vau
   [filter](cards-and-lists.md#filtering-by-tags-and-boards) in the board header.
 - Make clicking a tag filter the board instead of searching the vault —
   [Tag click action](../settings/tags.md#tag-click-action).
-- Make important cards stand out: give a tag like `#urgent` a color and switch on
-  [Highlight card](../settings/tags.md#tag-colors) — such cards get a colored stripe and tint.
 - Give specific tags a color, or control how lists are sorted by tag —
   see [Tags settings](../settings/tags.md).
+
+## Highlighting important cards
+
+Cards tagged `#urgent` or `#important` stand out on the board with a colored stripe and tint.
+Type the tag in the card, or open the card menu (**⋮**) and choose **Add tag #urgent** or
+**Add tag #important**; the same menu removes it again.
+
+![Highlighted cards](../assets/card-highlight.png)
+
+![Card menu with the highlighting tags](../assets/card-menu-highlight.png)
+
+These two tags come ready with a new install. If you updated from an earlier version, add
+`#urgent` in [Tag colors](../settings/tags.md#tag-colors) and switch on
+[Highlight card](../settings/tags.md#highlight-card) — any other tag can highlight cards the
+same way.

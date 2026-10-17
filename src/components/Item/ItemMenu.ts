@@ -7,6 +7,7 @@ import { moveEntity } from 'src/dnd/util/data';
 import { applyTemplate } from 'src/integrations/templates';
 import { t } from 'src/lang/helpers';
 import { EditState, Item } from 'src/model/types';
+import { addTag, hasTag, removeTag } from 'src/parsers/cardTags';
 import { removeTagDate, removeTagTime } from 'src/parsers/tagDate';
 import { generateInstanceId } from 'src/shared/ids';
 import { escapeRegExpStr } from 'src/shared/util';
@@ -295,6 +296,27 @@ export function useItemMenu({
       }
 
       menu.addSeparator();
+
+      // One item per highlighting tag (Tag colors → Highlight card): mark a card without
+      // remembering the tag's name.
+      const seen = new Set<string>();
+      for (const { tagKey, highlight } of stateManager.getSetting('tag-colors') ?? []) {
+        if (!highlight || !tagKey || seen.has(tagKey.toLowerCase())) continue;
+        seen.add(tagKey.toLowerCase());
+
+        const has = hasTag(item.data.metadata.tags, tagKey);
+        menu.addItem((i) => {
+          i.setIcon(has ? 'lucide-flag-off' : 'lucide-flag')
+            .setTitle(`${has ? t('Remove tag') : t('Add tag')} ${tagKey}`)
+            .onClick(() => {
+              const titleRaw = has
+                ? removeTag(item.data.titleRaw, tagKey)
+                : addTag(item.data.titleRaw, tagKey);
+              boardModifiers.updateItem(path, stateManager.updateItemContent(item, titleRaw));
+            });
+        });
+      }
+      if (seen.size) menu.addSeparator();
 
       const addMoveToOptions = (menu: Menu) => {
         const lanes = stateManager.state.children;

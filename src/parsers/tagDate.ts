@@ -35,8 +35,8 @@ export type FoundTagDate = TagDate & { text: string; index: number };
 // Code spans and fenced blocks: a `#` in them is not a tag for the parser either.
 const codeRegEx = /(`+)[\s\S]*?\1|~~~[\s\S]*?~~~/g;
 
-// Keeps offsets; the filler is neither whitespace nor `#`, so no tag starts in or right after code.
-function maskCode(text: string) {
+/** Blanks out code spans and blocks, keeping offsets: no tag starts in or right after code. */
+export function maskCode(text: string) {
   return text.replace(codeRegEx, (code) => code.replace(/[^\n]/g, '\0'));
 }
 

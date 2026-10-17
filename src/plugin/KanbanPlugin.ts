@@ -13,6 +13,7 @@ import { FRONTMATTER_KEY, VIEW_ICON, VIEW_TYPE } from 'src/constants';
 import { t } from 'src/lang/helpers';
 import { basicFrontmatter } from 'src/parsers/markers';
 import { KanbanSettingsTab } from 'src/settings/SettingsTab';
+import { initialSettings } from 'src/settings/defaults';
 import { KanbanSettings } from 'src/settings/types';
 import { StateManager } from 'src/state/StateManager';
 import { renameLinkedSourceLane } from 'src/state/linkedLanes';
@@ -68,7 +69,44 @@ export default class KanbanPlugin extends Plugin {
   isShiftPressed: boolean = false;
 
   async loadSettings() {
-    this.settings = Object.assign({}, (await this.loadData()) as KanbanSettings | null);
+    const saved = (await this.loadData()) as KanbanSettings | null;
+    this.settings = Object.assign({}, saved);
+    // Decided once, when the metadata cache can tell whether the vault already has boards.
+    if (!saved) {
+      this.initialSettingsSaved = new Promise((resolve) => {
+        this.app.workspace.onLayoutReady(() => {
+          void this.saveInitialSettings().then(resolve);
+        });
+      });
+    }
+  }
+
+  /** Set while settings for a vault without saved plugin data are being decided. */
+  initialSettingsSaved?: Promise<void>;
+
+  private hasBoards() {
+    return this.app.vault
+      .getMarkdownFiles()
+      .some((file) => !!this.app.metadataCache.getFileCache(file)?.frontmatter?.[FRONTMATTER_KEY]);
+  }
+
+  private async saveInitialSettings() {
+    // At startup the cache may still be indexing: no boards seen yet can mean "not yet".
+    if (!this.hasBoards()) await this.metadataResolved(5000);
+    await this.updateSettings({ ...initialSettings(this.hasBoards()), ...this.settings });
+  }
+
+  /** Resolves on the next `resolved` of the metadata cache, or after `timeout` ms. */
+  private metadataResolved(timeout: number) {
+    return new Promise<void>((resolve) => {
+      const done = () => {
+        this.app.metadataCache.offref(ref);
+        window.clearTimeout(timer);
+        resolve();
+      };
+      const ref = this.app.metadataCache.on('resolved', done);
+      const timer = window.setTimeout(done, timeout);
+    });
   }
 
   async saveSettings() {

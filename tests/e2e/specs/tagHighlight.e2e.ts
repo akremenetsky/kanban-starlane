@@ -1,12 +1,16 @@
 import { browser, expect } from '@wdio/globals';
 import { obsidianPage } from 'wdio-obsidian-service';
 
-import { card, expectEventually, openBoard, resetWorkspace, waitForFile } from '../helpers';
+import { card, cls, expectEventually, openBoard, resetWorkspace, waitForFile } from '../helpers';
 
 const BOARD = 'Boards/Highlight.md';
 const RED = 'rgba(233, 49, 71, 1)';
 
-function boardMd(highlight: boolean) {
+function plainBoardMd(cards: string) {
+  return `---\n\nkanban-starlane: board\n\n---\n\n## Todo\n\n${cards}\n\n\n\n\n%% kanban-starlane:settings\n\`\`\`\n{"kanban-starlane":"board"}\n\`\`\`\n%%`;
+}
+
+function boardMd(highlight: boolean, cards = '- [ ] Plain\n- [ ] Fix sync #urgent') {
   const tagColor = JSON.stringify({
     tagKey: '#urgent',
     color: '',
@@ -14,7 +18,7 @@ function boardMd(highlight: boolean) {
     ...(highlight ? { highlight: true } : {}),
   });
   const settings = `{"kanban-starlane":"board","tag-colors":[${tagColor}]}`;
-  return `---\n\nkanban-starlane: board\n\n---\n\n## Todo\n\n- [ ] Plain\n- [ ] Fix sync #urgent\n\n\n\n\n%% kanban-starlane:settings\n\`\`\`\n${settings}\n\`\`\`\n%%`;
+  return `---\n\nkanban-starlane: board\n\n---\n\n## Todo\n\n${cards}\n\n\n\n\n%% kanban-starlane:settings\n\`\`\`\n${settings}\n\`\`\`\n%%`;
 }
 
 async function createBoard(md: string) {
@@ -25,6 +29,13 @@ async function createBoard(md: string) {
     BOARD,
     md
   );
+}
+
+async function clickCardMenuItem(title: string, menuItem: string) {
+  await (await card(0, title)).$(cls('item-postfix-button')).click();
+  const item = await browser.$(`.menu-item-title=${menuItem}`);
+  await item.waitForDisplayed();
+  await item.click();
 }
 
 async function isHighlighted(title: string) {
@@ -67,5 +78,50 @@ describe('card highlight by tag', function () {
     await toggle.click();
     await waitForFile(BOARD, (md) => md.includes('"tag-colors"') && !md.includes('highlight'));
     await expectEventually(() => isHighlighted('Fix sync #urgent'), false);
+  });
+
+  it('does not add the ready-made tags to a vault that already had boards', async function () {
+    // The test vault has boards and no saved plugin data: an update, not a new install.
+    await createBoard(plainBoardMd('- [ ] Fix sync #urgent'));
+    await openBoard(BOARD);
+    await card(0, 'Fix sync #urgent');
+
+    const tagColors = await browser.executeObsidian(async ({ app }) => {
+      const plugin = (app as any).plugins.plugins['kanban-starlane'];
+      await plugin.initialSettingsSaved;
+      return plugin.settings['tag-colors'] ?? null;
+    });
+    expect(tagColors).toBeNull();
+    expect(await isHighlighted('Fix sync #urgent')).toBe(false);
+  });
+
+  it('gives a vault without boards the ready-made tags', async function () {
+    const tags = await browser.executeObsidian(async ({ app }) => {
+      for (const file of app.vault.getMarkdownFiles()) await app.vault.delete(file);
+      const plugin = (app as any).plugins.plugins['kanban-starlane'];
+      plugin.settings = {};
+      await plugin.saveInitialSettings();
+      const result = (plugin.settings['tag-colors'] ?? []).map(
+        (c: { tagKey: string; highlight?: boolean }) => `${c.tagKey}:${c.highlight}`
+      );
+      await plugin.updateSettings({});
+      return result;
+    });
+
+    expect(tags).toEqual(['#urgent:true', '#important:true']);
+  });
+
+  it('adds and removes a highlighting tag from the card menu', async function () {
+    // Card history gives the card a block id, so it may end with ` ^id`.
+    await createBoard(boardMd(true, '- [ ] Plain'));
+    await openBoard(BOARD);
+
+    await clickCardMenuItem('Plain', 'Add tag #urgent');
+    await waitForFile(BOARD, (md) => /- \[ \] Plain #urgent( \^\w+)?\n/.test(md));
+    await expectEventually(() => isHighlighted('Plain #urgent'), true);
+
+    await clickCardMenuItem('Plain #urgent', 'Remove tag #urgent');
+    await waitForFile(BOARD, (md) => /- \[ \] Plain( \^\w+)?\n/.test(md));
+    await expectEventually(() => isHighlighted('Plain'), false);
   });
 });

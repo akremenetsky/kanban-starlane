@@ -27,6 +27,13 @@ describe('getCardHighlightColor', () => {
     expect(getCardHighlightColor(['#urgent'], undefined)).toBeNull();
   });
 
+  it('matches tags in any case, like Obsidian', () => {
+    expect(getCardHighlightColor(['#Urgent'], [urgent])).toBe('rgb(233, 49, 71)');
+    expect(getCardHighlightColor(['#urgent'], [{ ...urgent, tagKey: '#URGENT' }])).toBe(
+      'rgb(233, 49, 71)'
+    );
+  });
+
   it('picks the first matching entry in the tag colors list', () => {
     expect(getCardHighlightColor(['#important', '#urgent'], [urgent, important])).toBe(
       'rgb(233, 49, 71)'
