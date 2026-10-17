@@ -86,35 +86,15 @@ describe('card highlight by tag', function () {
     await expectEventually(() => isHighlighted('Fix sync #urgent'), false);
   });
 
-  it('does not add the ready-made tags to a vault that already had boards', async function () {
-    // The test vault has boards and no saved plugin data: an update, not a new install.
-    await createBoard(plainBoardMd('- [ ] Fix sync #urgent'));
+  it('highlights #urgent and #important out of the box', async function () {
+    await createBoard(
+      plainBoardMd('- [ ] Plain\n- [ ] Fix sync #urgent\n- [ ] Release #important')
+    );
     await openBoard(BOARD);
-    await card(0, 'Fix sync #urgent');
 
-    const tagColors = await browser.executeObsidian(async ({ app }) => {
-      const plugin = (app as any).plugins.plugins['kanban-starlane'];
-      await plugin.initialSettingsSaved;
-      return plugin.settings['tag-colors'] ?? null;
-    });
-    expect(tagColors).toBeNull();
-    expect(await isHighlighted('Fix sync #urgent')).toBe(false);
-  });
-
-  it('gives a vault without boards the ready-made tags', async function () {
-    const tags = await browser.executeObsidian(async ({ app }) => {
-      for (const file of app.vault.getMarkdownFiles()) await app.vault.delete(file);
-      const plugin = (app as any).plugins.plugins['kanban-starlane'];
-      plugin.settings = {};
-      await plugin.saveInitialSettings();
-      const result = (plugin.settings['tag-colors'] ?? []).map(
-        (c: { tagKey: string; highlight?: boolean }) => `${c.tagKey}:${c.highlight}`
-      );
-      await plugin.updateSettings({});
-      return result;
-    });
-
-    expect(tags).toEqual(['#urgent:true', '#important:true']);
+    await expectEventually(() => isHighlighted('Fix sync #urgent'), true);
+    await expectEventually(() => isHighlighted('Release #important'), true);
+    expect(await isHighlighted('Plain')).toBe(false);
   });
 
   it('marks and unmarks a card from the card menu', async function () {

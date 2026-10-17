@@ -16,12 +16,13 @@ requests (community-archive/obsidian-kanban #108, #739, #651, #999) and seven mo
   (confused with the bottom stripe of linked cards) and an icon (hard to see from afar).
 - Several highlighting tags: the first in *Tag colors* wins (simplest; the list cannot be
   reordered yet). Highlighting overdue cards and Tasks priorities is postponed.
-- **Works without setup.** A new install gets `#urgent` and `#important` with highlight on;
-  updates are left alone, so nobody's `#urgent` cards change colour. Earlier versions saved
-  no plugin data until a setting was changed, so "no data" is not enough: a vault that already
-  has boards (frontmatter key, checked once the metadata cache is indexed) is an update. The
-  decision is saved at once, so later changes to the defaults never reach existing users.
-  The tags are English in every language, as they are written into files.
+- **Works without setup, for everyone.** `#urgent` and `#important` are added to the global
+  *Tag colors* with highlight on, on new installs and updates alike (the project is young;
+  the product owner accepted that already-tagged cards change colour). An existing entry for
+  the tag keeps its colours and gets the highlight on. Done once per `defaults-version`
+  (global settings), so deleted tags don't come back and a future ready-made mark reaches
+  everyone once. Boards with their own *Tag colors* are not touched (that would rewrite board
+  files). The tags are English in every language, as they are written into files.
 - **Card menu → *Mark as*** submenu, one checkable item per highlighting tag, appended to the
   card's first line. Named after the meaning, not "Add tag", and a submenu leaves room for more
   kinds of marks later.

@@ -30,10 +30,10 @@ color, if only that is set).
 
 ![Tag colors with Highlight card switched on](../assets/tag-colors-highlight-setting.png)
 
-A new install comes with two such tags ready: `#urgent` (red) and `#important` (orange). Change
-their colors, switch the highlight off or delete them like any other entry. An update from an
-earlier version does not add them, so cards you already tagged `#urgent` don't change by
-themselves.
+Two such tags come ready: `#urgent` (red) and `#important` (orange). Change their colors,
+switch the highlight off or delete them like any other entry — they are added only once, so a
+deleted one does not come back. If you already had a color for one of these tags, it keeps your
+colors and gets **Highlight card** switched on.
 
 Every tag with **Highlight card** on also appears in the card menu (**⋮**) under **Mark as**:
 picking it adds the tag to the card; a checked tag is already there, and picking it again

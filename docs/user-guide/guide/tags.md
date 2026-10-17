@@ -26,7 +26,6 @@ Type the tag in the card, or open the card menu (**⋮**) → **Mark as** and pi
 
 ![Card menu with the highlighting tags](../assets/card-menu-highlight.png)
 
-These two tags come ready with a new install. If you updated from an earlier version, add
-`#urgent` in [Tag colors](../settings/tags.md#tag-colors) and switch on
-[Highlight card](../settings/tags.md#highlight-card) — any other tag can highlight cards the
-same way.
+Both tags come ready in [Tag colors](../settings/tags.md#tag-colors). Any other tag can
+highlight cards the same way — switch on [Highlight card](../settings/tags.md#highlight-card)
+for it.
