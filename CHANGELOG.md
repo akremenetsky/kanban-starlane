@@ -5,6 +5,8 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 
 ## Unreleased
 
+## 0.1.7 — 2026-10-17
+
 ### Added
 - **Highlight important cards.** A new *Highlight card* switch in *Tag colors* makes cards
   with that tag stand out with a stripe on the left and a light tint of the tag's color. Every
