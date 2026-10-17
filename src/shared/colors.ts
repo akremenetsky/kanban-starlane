@@ -1,3 +1,4 @@
+import { colord } from 'colord';
 import { DateColor, TagColor } from 'src/model/types';
 import { Moment, TimeUnit, moment } from 'src/shared/moment';
 
@@ -12,6 +13,26 @@ export function getTagColorFn(tagColors: TagColor[]) {
     if (tagMap[tag]) return tagMap[tag];
     return null;
   };
+}
+
+/**
+ * The opaque color that highlights a card: from the first highlighting entry in `tagColors`
+ * whose tag the card has (its background color, else its text color), or null.
+ */
+export function getCardHighlightColor(
+  tags: string[] | undefined,
+  tagColors: TagColor[] | undefined
+) {
+  if (!tags?.length || !tagColors?.length) return null;
+
+  for (const entry of tagColors) {
+    if (!entry.highlight || !entry.tagKey || !tags.includes(entry.tagKey)) continue;
+
+    const color = colord(entry.backgroundColor || entry.color || '');
+    if (color.isValid()) return color.alpha(1).toRgbString();
+  }
+
+  return null;
 }
 
 export function getDateColorFn(dateColors: DateColor[]) {

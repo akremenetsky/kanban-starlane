@@ -13,5 +13,7 @@ By default, tags stay in the card's body and clicking one searches the whole vau
   [filter](cards-and-lists.md#filtering-by-tags-and-boards) in the board header.
 - Make clicking a tag filter the board instead of searching the vault —
   [Tag click action](../settings/tags.md#tag-click-action).
+- Make important cards stand out: give a tag like `#urgent` a color and switch on
+  [Highlight card](../settings/tags.md#tag-colors) — such cards get a colored stripe and tint.
 - Give specific tags a color, or control how lists are sorted by tag —
   see [Tags settings](../settings/tags.md).

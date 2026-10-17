@@ -21,3 +21,9 @@ you want them to sort; cards without a listed tag sort after the ones that have 
 ## Tag colors
 
 Give specific tags a background and text color, shown wherever that tag appears on a card.
+
+Switch on **Highlight card** for a tag to mark the whole card, not only the tag: cards with
+that tag get a stripe on the left and a light tint of the tag's background color (or its text
+color, if only that is set). Use it for tags like `#urgent` or `#important`. If a card has
+several highlighting tags, the first one in the *Tag colors* list wins; to change the order,
+remove an entry and add it again. The highlight shows on the board, not in the table view.

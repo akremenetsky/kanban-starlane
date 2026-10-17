@@ -179,6 +179,7 @@ const lang: Partial<Lang> = {
   'Field contains markdown': 'Поле содержит markdown',
 
   // TagColorSettings.tsx
+  'Highlight card': 'Подсвечивать карточку',
   'Add tag color': 'Добавить цвет метки',
 
   // components/Item/Item.tsx

@@ -5,6 +5,12 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 
 ## Unreleased
 
+### Added
+- **Highlight cards by tag.** A *Tag colors* entry has a new *Highlight card* switch: cards
+  with that tag get a stripe on the left and a light tint of the tag's color, so important
+  cards stand out. If a card has several such tags, the first one in the *Tag colors* list
+  wins.
+
 ## 0.1.6 — 2026-10-14
 
 ### Added

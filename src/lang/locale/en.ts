@@ -214,6 +214,7 @@ const en = {
     'Set an explicit sort order for the specified tags.',
 
   // TagColorSettings.tsx
+  'Highlight card': 'Highlight card',
   'Add tag color': 'Add tag color',
 
   // components/Table.tsx

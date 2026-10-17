@@ -830,6 +830,13 @@ button.kanban-starlane__new-item-button {
     0 0 0 2px hsla(var(--interactive-accent-hsl), 0.7);
 }
 
+/* The dragged copy keeps its highlight stripe. */
+.kanban-starlane__drag-container
+  > .kanban-starlane__item-wrapper
+  .kanban-starlane__item.kanban-starlane__item-highlighted {
+  border-inline-start-color: var(--kanban-starlane__card-highlight);
+}
+
 .kanban-starlane__item {
   font-size: 0.875rem;
   border: 1px solid var(--background-modifier-border);
@@ -840,6 +847,23 @@ button.kanban-starlane__new-item-button {
   &:has(.markdown-source-view) {
     outline: 1px solid var(--background-modifier-border-focus);
     border-color: var(--background-modifier-border-focus);
+  }
+}
+
+/* A card with a highlighting tag (Tag colors → Highlight card): a stripe and a light tint. */
+.kanban-starlane__item.kanban-starlane__item-highlighted {
+  border-inline-start: 4px solid var(--kanban-starlane__card-highlight);
+
+  .kanban-starlane__item-content-wrapper {
+    background: linear-gradient(
+        color-mix(in srgb, var(--kanban-starlane__card-highlight) 10%, transparent),
+        color-mix(in srgb, var(--kanban-starlane__card-highlight) 10%, transparent)
+      ),
+      var(--background-primary);
+  }
+
+  .kanban-starlane__item-title-wrapper {
+    background: transparent;
   }
 }
 
