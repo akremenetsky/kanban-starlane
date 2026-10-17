@@ -23,8 +23,9 @@ Reading code, running the plugin in `test-vault/` and searching the web are all 
 - Code touched: locate it via `AGENTS.md` → "Where things go" and `docs/dev/architecture.md`.
 - Demand signals:
   - this repo's issues: `gh issue list -R akremenetsky/kanban-starlane --search "<words>" --state all`;
-  - upstream: `gh search issues --repo mgmeyers/obsidian-kanban "<words>"` — count issues
-    and reactions (`gh issue view <n> -R mgmeyers/obsidian-kanban --json reactionGroups,comments`);
+  - upstream: `gh api -X GET search/issues -f q="repo:community-archive/obsidian-kanban is:issue <words>" -f sort=reactions`
+    (upstream moved from `mgmeyers/` to `community-archive/`) — count issues
+    and reactions (`gh issue view <n> -R community-archive/obsidian-kanban --json reactionGroups,comments`);
   - the Obsidian forum (forum.obsidian.md) and the community plugin list.
 - Other tools (web search): Trello, GitHub Projects, Jira, Linear, Notion, Planka, Wekan,
   Focalboard; in Obsidian — Obsidian Bases, Projects, Tasks, Dataview, Make.md, other kanban
