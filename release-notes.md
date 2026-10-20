@@ -1,8 +1,7 @@
 ### Added
-- **Highlight important cards.** A new *Highlight card* switch in *Tag colors* makes cards
-  with that tag stand out with a stripe on the left and a light tint of the tag's color. Every
-  such tag also appears in the card menu under *Mark as*, to add or remove it in one click.
-  `#urgent` and `#important` come ready, so no setup is needed: they are added to *Tag colors*
-  once, and cards already tagged with them get highlighted. If you already colored one of these
-  tags, your colors stay and the highlight is switched on. If a card has several highlighting
-  tags, the first one in the list wins.
+- **Send a card to a linked board.** In a list that shows lists of other boards, the card menu
+  has **Move to board: …**. It moves the card into the linked list of that board without
+  opening it; the card stays visible in your list as a linked card with its board's stripe.
+  With several linked lists the item opens a submenu. The item names the board; the list is
+  named too only when it is not obvious (it is called differently from yours, or the board has
+  several linked lists).
