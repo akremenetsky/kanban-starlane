@@ -178,4 +178,29 @@ describe('linked lanes', function () {
       md.includes('"C":{"sources":[{"file":"Boards/Work.md","lane":"C"}]}')
     );
   });
+
+  it('sends a card to the linked board from the card menu', async function () {
+    await openBoard(D1);
+    await expectEventually(async () => (await cardTitles(0)).length, 4);
+
+    await (await card(0, 'D1_A_0')).$(cls('item-postfix-button')).click();
+    const item = await browser.$('.menu-item-title=Move to board: Work / A');
+    await item.waitForDisplayed();
+    await item.click();
+
+    await waitForFile(D2, (md) => /- \[ \] D2_A_1\n- \[ \] D1_A_0/.test(md));
+    await waitForFile(D1, (md) => !md.includes('- [ ] D1_A_0'));
+    // The card is now a linked one: it shows after the other linked cards, with the stripe.
+    await expectEventually(() => cardTitles(0), ['D1_A_1', 'D2_A_0', 'D2_A_1', 'D1_A_0']);
+    expect((await lane(0).$$(`${cls('item')}${cls('item-linked')}`)).length).toBe(3);
+  });
+
+  it('offers no board to send to in a lane without links', async function () {
+    await openBoard(D1);
+    await expectEventually(async () => (await cardTitles(2)).length, 1);
+
+    await (await card(2, 'D1_C_0')).$(cls('item-postfix-button')).click();
+    await (await browser.$('.menu-item-title=Edit card')).waitForDisplayed();
+    expect(await browser.$$('.menu-item-title*=Move to board')).toHaveLength(0);
+  });
 });

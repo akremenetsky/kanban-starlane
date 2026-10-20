@@ -5,6 +5,12 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 
 ## Unreleased
 
+### Added
+- **Send a card to a linked board.** In a list that shows lists of other boards, the card menu
+  has **Move to board: …**. It moves the card into the linked list of that board without
+  opening it; the card stays visible in your list as a linked card with its board's stripe.
+  With several linked lists the item opens a submenu.
+
 ## 0.1.7 — 2026-10-17
 
 ### Added

@@ -273,6 +273,9 @@ const en = {
   'Move to top': 'Move to top',
   'Move to bottom': 'Move to bottom',
   'Move to list': 'Move to list',
+  'Move to board': 'Move to board',
+  'Could not move the card: the list was not found in the other board':
+    'Could not move the card: the list was not found in the other board',
 
   // components/Lane/LaneForm.tsx
   'Enter list title...': 'Enter list title...',

@@ -13,6 +13,7 @@ import { generateInstanceId } from 'src/shared/ids';
 import { escapeRegExpStr } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 import { BoardModifiers } from 'src/state/boardModifiers';
+import { LinkedMoveTarget } from 'src/state/linkedMove';
 import { linkCardTitleToNote, noteNameFromCardTitle } from 'src/state/noteFromCard';
 
 import { CardHistoryModal } from './CardHistoryModal';
@@ -31,6 +32,11 @@ interface UseItemMenuParams {
   stateManager: StateManager;
   /** Set when the card belongs to another board shown in a linked lane. */
   linkedFrom?: TFile | null;
+  /** Set for an own card in a lane that shows linked lanes: where it can be sent. */
+  linkedMove?: {
+    getTargets: () => LinkedMoveTarget[];
+    send: (target: LinkedMoveTarget) => void;
+  };
 }
 
 export function useItemMenu({
@@ -40,6 +46,7 @@ export function useItemMenu({
   boardModifiers,
   stateManager,
   linkedFrom,
+  linkedMove,
 }: UseItemMenuParams) {
   return useCallback(
     (e: MouseEvent) => {
@@ -369,8 +376,40 @@ export function useItemMenu({
         });
       }
 
+      const addSendToBoardOptions = () => {
+        const targets = linkedMove?.getTargets() ?? [];
+        if (!targets.length) return;
+
+        const label = (target: LinkedMoveTarget) => {
+          const file = stateManager.app.vault.getAbstractFileByPath(target.file);
+          const board = file instanceof TFile ? file.basename : target.file;
+          return `${board} / ${target.lane}`;
+        };
+        const add = (m: Menu, target: LinkedMoveTarget, title: string) =>
+          m.addItem((i) =>
+            i
+              .setIcon('lucide-send')
+              .setTitle(title)
+              .onClick(() => linkedMove.send(target))
+          );
+
+        menu.addSeparator();
+        if (targets.length === 1) {
+          add(menu, targets[0], `${t('Move to board')}: ${label(targets[0])}`);
+        } else if (Platform.isPhone) {
+          targets.forEach((target) => add(menu, target, `${t('Move to board')}: ${label(target)}`));
+        } else {
+          menu.addItem((i) => {
+            const submenu = i.setTitle(t('Move to board')).setIcon('lucide-send').setSubmenu();
+            targets.forEach((target) => add(submenu, target, label(target)));
+          });
+        }
+      };
+
+      addSendToBoardOptions();
+
       menu.showAtPosition(coordinates);
     },
-    [setEditState, item, path, boardModifiers, stateManager, linkedFrom]
+    [setEditState, item, path, boardModifiers, stateManager, linkedFrom, linkedMove]
   );
 }
