@@ -5,6 +5,8 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 
 ## Unreleased
 
+## 0.1.8 — 2026-10-21
+
 ### Added
 - **Send a card to a linked board.** In a list that shows lists of other boards, the card menu
   has **Move to board: …**. It moves the card into the linked list of that board without
