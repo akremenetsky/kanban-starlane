@@ -20,6 +20,12 @@ import { useDragHandle } from 'src/dnd/managers/DragManager';
 import { EditState, EditingState, Item, isEditing } from 'src/model/types';
 import { getCardHighlightColor } from 'src/shared/colors';
 import { LaneEntry } from 'src/state/linkedLanes';
+import {
+  LinkedMoveTarget,
+  linkedMoveTargets,
+  ownCardPath,
+  sendCardToLinkedBoard,
+} from 'src/state/linkedMove';
 
 import { ItemCheckbox } from './ItemCheckbox';
 import { ItemContent } from './ItemContent';
@@ -76,6 +82,25 @@ const ItemInner = memo(function ItemInner({
 
   const path = useNestedEntityPath();
 
+  const { boards } = useContext(LinkedLanesContext);
+  const linkedMove = useMemo(() => {
+    // Cards of linked boards stay in their file; only own cards can be sent away.
+    if (stateManager.file !== view.file) return undefined;
+    const getBoard = (file: string) => boards.get(file)?.board;
+    return {
+      getTargets: () =>
+        ownCardPath(stateManager.state, path, getBoard)
+          ? linkedMoveTargets(stateManager.state, path[0], getBoard)
+          : [],
+      send: (target: LinkedMoveTarget) => {
+        const ownPath = ownCardPath(stateManager.state, path, getBoard);
+        const destination = boards.get(target.file)?.stateManager;
+        if (ownPath && destination)
+          sendCardToLinkedBoard(stateManager, destination, ownPath, target);
+      },
+    };
+  }, [boards, stateManager, view, path]);
+
   const showItemMenu = useItemMenu({
     boardModifiers,
     item,
@@ -83,6 +108,7 @@ const ItemInner = memo(function ItemInner({
     stateManager,
     path,
     linkedFrom: stateManager.file !== view.file ? stateManager.file : null,
+    linkedMove,
   });
 
   const onContextMenu: JSX.MouseEventHandler<HTMLDivElement> = useCallback(

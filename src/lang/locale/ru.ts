@@ -220,6 +220,9 @@ const lang: Partial<Lang> = {
   'Add label': 'Добавить ярлык',
   'Move to top': 'Переместить вверх',
   'Move to bottom': 'Переместить вниз',
+  'Move to board': 'Переместить на доску',
+  'Could not move the card: the list was not found in the other board':
+    'Не удалось переместить карточку: в другой доске не найден список',
 
   // components/Lane/LaneForm.tsx
   'Enter list title...': 'Введите заголовок списка...',
