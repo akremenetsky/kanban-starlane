@@ -4,6 +4,7 @@ import { Board } from 'src/model/types';
 import { laneEntries, readLinkedLanes } from 'src/state/linkedLanes';
 import {
   dropOwnSlot,
+  linkedMoveLabel,
   linkedMoveTargets,
   ownCardPath,
   sendCardToLinkedBoard,
@@ -172,5 +173,26 @@ describe('sendCardToLinkedBoard', () => {
       'self',
       'D2.md#^x1',
     ]);
+  });
+});
+
+describe('linkedMoveLabel', () => {
+  const t = (file: string, lane: string) => ({ file, lane, laneIndex: 0 });
+
+  it('names only the board when the lane is the obvious one', () => {
+    const targets = [t(D2, 'A'), t(D3, 'A')];
+    expect(linkedMoveLabel(targets[0], targets, 'A', 'Work')).toBe('Work');
+    expect(linkedMoveLabel(targets[1], targets, 'A', 'Home')).toBe('Home');
+  });
+
+  it('adds the lane when it is named differently', () => {
+    const targets = [t(D2, 'Doing')];
+    expect(linkedMoveLabel(targets[0], targets, 'A', 'Work')).toBe('Work / Doing');
+  });
+
+  it('adds the lane when a board has several targets', () => {
+    const targets = [t(D2, 'A'), t(D2, 'B')];
+    expect(linkedMoveLabel(targets[0], targets, 'A', 'Work')).toBe('Work / A');
+    expect(linkedMoveLabel(targets[1], targets, 'A', 'Work')).toBe('Work / B');
   });
 });

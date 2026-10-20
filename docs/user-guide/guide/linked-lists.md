@@ -40,7 +40,8 @@ archive it, drag it — changes that board's file, even when that board is not o
   cards change order among themselves or move to another list.
 - **Sending your own card away.** In a list that shows another board, the menu of your own
   card has **Move to board: …**. It moves the card into the linked list of that board (one
-  entry per linked list, in a submenu when there are several). The card then appears in your
+  entry per linked list, in a submenu when there are several; the list name is added only when
+  it is not obvious: it is named differently from yours, or the board has several). The card then appears in your
   list as a linked card, with its board's stripe, after the other linked cards. Its
   [history](card-history.md) goes with it. Cards of other boards don't have this item.
 - **New cards** added to a list always belong to the board you are looking at.

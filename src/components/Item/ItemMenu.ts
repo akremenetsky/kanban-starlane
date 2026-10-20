@@ -13,7 +13,7 @@ import { generateInstanceId } from 'src/shared/ids';
 import { escapeRegExpStr } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 import { BoardModifiers } from 'src/state/boardModifiers';
-import { LinkedMoveTarget } from 'src/state/linkedMove';
+import { LinkedMoveTarget, linkedMoveLabel } from 'src/state/linkedMove';
 import { linkCardTitleToNote, noteNameFromCardTitle } from 'src/state/noteFromCard';
 
 import { CardHistoryModal } from './CardHistoryModal';
@@ -383,7 +383,12 @@ export function useItemMenu({
         const label = (target: LinkedMoveTarget) => {
           const file = stateManager.app.vault.getAbstractFileByPath(target.file);
           const board = file instanceof TFile ? file.basename : target.file;
-          return `${board} / ${target.lane}`;
+          return linkedMoveLabel(
+            target,
+            targets,
+            stateManager.state.children[path[0]]?.data.title,
+            board
+          );
         };
         const add = (m: Menu, target: LinkedMoveTarget, title: string) =>
           m.addItem((i) =>

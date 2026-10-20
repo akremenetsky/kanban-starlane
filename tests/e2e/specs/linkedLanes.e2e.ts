@@ -184,7 +184,7 @@ describe('linked lanes', function () {
     await expectEventually(async () => (await cardTitles(0)).length, 4);
 
     await (await card(0, 'D1_A_0')).$(cls('item-postfix-button')).click();
-    const item = await browser.$('.menu-item-title=Move to board: Work / A');
+    const item = await browser.$('.menu-item-title=Move to board: Work');
     await item.waitForDisplayed();
     await item.click();
 

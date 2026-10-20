@@ -39,6 +39,20 @@ export function linkedMoveTargets(
   }));
 }
 
+/**
+ * How a target is named in the card menu: the board, plus its lane when that is not obvious
+ * (the lane is named differently from the card's own, or the board has several targets).
+ */
+export function linkedMoveLabel(
+  target: LinkedMoveTarget,
+  targets: LinkedMoveTarget[],
+  laneTitle: string | undefined,
+  boardName: string
+): string {
+  const sameBoard = targets.filter((other) => other.file === target.file).length;
+  return sameBoard > 1 || target.lane !== laneTitle ? `${boardName} / ${target.lane}` : boardName;
+}
+
 /** The card's path in this board's own file, or null for a card of another board. */
 export function ownCardPath(board: Board, path: Path, getBoard: GetBoard): Path | null {
   const resolved = resolveDisplayPath(board, path, getBoard);
