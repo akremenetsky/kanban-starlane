@@ -5,6 +5,12 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 
 ## Unreleased
 
+### Fixed
+- A board with many lists could start scrolling to the right on its own and keep pulling back
+  there when scrolled left, until Obsidian was restarted. Drag auto-scroll now stops at the edge
+  (also with zoom or display scaling, and with a vertical scrollbar), ends with the drag, and
+  scrolls only the list or board the card is dragged against, not every list at once.
+
 ## 0.1.8 — 2026-10-21
 
 ### Added

@@ -25,6 +25,9 @@ export const scrollContainerEntityType = 'scroll-container';
 
 const scrollStrengthModifier = 8;
 
+// Zoom and display scaling give fractional scroll offsets that never land exactly on an edge.
+const edgeTolerance = 1;
+
 const sides: Side[] = ['top', 'right', 'bottom', 'left'];
 
 export class ScrollManager {
@@ -127,6 +130,7 @@ export class ScrollManager {
     if (!this.scrollEl && !this.observer) return;
 
     this.observerQueue.length = 0;
+    this.stopDragScroll();
     this.handleEntityUnregistration();
     this.observer.disconnect();
     this.unbindScrollHandlers();
@@ -180,24 +184,25 @@ export class ScrollManager {
     }
   }
 
+  // Every manager hears every container's scroll events; handlers check the entity id.
   bindScrollHandlers() {
-    sides.forEach((side) => {
-      const id = this.getId(side);
-      this.dndManager.dragManager.emitter.on('beginDragScroll', this.handleBeginDragScroll, id);
-      this.dndManager.dragManager.emitter.on('updateDragScroll', this.handleUpdateDragScroll, id);
-      this.dndManager.dragManager.emitter.on('endDragScroll', this.handleEndDragScroll, id);
-      this.dndManager.dragManager.emitter.on('dragEnd', this.onDragEnd);
-    });
+    const { emitter } = this.dndManager.dragManager;
+    emitter.on('beginDragScroll', this.handleBeginDragScroll);
+    emitter.on('updateDragScroll', this.handleUpdateDragScroll);
+    emitter.on('endDragScroll', this.handleEndDragScroll);
+    emitter.on('dragEnd', this.onDragEnd);
   }
 
   unbindScrollHandlers() {
-    sides.forEach((side) => {
-      const id = this.getId(side);
-      this.dndManager.dragManager.emitter.off('beginDragScroll', this.handleBeginDragScroll, id);
-      this.dndManager.dragManager.emitter.off('updateDragScroll', this.handleUpdateDragScroll, id);
-      this.dndManager.dragManager.emitter.off('endDragScroll', this.handleEndDragScroll, id);
-      this.dndManager.dragManager.emitter.off('dragEnd', this.onDragEnd);
-    });
+    const { emitter } = this.dndManager.dragManager;
+    emitter.off('beginDragScroll', this.handleBeginDragScroll);
+    emitter.off('updateDragScroll', this.handleUpdateDragScroll);
+    emitter.off('endDragScroll', this.handleEndDragScroll);
+    emitter.off('dragEnd', this.onDragEnd);
+  }
+
+  isOwnScrollEvent({ scrollEntityId, scrollEntitySide }: ScrollEventData) {
+    return scrollEntityId === this.getId(scrollEntitySide);
   }
 
   onScroll = () => {
@@ -208,45 +213,68 @@ export class ScrollManager {
   };
 
   onDragEnd = () => {
-    this.activeScroll.clear();
+    this.stopDragScroll();
   };
 
-  handleBeginDragScroll = ({ scrollEntitySide, scrollStrength }: ScrollEventData) => {
-    if (this.isDoneScrolling(scrollEntitySide)) return;
+  handleBeginDragScroll = (e: ScrollEventData) => {
+    if (!this.isOwnScrollEvent(e) || this.isDoneScrolling(e.scrollEntitySide)) return;
 
-    this.activeScroll.set(scrollEntitySide, scrollStrength);
+    this.activeScroll.set(e.scrollEntitySide, e.scrollStrength);
     this.handleDragScroll();
   };
 
-  handleUpdateDragScroll = ({ scrollEntitySide, scrollStrength }: ScrollEventData) => {
-    if (this.isDoneScrolling(scrollEntitySide)) return;
+  handleUpdateDragScroll = (e: ScrollEventData) => {
+    if (!this.isOwnScrollEvent(e) || this.isDoneScrolling(e.scrollEntitySide)) return;
 
-    this.activeScroll.set(scrollEntitySide, scrollStrength);
+    this.activeScroll.set(e.scrollEntitySide, e.scrollStrength);
+    this.handleDragScroll();
   };
 
-  handleEndDragScroll = ({ scrollEntitySide }: ScrollEventData) => {
-    this.activeScroll.delete(scrollEntitySide);
+  handleEndDragScroll = (e: ScrollEventData) => {
+    if (!this.isOwnScrollEvent(e)) return;
+
+    this.activeScroll.delete(e.scrollEntitySide);
   };
 
   isDoneScrolling(side: Side) {
+    const { x, y, maxX, maxY } = this.scrollState;
+
     switch (side) {
       case 'top':
-        return this.scrollState.y === 0;
+        return y < edgeTolerance;
       case 'right':
-        return this.scrollState.x === this.scrollState.maxX;
+        return x > maxX - edgeTolerance;
       case 'bottom':
-        return this.scrollState.y === this.scrollState.maxY;
+        return y > maxY - edgeTolerance;
       case 'left':
-        return this.scrollState.x === 0;
+        return x < edgeTolerance;
+    }
+  }
+
+  stopDragScroll() {
+    this.activeScroll.clear();
+
+    if (this.scrollFrame) {
+      this.scrollEl.win.cancelAnimationFrame(this.scrollFrame);
+      this.scrollFrame = 0;
     }
   }
 
   handleDragScroll() {
-    if (this.activeScroll.size === 0) {
+    // One frame loop per container, however many sides start scrolling.
+    if (this.activeScroll.size === 0 || this.scrollFrame) {
       return;
     }
 
-    this.scrollEl.win.requestAnimationFrame(() => {
+    this.scrollFrame = this.scrollEl.win.requestAnimationFrame(() => {
+      this.scrollFrame = 0;
+
+      // Safety net for a drag that ended without its dragEnd reaching this container.
+      if (!this.dndManager.dragManager.dragEntity) {
+        this.activeScroll.clear();
+        return;
+      }
+
       const scrollBy = {
         left: 0,
         top: 0,
