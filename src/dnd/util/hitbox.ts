@@ -302,12 +302,13 @@ export function getBestIntersect(
 }
 
 export function getElementScrollOffsets(element: HTMLElement): ScrollState {
-  const { scrollLeft, scrollTop, scrollWidth, scrollHeight, offsetWidth, offsetHeight } = element;
+  const { scrollLeft, scrollTop, scrollWidth, scrollHeight, clientWidth, clientHeight } = element;
 
   const x = scrollLeft;
   const y = scrollTop;
-  const maxX = scrollWidth - offsetWidth;
-  const maxY = scrollHeight - offsetHeight;
+  // client* excludes scrollbars and borders: offset* would put the edge out of reach.
+  const maxX = scrollWidth - clientWidth;
+  const maxY = scrollHeight - clientHeight;
 
   return {
     x,

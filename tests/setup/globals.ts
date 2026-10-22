@@ -49,6 +49,23 @@ define(Element.prototype, 'toggleClass', function (this: Element, cls: string, v
 define(Element.prototype, 'hasClass', function (this: Element, cls: string) {
   return this.classList.contains(cls);
 });
+if (!('win' in Node.prototype)) {
+  Object.defineProperty(Node.prototype, 'doc', {
+    configurable: true,
+    get(this: Node) {
+      return this.ownerDocument ?? document;
+    },
+  });
+  Object.defineProperty(Node.prototype, 'win', {
+    configurable: true,
+    get(this: Node) {
+      return (this.ownerDocument ?? document).defaultView ?? window;
+    },
+  });
+}
+define(Node.prototype, 'instanceOf', function (this: Node, type: new () => unknown) {
+  return this instanceof type;
+});
 
 function createEl(this: Node | void, tag: string, o?: any): HTMLElement {
   const el = document.createElement(tag);
