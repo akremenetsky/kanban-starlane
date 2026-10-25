@@ -5,6 +5,8 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 
 ## Unreleased
 
+## 0.1.9 — 2026-10-25
+
 ### Added
 - **Show date tags as written** (*Date & Time*, tag date syntax only): the card shows its date
   tag as written, such as `#26-10-14-13-25-20`, instead of a formatted date and time. It is a

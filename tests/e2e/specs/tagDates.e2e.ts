@@ -133,7 +133,9 @@ describe('tag dates', function () {
     await openBoard(BOARD);
     await expectEventually(async () => (await cardTitles(0)).length, 1);
 
-    await startNewCard('Meet #26-10-14 @@');
+    // The typed time leaves one suggestion: Enter picks it wherever the mouse is (a hovered
+    // suggestion becomes the selected one).
+    await startNewCard('Meet #26-10-14 @@00:00');
     await browser.$('.suggestion-item').waitForDisplayed();
     await browser.keys('Enter');
     await expectEventually(editorText, 'Meet #26-10-14-00-00-00 ');
@@ -163,7 +165,7 @@ describe('tag dates', function () {
     await openBoard(BOARD);
     await expectEventually(async () => (await cardTitles(0)).length, 1);
 
-    await startNewCard('Ping @@');
+    await startNewCard('Ping @@00:00');
     await browser.$('.suggestion-item').waitForDisplayed();
     await browser.keys('Enter');
     const expected = await today('YY-MM-DD');
