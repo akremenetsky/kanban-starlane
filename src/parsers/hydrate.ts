@@ -49,6 +49,17 @@ export function preprocessTitle(stateManager: StateManager, title: string) {
     dateColor = getDateColor(found.date);
     const iso = found.date.toISOString();
     const dateWrapper = getWrapperStyles(c('preview-date-wrapper'));
+    const insert = (rendered: string) =>
+      title.slice(0, found.index) + rendered + title.slice(found.index + found.text.length);
+
+    if (stateManager.getSetting('date-tags-as-written')) {
+      // The bare tag text inside the wrapper is rendered by Obsidian as a real tag, which users
+      // can target with their tag CSS.
+      return insert(
+        `<span data-date="${iso}" class="${dateWrapper.wrapperClass} ${c('date')} ${c('date-tag')}"${dateWrapper.wrapperStyle}>${found.text}</span>`
+      );
+    }
+
     let rendered = `<span data-date="${iso}" class="${dateWrapper.wrapperClass} ${c('date')}"${dateWrapper.wrapperStyle}><span class="${c('preview-date')} ${c('item-metadata-date')}">${found.date.format(dateDisplayFormat)}</span></span>`;
 
     if (found.hasTime) {
@@ -56,7 +67,7 @@ export function preprocessTitle(stateManager: StateManager, title: string) {
       rendered += ` <span data-date="${iso}" class="${timeWrapper.wrapperClass} ${c('date')}"${timeWrapper.wrapperStyle}><span class="${c('preview-time')} ${c('item-metadata-time')}">${found.date.format(timeFormat)}</span></span>`;
     }
 
-    return title.slice(0, found.index) + rendered + title.slice(found.index + found.text.length);
+    return insert(rendered);
   }
 
   title = title.replace(

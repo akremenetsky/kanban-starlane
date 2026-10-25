@@ -1,4 +1,5 @@
 import { Keymap, Menu } from 'obsidian';
+import { c } from 'src/components/helpers';
 
 import { KanbanView } from './KanbanView';
 
@@ -97,6 +98,8 @@ export function bindMarkdownEvents(view: KanbanView) {
   });
   contentEl.on('click', 'a.tag', (evt: MouseEvent, targetEl: HTMLElement) => {
     if (evt.button !== 0) return;
+    // A card's tag date shown as written opens the date picker instead (ItemContent, DateAndTime).
+    if (targetEl.parentElement?.hasClass(c('date-tag'))) return;
 
     const tag = targetEl.getText();
     const searchPlugin = app.internalPlugins.getPluginById('global-search');

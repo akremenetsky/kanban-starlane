@@ -47,6 +47,7 @@ export function compileSettings(
     'date-display-format': dateDisplayFormat,
     'date-time-display-format': dateDisplayFormat + ' ' + timeFormat,
     'date-syntax': dateSyntax,
+    'date-tags-as-written': raw('date-tags-as-written'),
     'date-trigger': raw('date-trigger') || defaultDateTrigger,
     'inline-metadata-position': raw('inline-metadata-position') || defaultMetadataPosition,
     'time-format': timeFormat,

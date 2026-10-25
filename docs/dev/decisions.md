@@ -3,6 +3,25 @@
 Short records of decisions that shape the project. Newest first. Add an entry when a
 decision is not obvious from the code (format changes, dependencies, trade-offs).
 
+## 2026-10-25 — Date tags as written, hiding dates (issue #16 follow-up)
+
+The author of #16 wants the card to show the date tag as written so their tag CSS applies,
+and a way to hide the date on cards.
+
+- **Setting `date-tags-as-written`, off by default** (product owner's choice), tag syntax only.
+  Showing the tag always would drop the display formats for people who like them.
+- The title keeps the bare tag text inside the date wrapper (`kanban-starlane__date-tag`), so
+  Obsidian renders a real `a.tag` with its `href`. Writing our own `<a class="tag">` does not
+  work: Obsidian parses the text inside inline HTML again and adds a second tag. The footer
+  renders the same structure itself.
+- **A click opens the date picker** (product owner's choice), not the tag search: the tag click
+  handler in `view/markdownEvents.ts` skips tags inside the date wrapper. There is no separate
+  time element; the time is edited from the card menu.
+- The tag takes the date colours when one matches, otherwise the theme's tag colours.
+- **Hiding dates is a CSS recipe, not a setting** (product owner's choice): the user guide has
+  a snippet. Upstream 1.x had hide-date settings and 2.0 dropped them; a setting comes only with
+  more demand.
+
 ## 2026-10-17 — Highlighting cards by tag
 
 The product owner wants important or urgent cards to stand out. Evaluated against upstream

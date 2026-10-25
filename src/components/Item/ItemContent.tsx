@@ -219,7 +219,12 @@ export const ItemContent = memo(function ItemContent({
   const onWrapperClick = useCallback(
     (e: MouseEvent) => {
       if (e.targetNode.instanceOf(HTMLElement)) {
-        if (e.targetNode.hasClass(c('item-metadata-date'))) {
+        // A tag date shown as written is a real tag rendered by Obsidian inside the date wrapper.
+        // closest(): during a search the click lands on the <mark> inside the tag.
+        if (e.targetNode.closest(`.${c('date-tag')} a.tag`)) {
+          e.preventDefault();
+          onEditDate(e);
+        } else if (e.targetNode.hasClass(c('item-metadata-date'))) {
           onEditDate(e);
         } else if (e.targetNode.hasClass(c('item-metadata-time'))) {
           onEditTime(e);

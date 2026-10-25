@@ -20,6 +20,13 @@ How card dates are written into markdown:
 Dates written the other way are no longer recognised, but your files are not changed:
 switching back brings them back.
 
+## Show date tags as written
+
+Only with the **Tag** [date syntax](#date-syntax). When on, the card shows its date tag as it
+is written (`#26-10-14-13-25-20`) instead of the date and time in the display formats. It stays
+a real tag, so CSS for tags applies to it, and keeps the date colours. Clicking it opens the
+calendar, not the tag search. Off by default.
+
 ## Date trigger
 
 The character (or sequence of characters) that opens the [date

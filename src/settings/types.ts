@@ -19,6 +19,8 @@ export interface KanbanSettings {
   'date-format'?: string;
   'date-picker-week-start'?: number;
   'date-syntax'?: DateSyntax;
+  /** Tag syntax only: show the card's date tag as written instead of formatted. */
+  'date-tags-as-written'?: boolean;
   'date-time-display-format'?: string;
   'date-trigger'?: string;
   /** Global only: the last version of the ready-made tags (`applyDefaultTags`) added. */
@@ -73,6 +75,7 @@ export const settingKeyLookup: Set<keyof KanbanSettings> = new Set([
   'date-format',
   'date-picker-week-start',
   'date-syntax',
+  'date-tags-as-written',
   'date-time-display-format',
   'date-trigger',
   'full-list-lane-width',
@@ -126,6 +129,7 @@ export function shouldRefreshBoard(oldSettings: KanbanSettings, newSettings: Kan
   const toCompare: Array<keyof KanbanSettings> = [
     'metadata-keys',
     'date-syntax',
+    'date-tags-as-written',
     'date-trigger',
     'time-trigger',
     'link-date-to-daily-note',

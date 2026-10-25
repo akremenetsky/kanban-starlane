@@ -68,6 +68,8 @@ export function DateAndTime({
   const timeFormat = stateManager.useSetting('time-format');
   const dateDisplayFormat = stateManager.useSetting('date-display-format');
   const shouldLinkDate = stateManager.useSetting('link-date-to-daily-note');
+  const dateSyntax = stateManager.useSetting('date-syntax');
+  const tagsAsWritten = stateManager.useSetting('date-tags-as-written');
 
   const targetDate = item.data.metadata.time ?? item.data.metadata.date;
   const dateColor = useMemo(() => {
@@ -76,6 +78,42 @@ export function DateAndTime({
   }, [targetDate, getDateColor]);
 
   if (!moveDates || !targetDate) return null;
+
+  const wrapperStyle = dateColor && {
+    '--date-color': dateColor.color,
+    '--date-background-color': dateColor.backgroundColor,
+  };
+
+  const tag = item.data.metadata.dateStr;
+  if (dateSyntax === 'tag' && tagsAsWritten && tag) {
+    return (
+      <span
+        style={wrapperStyle}
+        className={classcat([
+          c('item-metadata-date-wrapper'),
+          c('date'),
+          c('date-tag'),
+          { 'has-background': !!dateColor?.backgroundColor },
+        ])}
+      >
+        <a
+          href={tag}
+          className={`tag ${c('item-metadata-date')} is-button`}
+          aria-label={t('Change date')}
+          // On a card the picker is opened by ItemContent's wrapper click, which gets no
+          // onEditDate here; the table passes one. Stop it so the picker never opens twice.
+          onClick={(e) => {
+            e.preventDefault();
+            if (!onEditDate) return;
+            e.stopPropagation();
+            onEditDate(e);
+          }}
+        >
+          {tag}
+        </a>
+      </span>
+    );
+  }
 
   const dateStr = targetDate.format(dateFormat);
 
@@ -114,12 +152,7 @@ export function DateAndTime({
 
   return (
     <span
-      style={
-        dateColor && {
-          '--date-color': dateColor.color,
-          '--date-background-color': dateColor.backgroundColor,
-        }
-      }
+      style={wrapperStyle}
       className={classcat([
         c('item-metadata-date-wrapper'),
         c('date'),
