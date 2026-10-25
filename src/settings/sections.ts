@@ -237,6 +237,13 @@ function renderDates(ctx: SettingsContext) {
     defaultValue: defaultDateSyntax,
   });
 
+  toggleSetting(ctx, 'date-tags-as-written', {
+    name: t('Show date tags as written'),
+    desc: t(
+      'Tag date syntax only. Shows the card date as its tag, such as #26-10-14-13-25-20, instead of using the display formats. It stays a tag, so CSS for tags applies to it.'
+    ),
+  });
+
   textSetting(ctx, 'date-trigger', {
     name: t('Date trigger'),
     desc: t('When this is typed, it will trigger the date selector'),

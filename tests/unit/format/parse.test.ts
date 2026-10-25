@@ -299,6 +299,28 @@ describe('tag dates', () => {
     expect(title).toContain('#work');
   });
 
+  it('keeps the tag date as written when date tags are shown as written', async () => {
+    const md = tagBoard('- [ ] Task #26-10-14-13-25-20 #work', { 'date-tags-as-written': true });
+    const { title } = (await firstItem(md)).data;
+
+    // The tag text stays whole inside the date wrapper, so Obsidian renders it as a real tag.
+    expect(title).toContain('data-date="2026-10-14T13:25:20.000Z"');
+    expect(title).toContain('kanban-starlane__date-tag');
+    expect(title).toMatch(/>#26-10-14-13-25-20<\/span> #work$/);
+    expect(title).not.toContain('kanban-starlane__item-metadata-time');
+  });
+
+  it('keeps the date colour on a tag date shown as written', async () => {
+    const md = tagBoard('- [ ] Task #20-01-01', {
+      'date-tags-as-written': true,
+      'date-colors': [{ isBefore: true, color: 'red' }],
+    });
+    const { title } = (await firstItem(md)).data;
+
+    expect(title).toContain('--date-color: red');
+    expect(title).toMatch(/>#20-01-01<\/span>$/);
+  });
+
   it('shows a later tag date as a tag when dates move to the footer', async () => {
     const item = await firstItem(
       tagBoard('- [ ] Task #26-10-14 #26-12-01', { 'move-dates': true, 'move-tags': false })

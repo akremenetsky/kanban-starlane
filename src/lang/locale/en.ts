@@ -113,6 +113,9 @@ const en = {
     'How card dates are written. Tags look like #26-10-14 or, with a time, #26-10-14-13-25-20. Dates written the other way stop being recognised; files are not changed. Tag dates do not link to daily notes.',
   '@{date} @@{time}': '@{date} @@{time}',
   'Tag: #YY-MM-DD-HH-mm-ss': 'Tag: #YY-MM-DD-HH-mm-ss',
+  'Show date tags as written': 'Show date tags as written',
+  'Tag date syntax only. Shows the card date as its tag, such as #26-10-14-13-25-20, instead of using the display formats. It stays a tag, so CSS for tags applies to it.':
+    'Tag date syntax only. Shows the card date as its tag, such as #26-10-14-13-25-20, instead of using the display formats. It stays a tag, so CSS for tags applies to it.',
   'Date trigger': 'Date trigger',
   'When this is typed, it will trigger the date selector':
     'When this is typed, it will trigger the date selector',

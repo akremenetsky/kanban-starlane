@@ -1946,6 +1946,24 @@ body:not(.native-scrollbars) .kanban-starlane__scroll-container::-webkit-scrollb
   }
 }
 
+// A tag date shown as written: the tag itself carries the date colors; without a matching
+// date color it looks like any other tag.
+.kanban-starlane__date.kanban-starlane__date-tag {
+  background-color: transparent;
+  &:hover {
+    background-color: transparent;
+  }
+
+  > a.tag {
+    color: var(--date-color, var(--tag-color));
+    background-color: var(--date-background-color, var(--tag-background));
+    &:hover {
+      color: var(--date-color, var(--tag-color-hover));
+      background-color: var(--date-background-color, var(--tag-background-hover));
+    }
+  }
+}
+
 .completion .kanban-starlane__date.has-background {
   color: inherit;
   background-color: transparent;

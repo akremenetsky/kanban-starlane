@@ -41,6 +41,40 @@ today's date if the card has none). If a card has several date tags, the first o
 Only one syntax works at a time. With **Tag**, `@{…}` dates are plain text, and with the
 default syntax, date tags are ordinary tags. Switching does not change your files.
 
+By default the card shows the date and time in your display formats (`#26-10-14` and
+`13:25`). Turn on [Show date tags as written](../settings/dates-and-time.md#show-date-tags-as-written)
+to show the tag itself, `#26-10-14-13-25-20`. It is then a real Obsidian tag, so CSS snippets
+for tags apply to it (for example `a.tag[href^="#26-10"]`), and it keeps the date colours.
+Clicking it still opens the calendar; the time is changed from the card menu.
+
+## Hiding dates and tags on cards
+
+There is no setting for this; a [CSS snippet](https://help.obsidian.md/snippets) does it.
+The date or tags stay in the card's markdown and keep working (colours, sorting, search,
+filters), and you still see them while editing the card or in the card menu.
+
+```css
+/* Hide card dates: in the card text, in the footer, and the relative date */
+.kanban-starlane__item-markdown .kanban-starlane__date,
+.kanban-starlane__item-metadata-date-wrapper,
+.kanban-starlane__item-metadata-date-relative {
+  display: none !important;
+}
+
+/* Hide tags: in the card text and in the footer */
+.kanban-starlane__item-markdown a.tag,
+.kanban-starlane__item-tags {
+  display: none !important;
+}
+```
+
+Keep only the part you need. With [Show date tags as written](../settings/dates-and-time.md#show-date-tags-as-written)
+on, the card's date is a tag too, so the second rule hides it as well; to keep it, write the
+first selector as `.kanban-starlane__item-markdown a.tag:not(.kanban-starlane__date-tag > a.tag)`. To hide the dates on one board only, add a
+[`cssclasses`](https://help.obsidian.md/Editing+and+formatting/Properties#Default+properties)
+property to the board note (say `cssclasses: hide-dates`) and put `.hide-dates` in front of
+each selector: `.hide-dates .kanban-starlane__item-markdown .kanban-starlane__date`.
+
 ## Formatting and display
 
 - [Date format](../settings/dates-and-time.md#date-format) and

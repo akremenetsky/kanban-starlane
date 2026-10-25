@@ -59,6 +59,15 @@ async function clickFirstCardMenuItem(menuItem: string) {
   await item.click();
 }
 
+/** The query of the global search view, or '' when it was never opened. */
+async function searchQuery(): Promise<string> {
+  return browser.executeObsidian(({ app }) => {
+    const view = app.workspace.getLeavesOfType('search')[0]?.view as unknown as
+      { getQuery?: () => string } | undefined;
+    return view?.getQuery?.() ?? '';
+  });
+}
+
 async function pickToday() {
   const calendar = await browser.$('.flatpickr-calendar');
   await calendar.waitForDisplayed();
@@ -201,5 +210,91 @@ describe('tag dates', function () {
     await clickFirstCardMenuItem('Remove date');
 
     await waitForFile(BOARD, (md) => /- \[ \] Task #work( \^\w+)?\n/.test(md));
+  });
+
+  it('shows the tag date as written once the board setting is on', async function () {
+    await createBoard(boardMd('- [ ] Task #26-10-14-09-30-00 #work'));
+    await openBoard(BOARD);
+    await lane(0).$(cls('item-metadata-time')).waitForExist();
+
+    await browser.executeObsidianCommand('kanban-starlane:open-board-settings');
+    await browser.$('.modal').waitForExist();
+    const toggle = await (await settingRow('Show date tags as written')).$('.checkbox-container');
+    await toggle.scrollIntoView({ block: 'center' });
+    await toggle.waitForStable();
+    await toggle.click();
+    await waitForFile(BOARD, (md) => md.includes('"date-tags-as-written":true'));
+    await browser.keys('Escape');
+
+    const tag = lane(0).$(`${cls('item-title')} ${cls('date-tag')} a.tag`);
+    await tag.waitForExist();
+    expect(await tag.getText()).toBe('#26-10-14-09-30-00');
+    expect(await tag.getAttribute('href')).toBe('#26-10-14-09-30-00');
+    expect(await lane(0).$(cls('item-metadata-time')).isExisting()).toBe(false);
+  });
+
+  it('opens the date picker from a tag date shown as written', async function () {
+    await createBoard(
+      boardMd(
+        '- [ ] Task #26-10-14-09-30-00 #work',
+        '{"kanban-starlane":"board","date-syntax":"tag","date-tags-as-written":true}'
+      )
+    );
+    await openBoard(BOARD);
+    const tag = lane(0).$(`${cls('date-tag')} a.tag`);
+    await tag.waitForExist();
+
+    await tag.click();
+    await pickToday();
+
+    const expected = await today('YY-MM-DD');
+    await waitForFile(BOARD, (md) => md.includes(`- [ ] Task #${expected}-09-30-00 #work`));
+    // The click must not also run the tag search an ordinary tag opens.
+    expect(await searchQuery()).not.toContain('26-10-14');
+  });
+
+  it('shows the tag date as written in the card footer', async function () {
+    await createBoard(
+      boardMd(
+        '- [ ] Task #26-10-14 #work',
+        '{"kanban-starlane":"board","date-syntax":"tag","date-tags-as-written":true,"move-dates":true}'
+      )
+    );
+    await openBoard(BOARD);
+    const tag = lane(0).$(`${cls('item-metadata')} ${cls('date-tag')} a.tag`);
+    await tag.waitForExist();
+    expect(await tag.getText()).toBe('#26-10-14');
+
+    await tag.click();
+    await pickToday();
+
+    const expected = await today('YY-MM-DD');
+    await waitForFile(BOARD, (md) => md.includes(`- [ ] Task #${expected} #work`));
+  });
+
+  it('opens the date picker from a tag date highlighted by the board search', async function () {
+    await createBoard(
+      boardMd(
+        '- [ ] Task #26-10-14 #work',
+        '{"kanban-starlane":"board","date-syntax":"tag","date-tags-as-written":true}'
+      )
+    );
+    await openBoard(BOARD);
+    await lane(0)
+      .$(`${cls('date-tag')} a.tag`)
+      .waitForExist();
+
+    await browser.$('.view-action[aria-label="Search..."]').click();
+    const input = browser.$(cls('filter-input'));
+    await input.waitForExist();
+    await input.setValue('26-10');
+    // The search wraps the matching text in a <mark>, which then receives the click.
+    const mark = lane(0).$(`${cls('date-tag')} a.tag mark`);
+    await mark.waitForExist();
+    await mark.click();
+    await pickToday();
+
+    const expected = await today('YY-MM-DD');
+    await waitForFile(BOARD, (md) => md.includes(`- [ ] Task #${expected} #work`));
   });
 });
