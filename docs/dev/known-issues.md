@@ -9,7 +9,8 @@ what users expect. Each item is a candidate task; fixing one means updating its 
 | Frontmatter | Setting keys written in frontmatter (e.g. `lane-width: 300`) are moved into the settings JSON on the first save. | `parse.test.ts` › moves setting keys found in frontmatter |
 | Settings | Board metadata keys are merged with global ones, never replaced. | `stateManager.test.ts` › merges global and board metadata keys |
 | Diff/patch | `diffApply` mutates non-plain objects (class instances) on the old state in place. | not yet |
-| Drag & drop | Real pointer drags are only covered by `linkedLanes.e2e.ts`; other drags are verified by hand. | — |
+| Drag & drop | Real pointer drags are only covered by `linkedLanes.e2e.ts`; other drags are verified by hand. The edge auto-scroll loop is unit-tested on `ScrollManager` with a fake scroll box. | `scrollManager.test.ts` |
+| Drag & drop | Auto-scroll near a board edge is fast (up to 8 px a frame), so on wide boards it is hard to stop one or two lists over. Inherited (upstream #1110, #1166). | — |
 | Opening | Closing a board right after an edit and reopening it at once can read the file while Obsidian writes it; the empty data makes `setViewData` switch the leaf to markdown. Inherited. | — (seen in `linkedLanes.e2e.ts`, which now waits for the save) |
 | Linked lanes | New own cards in a combined lane follow the `self` slots: with *prepend*, a new card takes the first own slot and the other own cards shift one slot. | — |
 | Linked lanes | Positions among own cards are stored by count; editing the own lane in markdown can shift linked cards relative to own ones. | — |
