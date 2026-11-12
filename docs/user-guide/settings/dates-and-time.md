@@ -1,8 +1,17 @@
 # Date & time
 
-## Move dates to card footer
+## Date position
 
-When on, dates are shown in the card's footer instead of inline in its body text.
+Where a card's date is shown:
+
+- **In the card footer** (default) — at the bottom of the card, with a calendar icon, the
+  time and, with [Show relative date](#show-relative-date), the relative date ("in 3 days").
+  Click the date or the time to change it. Cards without a date have no footer.
+- **In the card text** — inside the card text, where it is written.
+- **In the card text and footer** — in both places.
+
+This replaces the earlier *Move dates to card footer* switch: a board where it was on shows
+dates in the footer, a board where it was off keeps them in the text.
 
 ## Date syntax
 

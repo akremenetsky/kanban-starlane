@@ -172,3 +172,54 @@ export async function dragCardUntil(
     }
   }
 }
+
+/**
+ * The first element matching `selector` that has a layout box; hidden leftovers of earlier
+ * popovers are skipped. Checked in the page: WebdriverIO's `isDisplayed` sometimes reports a
+ * calendar or suggestion on screen as hidden.
+ */
+export async function visible(selector: string) {
+  let index = -1;
+  await browser.waitUntil(
+    async () => {
+      index = await browser.execute(
+        (sel) =>
+          [...document.querySelectorAll(sel)].findIndex(
+            (el) => el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden'
+          ),
+        selector
+      );
+      return index >= 0;
+    },
+    { timeoutMsg: `nothing visible matches ${selector}` }
+  );
+  return browser.$$(selector)[index];
+}
+
+/**
+ * Clicks day `day` of the month the open calendar shows and returns it as `YY-MM-DD`. The
+ * calendar opens on the card's date, so "today" is not always on screen.
+ */
+export async function pickDay(day = 20): Promise<string> {
+  const calendar = await visible('.flatpickr-calendar');
+  const cell = await calendar
+    .$$('.flatpickr-day:not(.prevMonthDay):not(.nextMonthDay)')
+    .find(async (el) => (await el.getText()).trim() === String(day));
+  const picked = await browser.executeObsidian(
+    ({ obsidian }, el) =>
+      obsidian.moment((el as unknown as { dateObj: Date }).dateObj).format('YY-MM-DD'),
+    cell
+  );
+  await cell.click();
+  return picked;
+}
+
+/** The settings row (in the open modal) whose name is `name`. */
+export async function settingRow(name: string) {
+  const rows = await browser.$$('.modal .setting-item').getElements();
+  for (const row of rows) {
+    const label = await row.$('.setting-item-name');
+    if ((await label.isExisting()) && (await label.getText()) === name) return row;
+  }
+  throw new Error(`no setting named "${name}"`);
+}

@@ -1,7 +1,7 @@
 import { DEFAULT_HIGHLIGHT_TAGS } from 'src/constants';
 import { TagColor } from 'src/model/types';
 
-import { DateSyntax, KanbanSettings } from './types';
+import { DatePosition, DateSyntax, KanbanSettings } from './types';
 
 export const defaultDateTrigger = '@';
 
@@ -10,6 +10,16 @@ export const defaultDateSyntax: DateSyntax = 'trigger';
 export const defaultTimeTrigger = '@@';
 
 export const defaultMetadataPosition = 'body';
+
+export const defaultDatePosition: DatePosition = 'footer';
+
+/** The date position set in one settings layer, reading the legacy `move-dates` toggle. */
+export function storedDatePosition(settings: KanbanSettings | undefined): DatePosition | undefined {
+  if (settings?.['date-position']) return settings['date-position'];
+  if (settings?.['move-dates'] === true) return 'footer';
+  if (settings?.['move-dates'] === false) return 'body';
+  return undefined;
+}
 
 const defaultTagColors: TagColor[] = [
   {

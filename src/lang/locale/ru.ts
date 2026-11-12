@@ -126,6 +126,19 @@ const lang: Partial<Lang> = {
   'This format will be used when displaying dates in Kanban cards.':
     'Этот формат будет использован при показе дат в Kanban-карточках.',
   'Show relative date': 'Показывать относительную дату',
+  'Date position': 'Где показывать даты',
+  "Where a card's date is shown: in the card text, in the card footer, or in both.":
+    'Где показывается дата карточки: в тексте, в подвале карточки или и там, и там.',
+  'In the card text': 'В тексте карточки',
+  'In the card text and footer': 'В тексте и в подвале',
+  'In the card footer': 'В подвале карточки',
+  'Below the card text': 'Под текстом карточки',
+  'Show tags below the card text': 'Показывать теги под текстом карточки',
+  'When toggled, tags are shown below the card text instead of inside it.':
+    'Когда включено, теги показываются под текстом карточки, а не внутри него.',
+  'Show task data below the card text': 'Показывать данные задач под текстом карточки',
+  'When toggled, task data (from the Tasks plugin) is shown below the card text instead of inside it.':
+    'Когда включено, данные задач (из плагина Tasks) показываются под текстом карточки, а не внутри него.',
   'Hide card counts in list titles': 'Скрыть счётчики карточек в заголовках списка',
   'When toggled, card counts are hidden from the list title':
     'Когда включено, счётчики карточек скрыты в заголовках списка',
@@ -197,6 +210,7 @@ const lang: Partial<Lang> = {
   yesterday: 'вчера',
   tomorrow: 'завтра',
   'Change date': 'Изменить дату',
+  Date: 'Дата',
   'Change time': 'Изменить время',
 
   // components/Item/ItemForm.tsx

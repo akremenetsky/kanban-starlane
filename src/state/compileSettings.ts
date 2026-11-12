@@ -1,9 +1,11 @@
 import { FRONTMATTER_KEY } from 'src/constants';
 import {
+  defaultDatePosition,
   defaultDateSyntax,
   defaultDateTrigger,
   defaultMetadataPosition,
   defaultTimeTrigger,
+  storedDatePosition,
 } from 'src/settings/defaults';
 import { KanbanSettings } from 'src/settings/types';
 
@@ -40,12 +42,16 @@ export function compileSettings(
   const dateDisplayFormat = raw('date-display-format') || dateFormat;
   const timeFormat = raw('time-format') || defaults.timeFormat;
   const dateSyntax = raw('date-syntax') || defaultDateSyntax;
+  // Resolved per layer: a board's legacy `move-dates` beats a global `date-position`.
+  const datePosition =
+    [...boardLayers, globalSettings].map(storedDatePosition).find(Boolean) ?? defaultDatePosition;
 
   return {
     [FRONTMATTER_KEY]: raw(FRONTMATTER_KEY) || 'board',
     'date-format': dateFormat,
     'date-display-format': dateDisplayFormat,
     'date-time-display-format': dateDisplayFormat + ' ' + timeFormat,
+    'date-position': datePosition,
     'date-syntax': dateSyntax,
     'date-tags-as-written': raw('date-tags-as-written'),
     'date-trigger': raw('date-trigger') || defaultDateTrigger,
@@ -54,7 +60,6 @@ export function compileSettings(
     'time-trigger': raw('time-trigger') || defaultTimeTrigger,
     // A tag date cannot be a link, so the daily note link only applies to `@{…}` dates.
     'link-date-to-daily-note': dateSyntax === 'tag' ? false : raw('link-date-to-daily-note'),
-    'move-dates': raw('move-dates'),
     'move-tags': raw('move-tags'),
     'move-task-metadata': raw('move-task-metadata'),
     'metadata-keys': metadataKeys,

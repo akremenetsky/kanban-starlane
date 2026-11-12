@@ -3,6 +3,31 @@
 Short records of decisions that shape the project. Newest first. Add an entry when a
 decision is not obvious from the code (format changes, dependencies, trade-offs).
 
+## 2026-11-12 — Date position replaces "Move dates to card footer"
+
+Step 2 of [card-roadmap.md](card-roadmap.md). The product owner wanted a choice of three and
+dates in the new card footer by default.
+
+- **New key `date-position`** (`body` / `both` / `footer`, default `footer`) instead of
+  changing the type of `move-dates`: an old plugin version reading a string from `move-dates`
+  would treat any value as "on".
+- **`move-dates` is still read, never written.** `storedDatePosition` maps it per settings
+  layer (true → footer, false → body), so a board's own legacy value beats a global
+  `date-position`. Board files keep the key until the setting is changed in the UI, which
+  writes `date-position` and removes `move-dates` — unchanged boards stay byte-identical.
+- **Default `footer` changes the look of boards that never set the switch** (it was off by
+  default, so their dates were in the text). The product owner accepted this; the CHANGELOG
+  says how to get the old look.
+- **The old "card footer" (the line below the text) is not a position any more.** With the
+  switch on, the date used to sit on that line; it now goes to the footer chip. Tags, task data
+  and inline fields still use that line; their settings are relabelled *below the card text*
+  (keys unchanged), so "footer" means one thing.
+- The relative date goes into the date chip ("· in 3 days"); on the line below the text it is
+  shown only when dates stay in the text. It keeps the old `item-metadata-date-relative` class
+  for users' CSS snippets.
+- *Both* means both in the table view too: the date stays in the card text and gets the Date
+  column.
+
 ## 2026-10-25 — Date tags as written, hiding dates (issue #16 follow-up)
 
 The author of #16 wants the card to show the date tag as written so their tag CSS applies,

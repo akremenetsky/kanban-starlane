@@ -38,10 +38,12 @@ import {
   toggleSetting,
 } from './controls';
 import {
+  defaultDatePosition,
   defaultDateSyntax,
   defaultDateTrigger,
   defaultMetadataPosition,
   defaultTimeTrigger,
+  storedDatePosition,
 } from './defaults';
 import { createSearchSelect, getListOptions } from './searchSelect';
 import { KanbanSettings } from './types';
@@ -176,10 +178,8 @@ function renderTags(ctx: SettingsContext) {
   heading(ctx, t('Tags'));
 
   toggleSetting(ctx, 'move-tags', {
-    name: t('Move tags to card footer'),
-    desc: t(
-      "When toggled, tags will be displayed in the card's footer instead of the card's body."
-    ),
+    name: t('Show tags below the card text'),
+    desc: t('When toggled, tags are shown below the card text instead of inside it.'),
   });
 
   dropdownSetting(ctx, 'tag-action', {
@@ -218,11 +218,18 @@ function renderDates(ctx: SettingsContext) {
 
   heading(ctx, t('Date & Time'));
 
-  toggleSetting(ctx, 'move-dates', {
-    name: t('Move dates to card footer'),
-    desc: t(
-      "When toggled, dates will be displayed in the card's footer instead of the card's body."
-    ),
+  dropdownSetting(ctx, 'date-position', {
+    name: t('Date position'),
+    desc: t("Where a card's date is shown: in the card text, in the card footer, or in both."),
+    options: [
+      ['body', t('In the card text')],
+      ['both', t('In the card text and footer')],
+      ['footer', t('In the card footer')],
+    ],
+    defaultValue: defaultDatePosition,
+    read: storedDatePosition,
+    replaces: ['move-dates'],
+    resettable: true,
   });
 
   dropdownSetting(ctx, 'date-syntax', {
@@ -363,8 +370,8 @@ function renderInlineMetadata(ctx: SettingsContext) {
     name: t('Inline metadata position'),
     desc: t('Controls where the inline metadata (from the Dataview plugin) will be displayed.'),
     options: [
-      ['body', t('Card body')],
-      ['footer', t('Card footer')],
+      ['body', t('In the card text')],
+      ['footer', t('Below the card text')],
       ['metadata-table', t('Merge with linked page metadata')],
     ],
     defaultValue: defaultMetadataPosition,
@@ -372,9 +379,9 @@ function renderInlineMetadata(ctx: SettingsContext) {
   });
 
   toggleSetting(ctx, 'move-task-metadata', {
-    name: t('Move task data to card footer'),
+    name: t('Show task data below the card text'),
     desc: t(
-      "When toggled, task data (from the Tasks plugin) will be displayed in the card's footer instead of the card's body."
+      'When toggled, task data (from the Tasks plugin) is shown below the card text instead of inside it.'
     ),
   });
 }

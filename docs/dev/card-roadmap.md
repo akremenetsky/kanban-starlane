@@ -64,9 +64,11 @@ Each step is a separate PR from `main`. Steps 1–3 need no new syntax in board 
       overflow a line; until then labels are truncated with an ellipsis. Re-placing an open
       popover when its content or the window resizes, and an e2e test of a popover in real
       Obsidian, come with the first chip that has a popover.
-- [ ] **2. Date placement setting.** `inline` (as today) / `both` / `footer`, default `footer`.
-      Follows the existing `inline-metadata-position` pattern. User-visible: dates of existing
-      boards move to the footer after the update — CHANGELOG must say how to get them back.
+- [x] **2. Date placement setting.** `date-position`: `body` / `both` / `footer`, default
+      `footer`; replaces the `move-dates` toggle (still read: true → footer, false → body).
+      The first chip: date, time and relative date in the footer (`zones/dateChip.tsx`).
+      The "line below the text" (tags, task data, inline fields) stays part of the body; its
+      settings are now labelled *below the card text*.
 - [ ] **3. Quick action panel.** Hover panel, `⋯` button removed on desktop (kept on mobile
       and while editing). The set is a setting: up to 5 actions picked from the existing card
       menu actions — Done, Date, Next lane, Move to lane…, Open/create note, Archive,
@@ -104,6 +106,8 @@ Each step is a separate PR from `main`. Steps 1–3 need no new syntax in board 
 - 2026-11-12 — Relation types: blocks, relates to, duplicates, causes, depends on (step 5).
 - 2026-11-12 — Size totals: sum of weights in the lane header with a hover breakdown; epic
   progress in the epic card footer (steps 4, 6).
+- 2026-11-12 — `move-dates` is replaced by `date-position` (three options); the line below the
+  card text is no longer called "card footer" in settings (step 2).
 - 2026-11-12 — Timers and epics start with the simplest version (independent timers, epics on
   the same board); cross-board epics come later.
 

@@ -63,7 +63,6 @@ export function DateAndTime({
   onEditTime,
   getDateColor,
 }: DateProps & DateAndTimeProps) {
-  const moveDates = stateManager.useSetting('move-dates');
   const dateFormat = stateManager.useSetting('date-format');
   const timeFormat = stateManager.useSetting('time-format');
   const dateDisplayFormat = stateManager.useSetting('date-display-format');
@@ -77,7 +76,7 @@ export function DateAndTime({
     return getDateColor(targetDate);
   }, [targetDate, getDateColor]);
 
-  if (!moveDates || !targetDate) return null;
+  if (!targetDate) return null;
 
   const wrapperStyle = dateColor && {
     '--date-color': dateColor.color,

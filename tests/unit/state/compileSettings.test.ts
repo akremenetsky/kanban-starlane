@@ -17,6 +17,7 @@ describe('compileSettings', () => {
       'date-trigger': '@',
       'time-trigger': '@@',
       'inline-metadata-position': 'body',
+      'date-position': 'footer',
       'show-add-list': true,
       'show-filter': true,
       'tag-action': 'obsidian',
@@ -49,5 +50,18 @@ describe('compileSettings', () => {
   it('keeps explicit false for boolean settings with a true default', () => {
     expect(compileSettings([{ 'show-search': false }], {}, defaults)['show-search']).toBe(false);
     expect(compileSettings([], { 'show-filter': false }, defaults)['show-filter']).toBe(false);
+  });
+
+  it('reads the legacy move-dates toggle as the date position, layer by layer', () => {
+    const position = (layers: object[], global: object = {}) =>
+      compileSettings(layers, global, defaults)['date-position'];
+
+    expect(position([{ 'move-dates': true }])).toBe('footer');
+    expect(position([{ 'move-dates': false }])).toBe('body');
+    expect(position([{ 'date-position': 'both', 'move-dates': false }])).toBe('both');
+    // A board's own legacy value beats the global setting, and the global legacy value applies.
+    expect(position([{ 'move-dates': false }], { 'date-position': 'footer' })).toBe('body');
+    expect(position([], { 'move-dates': false })).toBe('body');
+    expect(position([{}], { 'date-position': 'both' })).toBe('both');
   });
 });

@@ -54,14 +54,15 @@ The date or tags stay in the card's markdown and keep working (colours, sorting,
 filters), and you still see them while editing the card or in the card menu.
 
 ```css
-/* Hide card dates: in the card text, in the footer, and the relative date */
+/* Hide card dates: in the card text, in the card footer, and the relative date */
 .kanban-starlane__item-markdown .kanban-starlane__date,
-.kanban-starlane__item-metadata-date-wrapper,
+.kanban-starlane__item-footer [data-chip="date"],
+.kanban-starlane__item-footer:has(> [data-chip="date"]:only-child),
 .kanban-starlane__item-metadata-date-relative {
   display: none !important;
 }
 
-/* Hide tags: in the card text and in the footer */
+/* Hide tags: in the card text and below it */
 .kanban-starlane__item-markdown a.tag,
 .kanban-starlane__item-tags {
   display: none !important;
@@ -82,8 +83,8 @@ each selector: `.hide-dates .kanban-starlane__item-markdown .kanban-starlane__da
   card's markdown.
 - [Date display format](../settings/dates-and-time.md#date-display-format) controls how the
   date is shown on the card, independently of what's saved to disk.
-- Move the date out of the card's body and into its footer with
-  [Move dates to card footer](../settings/dates-and-time.md#move-dates-to-card-footer).
+- Choose where the date is shown — in the card footer (default), in the card text, or both —
+  with [Date position](../settings/dates-and-time.md#date-position).
 - Turn on [Show relative date](../settings/dates-and-time.md#show-relative-date) to show "in 3
   days" or "a month ago" instead of a fixed date.
 - Turn on [Link dates to daily notes](../settings/dates-and-time.md#link-dates-to-daily-notes)
