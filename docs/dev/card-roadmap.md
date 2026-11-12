@@ -63,15 +63,25 @@ Each step is a separate PR from `main`. Steps 1–3 need no new syntax in board 
       Follows the existing `inline-metadata-position` pattern. User-visible: dates of existing
       boards move to the footer after the update — CHANGELOG must say how to get them back.
 - [ ] **3. Quick action panel.** Hover panel, `⋯` button removed on desktop (kept on mobile
-      and while editing). *Needs a decision:* the default action set.
+      and while editing). The set is a setting: up to 5 actions picked from the existing card
+      menu actions — Done, Date, Next lane, Move to lane…, Open/create note, Archive,
+      Duplicate — in a fixed order; `⋯` is always last and not counted. Default:
+      Done · Date · Next lane · `⋯`. Delete is never offered. New features (timer, size,
+      relations) add their actions to the list in their own PRs.
 - [ ] **4. Card size (estimation).** XS / S / M / L / XL, picker popover, footer chip.
-      Format change → `change-board-format` skill. *Needs a decision:* lane header total
-      (sum of weights? count per size?), whether weights are configurable.
+      Format change → `change-board-format` skill. Every size has a weight (default
+      XS 1, S 2, M 3, L 5, XL 8, editable in settings). The lane header shows the sum of weights
+      with the size icon, right-aligned, hidden when no card has a size. Hover (tap on mobile)
+      shows the breakdown: count and weight per size, and the weight scale.
 - [ ] **5. Relations within one board.** Card picker, relation types, blocked state in the
       header, relations popover (click → scroll to the card). Card identity = hidden block id
-      `^id` (as linked lanes). *Needs a decision:* the list of relation types.
+      `^id` (as linked lanes). Types, each shown from both sides:
+      blocks / blocked by (the only one that sets the blocked state), relates to,
+      duplicates / duplicated by, causes / caused by, depends on / required for.
 - [ ] **6. Epics within one board.** Mark a card as epic, assign cards (reuses the card picker
-      from step 5), epic chip in the header, epic card with progress (cards done, sizes done).
+      from step 5), epic chip in the header, epic card with progress in its footer: bar,
+      cards done of total, weight done of total; hover shows the breakdown by size. An epic card
+      has no size of its own — its total is computed from its cards.
 - [ ] **7. Timers.** Per-card start/stop from the panel and the footer chip. Several timers may
       run at once (independent cards need no coordination, so this is also the simplest).
       Finished intervals go to card history.
@@ -85,11 +95,13 @@ Each step is a separate PR from `main`. Steps 1–3 need no new syntax in board 
 - 2026-11-12 — Estimation uses sizes (XS–XL), not numbers.
 - 2026-11-12 — Date placement is a setting with three options, default *footer only*.
 - 2026-11-12 — Tag highlight outranks epic colour.
+- 2026-11-12 — Quick actions: configurable set from the existing menu actions (step 3).
+- 2026-11-12 — Relation types: blocks, relates to, duplicates, causes, depends on (step 5).
+- 2026-11-12 — Size totals: sum of weights in the lane header with a hover breakdown; epic
+  progress in the epic card footer (steps 4, 6).
 - 2026-11-12 — Timers and epics start with the simplest version (independent timers, epics on
   the same board); cross-board epics come later.
 
 ## Open questions
 
-- Default quick actions (step 3).
-- Relation types, 5–7 at most (step 5).
-- Lane header total for sizes (step 4).
+None at the moment.
