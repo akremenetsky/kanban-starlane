@@ -57,8 +57,13 @@ ever have to share a channel, the tag highlight wins (product owner, 2026-11-12)
 
 Each step is a separate PR from `main`. Steps 1–3 need no new syntax in board files.
 
-- [ ] **1. Card zones scaffold.** Header/footer slots, chip component, chip popover.
+- [x] **1. Card zones scaffold.** Header/footer slots, chip component, chip popover.
       No visible change: unit/e2e proof that a card without data renders as before.
+      How it works: *Card zones* in [architecture.md](architecture.md). Not built yet:
+      collapsing overflow into `+N` (rule 2) — comes with the first feature that can
+      overflow a line; until then labels are truncated with an ellipsis. Re-placing an open
+      popover when its content or the window resizes, and an e2e test of a popover in real
+      Obsidian, come with the first chip that has a popover.
 - [ ] **2. Date placement setting.** `inline` (as today) / `both` / `footer`, default `footer`.
       Follows the existing `inline-metadata-position` pattern. User-visible: dates of existing
       boards move to the footer after the update — CHANGELOG must say how to get them back.

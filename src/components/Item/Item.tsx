@@ -33,6 +33,8 @@ import { useItemMenu } from './ItemMenu';
 import { ItemMenuButton } from './ItemMenuButton';
 import { ItemMetadata } from './MetadataTable';
 import { getItemClassModifiers } from './classModifiers';
+import { CardZoneRow } from './zones/CardZones';
+import { useCardChips } from './zones/chips';
 
 export interface DraggableItemProps {
   item: Item;
@@ -81,6 +83,7 @@ const ItemInner = memo(function ItemInner({
   }, [item.data.forceEditMode]);
 
   const path = useNestedEntityPath();
+  const chips = useCardChips(item, stateManager);
 
   const { boards } = useContext(LinkedLanesContext);
   const linkedMove = useMemo(() => {
@@ -147,6 +150,7 @@ const ItemInner = memo(function ItemInner({
       className={c('item-content-wrapper')}
       {...ignoreAttr}
     >
+      <CardZoneRow zone="header" chips={chips.header} />
       <div className={c('item-title-wrapper')} {...ignoreAttr}>
         <ItemCheckbox
           boardModifiers={boardModifiers}
@@ -165,6 +169,7 @@ const ItemInner = memo(function ItemInner({
         <ItemMenuButton editState={editState} setEditState={setEditState} showMenu={showItemMenu} />
       </div>
       <ItemMetadata searchQuery={isMatch ? searchQuery : undefined} item={item} />
+      <CardZoneRow zone="footer" chips={chips.footer} />
     </div>
   );
 });

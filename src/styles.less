@@ -892,9 +892,109 @@ button.kanban-starlane__new-item-button {
   padding-inline: 8px;
   // align-items: center;
 
-  &:not(:only-child) {
+  // `:not(:last-child)`, not `:not(:only-child)`: a card header can sit above the title.
+  &:not(:last-child) {
     border-bottom: 1px solid var(--background-modifier-border);
   }
+}
+
+/* Card zones (docs/dev/card-roadmap.md): header = context, footer = signals. One line each. */
+.kanban-starlane__item-header,
+.kanban-starlane__item-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4-3);
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  padding-inline: 8px;
+  font-size: var(--font-ui-smaller);
+  color: var(--text-muted);
+}
+
+.kanban-starlane__item-header {
+  padding-block: 5px 0;
+  background: var(--background-primary);
+}
+
+.kanban-starlane__item-footer {
+  padding-block: 4px;
+  background-color: var(--background-primary-alt);
+  font-variant-numeric: tabular-nums;
+}
+
+.kanban-starlane__item-metadata-wrapper + .kanban-starlane__item-footer {
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+.kanban-starlane__item-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-2-2);
+  min-width: 0;
+  color: var(--kanban-starlane__chip-color, inherit);
+
+  .kanban-starlane__icon {
+    display: flex;
+    flex: none;
+    --icon-size: 13px;
+  }
+}
+
+.kanban-starlane__item-chip-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kanban-starlane__item-chip-end {
+  margin-inline-start: auto;
+}
+
+.kanban-starlane__item-chip-danger {
+  color: var(--text-error);
+}
+
+.kanban-starlane__item-chip-accent {
+  color: var(--text-accent);
+}
+
+button.kanban-starlane__item-chip-button {
+  height: auto;
+  padding: 0 2px;
+  margin-inline: -2px;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: none;
+  box-shadow: none;
+  font: inherit;
+  color: var(--kanban-starlane__chip-color, inherit);
+  cursor: var(--cursor);
+
+  &:hover {
+    background: var(--background-modifier-hover);
+    color: var(--kanban-starlane__chip-color, var(--text-normal));
+  }
+
+  &.kanban-starlane__item-chip-danger {
+    color: var(--text-error);
+  }
+
+  &.kanban-starlane__item-chip-accent {
+    color: var(--text-accent);
+  }
+}
+
+.kanban-starlane__item-chip-popover {
+  position: fixed;
+  z-index: var(--layer-popover);
+  min-width: 160px;
+  max-width: 320px;
+  padding: var(--size-4-2);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  background: var(--background-primary);
+  box-shadow: var(--shadow-s);
+  font-size: var(--font-ui-small);
 }
 
 .kanban-starlane__item-title {
