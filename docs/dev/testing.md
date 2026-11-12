@@ -58,6 +58,14 @@ rewrites them from the serializer output) and review the diff.
 - Rendering is asynchronous: never assert on text right after an action; use
   `expectEventually` / `waitForFile` / `waitUntil`.
 - Modals animate in; call `waitForStable()` before clicking inside them.
+- **Don't depend on today's date.** A date picker opens on the card's date, so "today" is
+  only on screen when the card has no date. Pick a fixed day of the shown month and read the
+  picked date back (`pickDay()` in `specs/tagDates.e2e.ts`). Fixed dates in fixtures go
+  stale: tests that clicked `.flatpickr-day.today` on a card dated October broke in November.
+- **Popovers and suggestions:** `browser.$(selector)` returns the *first* match, which can be a
+  hidden leftover, and `isDisplayed`/`waitForDisplayed` sometimes report a visible calendar or
+  suggestion as hidden. Wait for a match with a layout box in the page instead
+  (`visible()` in `specs/tagDates.e2e.ts`).
 - Failures save a screenshot to `tests/e2e/.artifacts/` — open it, it usually explains
   the failure in seconds.
 - Run one file: `npm run test:e2e -- --spec tests/e2e/specs/board.e2e.ts`.
