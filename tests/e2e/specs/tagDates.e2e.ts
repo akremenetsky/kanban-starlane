@@ -68,10 +68,45 @@ async function searchQuery(): Promise<string> {
   });
 }
 
-async function pickToday() {
-  const calendar = await browser.$('.flatpickr-calendar');
-  await calendar.waitForDisplayed();
-  await calendar.$('.flatpickr-day.today').click();
+/**
+ * The first element matching `selector` that has a layout box; hidden leftovers of earlier
+ * popovers are skipped. Checked in the page: WebdriverIO's `isDisplayed` sometimes reports a
+ * calendar or suggestion on screen as hidden.
+ */
+async function visible(selector: string) {
+  let index = -1;
+  await browser.waitUntil(
+    async () => {
+      index = await browser.execute(
+        (sel) =>
+          [...document.querySelectorAll(sel)].findIndex(
+            (el) => el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden'
+          ),
+        selector
+      );
+      return index >= 0;
+    },
+    { timeoutMsg: `nothing visible matches ${selector}` }
+  );
+  return browser.$$(selector)[index];
+}
+
+/**
+ * Clicks day `day` of the month the open calendar shows and returns it as `YY-MM-DD`. The
+ * calendar opens on the card's date, so "today" is not always on screen.
+ */
+async function pickDay(day = 20): Promise<string> {
+  const calendar = await visible('.flatpickr-calendar');
+  const cell = await calendar
+    .$$('.flatpickr-day:not(.prevMonthDay):not(.nextMonthDay)')
+    .find(async (el) => (await el.getText()).trim() === String(day));
+  const picked = await browser.executeObsidian(
+    ({ obsidian }, el) =>
+      obsidian.moment((el as unknown as { dateObj: Date }).dateObj).format('YY-MM-DD'),
+    cell
+  );
+  await cell.click();
+  return picked;
 }
 
 /** The settings row (in the open modal) whose name is `name`. */
@@ -119,8 +154,7 @@ describe('tag dates', function () {
     await expectEventually(async () => (await cardTitles(0)).length, 1);
 
     await startNewCard('Call @');
-    await pickToday();
-    const expected = await today('YY-MM-DD');
+    const expected = await pickDay();
     await expectEventually(editorText, `Call #${expected} `);
     await suggestionClosed();
     await browser.keys('Enter');
@@ -136,7 +170,7 @@ describe('tag dates', function () {
     // The typed time leaves one suggestion: Enter picks it wherever the mouse is (a hovered
     // suggestion becomes the selected one).
     await startNewCard('Meet #26-10-14 @@00:00');
-    await browser.$('.suggestion-item').waitForDisplayed();
+    await visible('.suggestion-container .suggestion-item');
     await browser.keys('Enter');
     await expectEventually(editorText, 'Meet #26-10-14-00-00-00 ');
     await suggestionClosed();
@@ -145,14 +179,34 @@ describe('tag dates', function () {
     await waitForFile(BOARD, (md) => /- \[ \] Meet #26-10-14-00-00-00/.test(md));
   });
 
+  it('switches from the date picker to time suggestions when the time trigger is typed', async function () {
+    await createBoard(boardMd('- [ ] Existing'));
+    await openBoard(BOARD);
+    await expectEventually(async () => (await cardTitles(0)).length, 1);
+
+    // A slow typist: the date picker opens on the first `@` before the second one is typed.
+    await startNewCard('Meet @');
+    await visible('.flatpickr-calendar');
+    await browser.keys('@00:00');
+    await visible('.suggestion-container .suggestion-item');
+    await expectEventually(
+      () =>
+        browser.execute(() =>
+          [...document.querySelectorAll('.flatpickr-calendar')].some(
+            (el) => el.getClientRects().length > 0
+          )
+        ),
+      false
+    );
+  });
+
   it('replaces the date of a card that has one when the trigger is typed', async function () {
     await createBoard(boardMd('- [ ] Existing'));
     await openBoard(BOARD);
     await expectEventually(async () => (await cardTitles(0)).length, 1);
 
     await startNewCard('Call #26-10-14-09-30-00 @');
-    await pickToday();
-    const expected = await today('YY-MM-DD');
+    const expected = await pickDay();
     await expectEventually(editorText, `Call #${expected}-09-30-00 `);
     await suggestionClosed();
     await browser.keys('Enter');
@@ -166,7 +220,7 @@ describe('tag dates', function () {
     await expectEventually(async () => (await cardTitles(0)).length, 1);
 
     await startNewCard('Ping @@00:00');
-    await browser.$('.suggestion-item').waitForDisplayed();
+    await visible('.suggestion-container .suggestion-item');
     await browser.keys('Enter');
     const expected = await today('YY-MM-DD');
     await expectEventually(editorText, `Ping #${expected}-00-00-00 `);
@@ -188,9 +242,7 @@ describe('tag dates', function () {
     await date.waitForExist();
 
     await date.click();
-    await pickToday();
-
-    const expected = await today('YY-MM-DD');
+    const expected = await pickDay();
     await waitForFile(BOARD, (md) => md.includes(`- [ ] Task #${expected}-09-30-00 #work`));
   });
 
@@ -247,9 +299,7 @@ describe('tag dates', function () {
     await tag.waitForExist();
 
     await tag.click();
-    await pickToday();
-
-    const expected = await today('YY-MM-DD');
+    const expected = await pickDay();
     await waitForFile(BOARD, (md) => md.includes(`- [ ] Task #${expected}-09-30-00 #work`));
     // The click must not also run the tag search an ordinary tag opens.
     expect(await searchQuery()).not.toContain('26-10-14');
@@ -268,9 +318,7 @@ describe('tag dates', function () {
     expect(await tag.getText()).toBe('#26-10-14');
 
     await tag.click();
-    await pickToday();
-
-    const expected = await today('YY-MM-DD');
+    const expected = await pickDay();
     await waitForFile(BOARD, (md) => md.includes(`- [ ] Task #${expected} #work`));
   });
 
@@ -294,9 +342,7 @@ describe('tag dates', function () {
     const mark = lane(0).$(`${cls('date-tag')} a.tag mark`);
     await mark.waitForExist();
     await mark.click();
-    await pickToday();
-
-    const expected = await today('YY-MM-DD');
+    const expected = await pickDay();
     await waitForFile(BOARD, (md) => md.includes(`- [ ] Task #${expected} #work`));
   });
 });
