@@ -14,7 +14,7 @@ import { BoardModifiers } from 'src/state/boardModifiers';
 import { LinkedMoveTarget, linkedMoveLabel } from 'src/state/linkedMove';
 
 import { CardHistoryModal } from './CardHistoryModal';
-import { addMoveToLaneItems, createNoteFromCard } from './cardActions';
+import { addMoveToLaneItems, addSizeItems, createNoteFromCard } from './cardActions';
 import {
   constructDatePicker,
   constructMenuDatePickerOnChange,
@@ -299,6 +299,18 @@ export function useItemMenu({
           menu.addItem((i) => {
             const submenu = i.setTitle(t('Mark as')).setIcon('lucide-flag').setSubmenu();
             addMarkOptions(submenu, '');
+          });
+        }
+        menu.addSeparator();
+      }
+
+      if (stateManager.getSetting('show-card-size')) {
+        if (Platform.isPhone) {
+          addSizeItems(menu, stateManager, boardModifiers, item, path);
+        } else {
+          menu.addItem((i) => {
+            const submenu = i.setTitle(t('Size')).setIcon('lucide-gauge').setSubmenu();
+            addSizeItems(submenu, stateManager, boardModifiers, item, path);
           });
         }
         menu.addSeparator();

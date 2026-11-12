@@ -17,6 +17,7 @@ overrides the global value for that board only.
 
 - [General](general.md) — cards, lists, notes created from cards
 - [Quick actions](quick-actions.md) — the buttons shown on a card under the pointer
+- [Card size](card-size.md) — XS to XL estimates and list totals
 - [Tags](tags.md)
 - [Date & time](dates-and-time.md)
 - [Archive](archive.md)

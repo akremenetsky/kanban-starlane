@@ -77,11 +77,14 @@ Each step is a separate PR from `main`. Steps 1–3 need no new syntax in board 
       relations) add their actions to the list in their own PRs.
       Built as `components/Item/QuickActions.tsx`; the panel sits *inside* the card (the card
       clips overflow), over the top-right corner, unlike the mock-up where it stuck out above.
-- [ ] **4. Card size (estimation).** XS / S / M / L / XL, picker popover, footer chip.
+- [x] **4. Card size (estimation).** XS / S / M / L / XL, picker popover, footer chip.
       Format change → `change-board-format` skill. Every size has a weight (default
       XS 1, S 2, M 3, L 5, XL 8, editable in settings). The lane header shows the sum of weights
       with the size icon, right-aligned, hidden when no card has a size. Hover (tap on mobile)
       shows the breakdown: count and weight per size, and the weight scale.
+      Stored as a tag `#size/M` (product owner's choice; word set by `size-tag`). Also: a
+      *Size* submenu in the card menu, a *Set size* quick action, and *Card sizes* to switch
+      the feature off. A click on the total opens the breakdown (no tooltips on phones).
 - [ ] **5. Relations within one board.** Card picker, relation types, blocked state in the
       header, relations popover (click → scroll to the card). Card identity = hidden block id
       `^id` (as linked lanes). Types, each shown from both sides:

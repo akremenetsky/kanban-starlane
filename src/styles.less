@@ -993,6 +993,77 @@ button.kanban-starlane__new-item-button {
   text-overflow: ellipsis;
 }
 
+// Card size picker (in a chip popover) and the list's size total (docs/dev/card-roadmap.md, step 4).
+.kanban-starlane__size-picker {
+  display: flex;
+  gap: var(--size-2-2);
+}
+
+button.kanban-starlane__size-option {
+  min-width: 2.25em;
+  padding-inline: var(--size-4-1);
+  font-size: var(--font-ui-small);
+  font-variant-numeric: tabular-nums;
+
+  &.is-active {
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+  }
+}
+
+button.kanban-starlane__lane-size-total {
+  height: auto;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  gap: var(--size-2-1);
+  padding-inline: var(--size-2-2);
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  font-variant-numeric: tabular-nums;
+  cursor: var(--cursor);
+
+  &:hover {
+    color: var(--text-normal);
+  }
+
+  .kanban-starlane__icon {
+    display: flex;
+    --icon-size: 12px;
+  }
+}
+
+.kanban-starlane__lane-size-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.kanban-starlane__lane-size-scale {
+  margin-block-start: var(--size-4-1);
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+
+.kanban-starlane__size-weights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-4-2);
+}
+
+.kanban-starlane__size-weight {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2-2);
+
+  input {
+    width: 4em;
+  }
+}
+
 // A secondary value after the chip's main one, e.g. the relative date after the date.
 .kanban-starlane__item-chip-note::before {
   content: '·';

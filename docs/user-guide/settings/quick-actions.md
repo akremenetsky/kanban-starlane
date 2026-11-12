@@ -8,6 +8,7 @@ five actions to show before it:
 |---|---|
 | **Mark as done** (on by default) | Checks the card, or unchecks a checked one |
 | **Add or change date** (on by default) | Opens the calendar |
+| **Set size** | Opens the list of [card sizes](card-size.md) |
 | **Move to next list** (on by default) | Moves the card to the top of the list on the right; unavailable in the last list |
 | **Move to list** | Opens the list of lists to move the card to |
 | **Open or create note** | Opens the note the card links to, or creates one from the card, like [New note from card](../guide/cards-and-lists.md#creating-a-note-from-a-card) |

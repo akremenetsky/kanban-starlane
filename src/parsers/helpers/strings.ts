@@ -13,8 +13,9 @@ export function markRangeForDeletion(str: string, range: { start: number; end: n
   let start = range.start;
   while (start > 0 && str[start - 1] === ' ') start--;
 
+  // Spaces after the range only; never past a line break into the next line's indent.
   let end = range.end;
-  while (end < len - 1 && str[end + 1] === ' ') end++;
+  while (end < len && str[end] === ' ') end++;
 
   return str.slice(0, start) + '\u0000'.repeat(end - start) + str.slice(end);
 }

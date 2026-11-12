@@ -85,8 +85,14 @@ export interface FileMetadata {
   [k: string]: PageData;
 }
 
+/** Card sizes (estimation), smallest first. Written as a tag such as `#size/M`. */
+export const CARD_SIZES = ['XS', 'S', 'M', 'L', 'XL'] as const;
+export type CardSize = (typeof CARD_SIZES)[number];
+
 export interface ItemMetadata {
   dateStr?: string;
+  /** From the card's first size tag. */
+  size?: CardSize;
   date?: moment.Moment;
   timeStr?: string;
   time?: moment.Moment;

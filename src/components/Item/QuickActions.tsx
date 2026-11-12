@@ -11,6 +11,7 @@ import { BoardModifiers } from 'src/state/boardModifiers';
 
 import {
   addMoveToLaneItems,
+  addSizeItems,
   createNoteFromCard,
   moveCardToLane,
   toggleCardDone,
@@ -63,6 +64,17 @@ function actionButton(
           ),
       };
     }
+    case 'size':
+      if (!stateManager.getSetting('show-card-size')) return null;
+      return {
+        icon: 'lucide-gauge',
+        label: t('Set size'),
+        run: (e) => {
+          const menu = new Menu();
+          addSizeItems(menu, stateManager, boardModifiers, item, path);
+          menu.showAtMouseEvent(e);
+        },
+      };
     case 'next-lane':
       return {
         icon: 'lucide-arrow-right',

@@ -1,5 +1,5 @@
 import { FRONTMATTER_KEY } from 'src/constants';
-import { DataKey, DateColor, LinkedLanes, TagColor, TagSort } from 'src/model/types';
+import { CardSize, DataKey, DateColor, LinkedLanes, TagColor, TagSort } from 'src/model/types';
 
 export type KanbanFormat = 'basic' | 'board' | 'table' | 'list';
 
@@ -10,6 +10,7 @@ export type DateSyntax = 'trigger' | 'tag';
 export const QUICK_ACTIONS = [
   'done',
   'date',
+  'size',
   'next-lane',
   'move-to-lane',
   'note',
@@ -63,6 +64,11 @@ export interface KanbanSettings {
   'show-archive-all'?: boolean;
   'show-board-settings'?: boolean;
   'show-checkboxes'?: boolean;
+  /** Read `#<size-tag>/XS` … `/XL` tags as card sizes. */
+  'show-card-size'?: boolean;
+  /** The word of size tags: `size` → `#size/M`. */
+  'size-tag'?: string;
+  'size-weights'?: Partial<Record<CardSize, number>>;
   'show-filter'?: boolean;
   'show-relative-date'?: boolean;
   'show-search'?: boolean;
@@ -117,6 +123,9 @@ export const settingKeyLookup: Set<keyof KanbanSettings> = new Set([
   'show-archive-all',
   'show-board-settings',
   'show-checkboxes',
+  'show-card-size',
+  'size-tag',
+  'size-weights',
   'show-filter',
   'show-relative-date',
   'show-search',
@@ -163,6 +172,8 @@ export function shouldRefreshBoard(oldSettings: KanbanSettings, newSettings: Kan
     'hide-card-count',
     'tag-colors',
     'date-colors',
+    'show-card-size',
+    'size-tag',
   ];
 
   return !toCompare.every((k) => {

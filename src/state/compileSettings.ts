@@ -7,6 +7,8 @@ import {
   defaultQuickActions,
   defaultTimeTrigger,
   sanitizeQuickActions,
+  sanitizeSizeTag,
+  sanitizeSizeWeights,
   storedDatePosition,
 } from 'src/settings/defaults';
 import { KanbanSettings } from 'src/settings/types';
@@ -79,6 +81,16 @@ export function compileSettings(
     'tag-sort': raw('tag-sort') ?? [],
     'date-colors': raw('date-colors') ?? [],
     'quick-actions': sanitizeQuickActions(raw('quick-actions')) ?? defaultQuickActions,
+    'show-card-size': raw('show-card-size') ?? true,
+    'size-tag': sanitizeSizeTag(raw('size-tag')),
+    // Per size: a board that sets only M keeps the global (or default) weights of the others.
+    'size-weights': sanitizeSizeWeights(
+      Object.assign(
+        {},
+        globalSettings?.['size-weights'],
+        ...[...boardLayers].reverse().map((layer) => layer?.['size-weights'])
+      )
+    ),
     'tag-action': raw('tag-action') ?? 'obsidian',
   };
 }

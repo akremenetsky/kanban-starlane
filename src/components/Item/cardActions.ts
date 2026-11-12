@@ -4,7 +4,9 @@ import { Path } from 'src/dnd/types';
 import { moveEntity } from 'src/dnd/util/data';
 import { getTaskStatusDone, toggleTask } from 'src/integrations/tasks';
 import { applyTemplate } from 'src/integrations/templates';
-import { Item } from 'src/model/types';
+import { t } from 'src/lang/helpers';
+import { CARD_SIZES, CardSize, Item } from 'src/model/types';
+import { setCardSize } from 'src/parsers/cardSize';
 import { StateManager } from 'src/state/StateManager';
 import { BoardModifiers } from 'src/state/boardModifiers';
 import { linkCardTitleToNote, noteNameFromCardTitle } from 'src/state/noteFromCard';
@@ -102,4 +104,43 @@ export async function createNoteFromCard(
   );
 
   boardModifiers.updateItem(path, stateManager.updateItemContent(item, newTitleRaw));
+}
+
+/** Sets the card's size, or removes it for null, by rewriting its size tag. */
+export function setItemSize(
+  stateManager: StateManager,
+  boardModifiers: BoardModifiers,
+  item: Item,
+  path: Path,
+  size: CardSize | null
+) {
+  const titleRaw = setCardSize(item.data.titleRaw, size, stateManager.getSetting('size-tag'));
+  boardModifiers.updateItem(path, stateManager.updateItemContent(item, titleRaw));
+}
+
+/** Adds one item per size, and one to remove the size; the card's size is checked. */
+export function addSizeItems(
+  menu: Menu,
+  stateManager: StateManager,
+  boardModifiers: BoardModifiers,
+  item: Item,
+  path: Path
+) {
+  const current = item.data.metadata.size;
+  for (const size of CARD_SIZES) {
+    menu.addItem((i) =>
+      i
+        .setTitle(size)
+        .setChecked(current === size)
+        .onClick(() => setItemSize(stateManager, boardModifiers, item, path, size))
+    );
+  }
+  if (current) {
+    menu.addItem((i) =>
+      i
+        .setIcon('lucide-x')
+        .setTitle(t('Remove size'))
+        .onClick(() => setItemSize(stateManager, boardModifiers, item, path, null))
+    );
+  }
 }

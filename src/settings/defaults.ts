@@ -1,5 +1,5 @@
 import { DEFAULT_HIGHLIGHT_TAGS } from 'src/constants';
-import { TagColor } from 'src/model/types';
+import { CARD_SIZES, CardSize, TagColor } from 'src/model/types';
 
 import { DatePosition, DateSyntax, KanbanSettings, QUICK_ACTIONS, QuickAction } from './types';
 
@@ -14,6 +14,30 @@ export const defaultMetadataPosition = 'body';
 export const defaultDatePosition: DatePosition = 'footer';
 
 export const defaultQuickActions: QuickAction[] = ['done', 'date', 'next-lane'];
+
+export const defaultSizeTag = 'size';
+
+export const defaultSizeWeights: Record<CardSize, number> = { XS: 1, S: 2, M: 3, L: 5, XL: 8 };
+
+/** The word of size tags without characters that end a tag (or `/`); the default when empty. */
+export function sanitizeSizeTag(value: unknown): string {
+  const word =
+    typeof value === 'string'
+      ? value.replace(/[\u2000-\u206F\u2E00-\u2E7F'!"#$%&()*+,./:;<=>?@^`{|}~[\]\\\s]/g, '')
+      : '';
+  return word || defaultSizeTag;
+}
+
+/** Weights for every size: stored numbers ≥ 0 where valid, the defaults elsewhere. */
+export function sanitizeSizeWeights(value: unknown): Record<CardSize, number> {
+  const stored = (value && typeof value === 'object' ? value : {}) as Record<string, unknown>;
+  const weights = { ...defaultSizeWeights };
+  for (const size of CARD_SIZES) {
+    const w = stored[size];
+    if (typeof w === 'number' && Number.isFinite(w) && w >= 0) weights[size] = w;
+  }
+  return weights;
+}
 
 /** The panel holds at most this many actions, plus the menu button. */
 export const MAX_QUICK_ACTIONS = 5;

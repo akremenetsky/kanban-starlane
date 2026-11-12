@@ -6,6 +6,12 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 ## Unreleased
 
 ### Added
+- **Card size**: give a card a size — XS, S, M, L or XL — from its menu (*Size*), the new *Set
+  size* quick action, or by clicking the size in the card footer. Each list shows the total
+  of its sizes next to the card count; hover or click it to see how it adds up. A size is a
+  tag in the card text, `#size/M`, so it works in the tag filter and in search. New settings
+  in *Card size*: switch sizes off, change the tag word, and set what each size weighs
+  (XS 1, S 2, M 3, L 5, XL 8 by default).
 - **Quick actions**: hover a card to show a small panel of buttons in its top-right corner —
   by default *Mark as done*, *Add or change date*, *Move to next list*, and `⋮` for the card
   menu. Choose up to five actions in the new *Quick actions* settings (also *Move to list*,
@@ -25,6 +31,11 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
   named *below the card text* instead of *card footer*: *Show tags below the card text*,
   *Show task data below the card text*, and *Below the card text* in *Inline metadata
   position*. They work as before.
+
+### Fixed
+- A multi-line card with a tag or date at the end of its first line was shown with that line
+  run together with the next one (and a code block below could break) when moving tags or
+  dates out of the text and the vault indents with spaces. Files were not affected.
 
 ## 0.1.9 — 2026-10-25
 
