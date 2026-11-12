@@ -1,10 +1,8 @@
 import update from 'immutability-helper';
-import { Menu, Platform, TFile, TFolder } from 'obsidian';
+import { Menu, Platform, TFile } from 'obsidian';
 import { Dispatch, StateUpdater, useCallback } from 'preact/hooks';
 import { VIEW_ICON } from 'src/constants';
 import { Path } from 'src/dnd/types';
-import { moveEntity } from 'src/dnd/util/data';
-import { applyTemplate } from 'src/integrations/templates';
 import { t } from 'src/lang/helpers';
 import { EditState, Item } from 'src/model/types';
 import { addTag, hasTag, removeTag } from 'src/parsers/cardTags';
@@ -14,9 +12,9 @@ import { escapeRegExpStr } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 import { BoardModifiers } from 'src/state/boardModifiers';
 import { LinkedMoveTarget, linkedMoveLabel } from 'src/state/linkedMove';
-import { linkCardTitleToNote, noteNameFromCardTitle } from 'src/state/noteFromCard';
 
 import { CardHistoryModal } from './CardHistoryModal';
+import { addMoveToLaneItems, createNoteFromCard } from './cardActions';
 import {
   constructDatePicker,
   constructMenuDatePickerOnChange,
@@ -88,45 +86,7 @@ export function useItemMenu({
         .addItem((i) => {
           i.setIcon('lucide-file-plus-2')
             .setTitle(t('New note from card'))
-            .onClick(async () => {
-              const triggers = {
-                dateTrigger: stateManager.getSetting('date-trigger'),
-                timeTrigger: stateManager.getSetting('time-trigger'),
-              };
-              const sanitizedTitle = noteNameFromCardTitle(item.data.titleRaw, triggers);
-
-              const newNoteFolder = stateManager.getSetting('new-note-folder');
-              const newNoteTemplatePath = stateManager.getSetting('new-note-template');
-
-              const configuredFolder = newNoteFolder
-                ? stateManager.app.vault.getAbstractFileByPath(newNoteFolder)
-                : null;
-              const targetFolder =
-                configuredFolder instanceof TFolder
-                  ? configuredFolder
-                  : stateManager.app.fileManager.getNewFileParent(stateManager.file.path);
-
-              const newFile = await stateManager.app.fileManager.createNewMarkdownFile(
-                targetFolder,
-                sanitizedTitle
-              );
-
-              const newLeaf = stateManager.app.workspace.getLeaf('split');
-
-              await newLeaf.openFile(newFile);
-
-              stateManager.app.workspace.setActiveLeaf(newLeaf, { focus: true });
-
-              await applyTemplate(stateManager, newNoteTemplatePath);
-
-              const newTitleRaw = linkCardTitleToNote(
-                item.data.titleRaw,
-                stateManager.app.fileManager.generateMarkdownLink(newFile, stateManager.file.path),
-                triggers
-              );
-
-              boardModifiers.updateItem(path, stateManager.updateItemContent(item, newTitleRaw));
-            });
+            .onClick(() => createNoteFromCard(stateManager, boardModifiers, item, path));
         })
         .addItem((i) => {
           i.setIcon('lucide-link')
@@ -344,24 +304,7 @@ export function useItemMenu({
         menu.addSeparator();
       }
 
-      const addMoveToOptions = (menu: Menu) => {
-        const lanes = stateManager.state.children;
-        if (lanes.length <= 1) return;
-        for (let i = 0, len = lanes.length; i < len; i++) {
-          menu.addItem((item) =>
-            item
-              .setIcon('lucide-square-kanban')
-              .setChecked(path[0] === i)
-              .setTitle(lanes[i].data.title)
-              .onClick(() => {
-                if (path[0] === i) return;
-                stateManager.setState((boardData) => {
-                  return moveEntity(boardData, path, [i, 0]);
-                });
-              })
-          );
-        }
-      };
+      const addMoveToOptions = (menu: Menu) => addMoveToLaneItems(menu, stateManager, path);
 
       if (Platform.isPhone) {
         addMoveToOptions(menu);

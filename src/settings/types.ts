@@ -6,6 +6,18 @@ export type KanbanFormat = 'basic' | 'board' | 'table' | 'list';
 /** How card dates are written: `@{…}`/`@@{…}` triggers, or tags like `#26-10-14-13-25-20`. */
 export type DateSyntax = 'trigger' | 'tag';
 
+/** Buttons of the card's quick action panel, shown in this order. */
+export const QUICK_ACTIONS = [
+  'done',
+  'date',
+  'next-lane',
+  'move-to-lane',
+  'note',
+  'archive',
+  'duplicate',
+] as const;
+export type QuickAction = (typeof QUICK_ACTIONS)[number];
+
 /** Where a card's date is shown: in its text, in the card footer, or both. */
 export type DatePosition = 'body' | 'both' | 'footer';
 
@@ -42,6 +54,7 @@ export interface KanbanSettings {
   'move-dates'?: boolean;
   'move-tags'?: boolean;
   'move-task-metadata'?: boolean;
+  'quick-actions'?: QuickAction[];
   'new-card-insertion-method'?: 'prepend' | 'prepend-compact' | 'append';
   'new-line-trigger'?: 'enter' | 'shift-enter';
   'new-note-folder'?: string;
@@ -96,6 +109,7 @@ export const settingKeyLookup: Set<keyof KanbanSettings> = new Set([
   'move-tags',
   'move-task-metadata',
   'new-card-insertion-method',
+  'quick-actions',
   'new-line-trigger',
   'new-note-folder',
   'new-note-template',

@@ -11,6 +11,10 @@ export interface KanbanContextProps {
   stateManager: StateManager;
   boardModifiers: BoardModifiers;
   view: KanbanView;
+  /** The board being viewed; unlike `stateManager`, linked lanes do not override it. */
+  viewStateManager?: StateManager;
+  /** Number of lists of the viewed board, so cards re-render when lists come and go. */
+  laneCount?: number;
 }
 
 export const KanbanContext = createContext<KanbanContextProps>(null);

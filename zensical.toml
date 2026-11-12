@@ -25,6 +25,7 @@ nav = [
   { "Settings" = [
     { "Overview" = "settings/index.md" },
     { "General" = "settings/general.md" },
+    { "Quick actions" = "settings/quick-actions.md" },
     { "Tags" = "settings/tags.md" },
     { "Date & time" = "settings/dates-and-time.md" },
     { "Archive" = "settings/archive.md" },

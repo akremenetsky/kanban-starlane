@@ -882,7 +882,54 @@ button.kanban-starlane__new-item-button {
 }
 
 .kanban-starlane__item-content-wrapper {
+  position: relative;
   background: var(--background-primary);
+}
+
+/* Quick action panel (docs/dev/card-roadmap.md, step 3). It floats over the card's top-right
+   corner — the card clips anything outside it — and shows on hover or keyboard focus. It stays
+   clickable while transparent: a pointer has to hover the card, and so reveal it, to click. */
+.kanban-starlane__item-actions {
+  position: absolute;
+  top: 3px;
+  inset-inline-end: 3px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  padding: 1px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+  background: var(--background-primary);
+  box-shadow: var(--shadow-s);
+  opacity: 0;
+  transition: opacity 100ms;
+
+  .kanban-starlane__item:hover &,
+  &:focus-within {
+    opacity: 1;
+  }
+
+  .clickable-icon {
+    --icon-size: 15px;
+    padding: 3px;
+    margin: 0;
+  }
+
+  .kanban-starlane__item-action[aria-pressed='true'] {
+    color: var(--text-accent);
+  }
+
+  .kanban-starlane__item-action:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kanban-starlane__item-actions {
+    transition: none;
+  }
 }
 
 .kanban-starlane__item-title-wrapper {

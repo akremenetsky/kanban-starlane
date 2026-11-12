@@ -5,6 +5,13 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 
 ## Unreleased
 
+### Added
+- **Quick actions**: hover a card to show a small panel of buttons in its top-right corner —
+  by default *Mark as done*, *Add or change date*, *Move to next list*, and `⋮` for the card
+  menu. Choose up to five actions in the new *Quick actions* settings (also *Move to list*,
+  *Open or create note*, *Archive card*, *Duplicate card*). The `⋮` button no longer takes
+  room on every card; on phones and tablets it stays as before.
+
 ### Changed
 - **Dates now sit in a footer at the bottom of the card** by default: a calendar icon, the date,
   the time and, with *Show relative date*, the relative date ("in 3 days"). Click the date or

@@ -5,7 +5,7 @@
  * To add a setting: add its key to settings/types.ts (KanbanSettings + settingKeyLookup),
  * give it a default in state/compileSettings.ts if needed, then add a control here.
  */
-import { Setting } from 'obsidian';
+import { Setting, ToggleComponent } from 'obsidian';
 import { c } from 'src/components/helpers';
 import { getParentWindow } from 'src/dnd/util/getWindow';
 import { getDefaultDateFormat, getDefaultTimeFormat } from 'src/integrations/dateFormats';
@@ -38,15 +38,18 @@ import {
   toggleSetting,
 } from './controls';
 import {
+  MAX_QUICK_ACTIONS,
   defaultDatePosition,
   defaultDateSyntax,
   defaultDateTrigger,
   defaultMetadataPosition,
+  defaultQuickActions,
   defaultTimeTrigger,
+  sanitizeQuickActions,
   storedDatePosition,
 } from './defaults';
 import { createSearchSelect, getListOptions } from './searchSelect';
-import { KanbanSettings } from './types';
+import { KanbanSettings, QUICK_ACTIONS, QuickAction } from './types';
 
 export function renderSettings(ctx: SettingsContext, title: string) {
   const { containerEl, local } = ctx;
@@ -61,6 +64,7 @@ export function renderSettings(ctx: SettingsContext, title: string) {
   });
 
   renderGeneral(ctx);
+  renderQuickActions(ctx);
   renderTags(ctx);
   renderDates(ctx);
   renderArchive(ctx);
@@ -172,6 +176,70 @@ function renderGeneral(ctx: SettingsContext) {
         manager: ctx.manager,
       })
     );
+}
+
+function renderQuickActions(ctx: SettingsContext) {
+  const { manager, local, containerEl } = ctx;
+  heading(ctx, t('Quick actions'));
+
+  const names: Record<QuickAction, string> = {
+    done: t('Mark as done'),
+    date: t('Add or change date'),
+    'next-lane': t('Move to next list'),
+    'move-to-lane': t('Move to list'),
+    note: t('Open or create note'),
+    archive: t('Archive card'),
+    duplicate: t('Duplicate card'),
+  };
+  const current = () =>
+    sanitizeQuickActions(manager.settings['quick-actions']) ??
+    (local ? sanitizeQuickActions(manager.plugin.settings['quick-actions']) : undefined) ??
+    defaultQuickActions;
+
+  const toggles = new Map<QuickAction, ToggleComponent>();
+  let resetting = false;
+  // Past the limit, the switches that are off are disabled.
+  const sync = () => {
+    const actions = current();
+    for (const [action, toggle] of toggles) {
+      if (resetting) toggle.setValue(actions.includes(action));
+      toggle.setDisabled(!actions.includes(action) && actions.length >= MAX_QUICK_ACTIONS);
+    }
+  };
+
+  const intro = new Setting(containerEl).setDesc(
+    t(
+      'Buttons shown on a card under the mouse pointer, up to 5. The card menu is always the last button. Phones and tablets keep only the menu button.'
+    )
+  );
+  if (local) {
+    intro.addExtraButton((b) =>
+      b
+        .setIcon('lucide-rotate-ccw')
+        .setTooltip(t('Reset to default'))
+        .onClick(() => {
+          manager.applySettingsUpdate({ $unset: ['quick-actions'] });
+          resetting = true;
+          sync();
+          resetting = false;
+        })
+    );
+  }
+
+  for (const action of QUICK_ACTIONS) {
+    new Setting(containerEl).setName(names[action]).addToggle((toggle) => {
+      toggles.set(action, toggle);
+      toggle.setValue(current().includes(action));
+      toggle.onChange((on) => {
+        if (resetting) return;
+        const actions = current();
+        const next = QUICK_ACTIONS.filter((a) => (a === action ? on : actions.includes(a)));
+        manager.applySettingsUpdate({ 'quick-actions': { $set: next } });
+        sync();
+      });
+    });
+  }
+  sync();
 }
 
 function renderTags(ctx: SettingsContext) {

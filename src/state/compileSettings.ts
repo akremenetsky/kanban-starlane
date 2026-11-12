@@ -4,7 +4,9 @@ import {
   defaultDateSyntax,
   defaultDateTrigger,
   defaultMetadataPosition,
+  defaultQuickActions,
   defaultTimeTrigger,
+  sanitizeQuickActions,
   storedDatePosition,
 } from 'src/settings/defaults';
 import { KanbanSettings } from 'src/settings/types';
@@ -76,6 +78,7 @@ export function compileSettings(
     'tag-colors': raw('tag-colors') ?? [],
     'tag-sort': raw('tag-sort') ?? [],
     'date-colors': raw('date-colors') ?? [],
+    'quick-actions': sanitizeQuickActions(raw('quick-actions')) ?? defaultQuickActions,
     'tag-action': raw('tag-action') ?? 'obsidian',
   };
 }

@@ -1,4 +1,5 @@
 import classcat from 'classcat';
+import { Platform } from 'obsidian';
 import { ComponentChildren } from 'preact';
 import {
   JSX,
@@ -32,6 +33,7 @@ import { ItemContent } from './ItemContent';
 import { useItemMenu } from './ItemMenu';
 import { ItemMenuButton } from './ItemMenuButton';
 import { ItemMetadata } from './MetadataTable';
+import { QuickActions } from './QuickActions';
 import { getItemClassModifiers } from './classModifiers';
 import { CardZoneRow } from './zones/CardZones';
 import { useCardChips } from './zones/chips';
@@ -60,7 +62,8 @@ const ItemInner = memo(function ItemInner({
   searchQuery,
   isStatic,
 }: ItemInnerProps) {
-  const { stateManager, boardModifiers, view } = useContext(KanbanContext);
+  const { stateManager, boardModifiers, view, viewStateManager, laneCount } =
+    useContext(KanbanContext);
   const [editState, setEditState] = useState<EditState>(EditingState.cancel);
 
   const dndManager = useContext(DndManagerContext);
@@ -84,6 +87,11 @@ const ItemInner = memo(function ItemInner({
 
   const path = useNestedEntityPath();
   const chips = useCardChips(item, stateManager);
+  // The panel follows the board being viewed, also on cards of linked boards.
+  const quickActions = (viewStateManager ?? stateManager).useSetting('quick-actions');
+  const isLinkedCard = stateManager.file !== view.file;
+  // No hover on phones and tablets: they keep the menu button. While editing it cancels.
+  const showPanel = !Platform.isMobile && !isStatic && !isEditing(editState);
 
   const { boards } = useContext(LinkedLanesContext);
   const linkedMove = useMemo(() => {
@@ -150,6 +158,19 @@ const ItemInner = memo(function ItemInner({
       className={c('item-content-wrapper')}
       {...ignoreAttr}
     >
+      {/* First, so the title keeps being the last child when nothing follows it. */}
+      {showPanel && (
+        <QuickActions
+          item={item}
+          path={path}
+          stateManager={stateManager}
+          boardModifiers={boardModifiers}
+          showMenu={showItemMenu}
+          actions={quickActions}
+          // A linked card's next list is in its own board, maybe not shown here.
+          canMoveToNextLane={!isLinkedCard && path[0] < (laneCount ?? 0) - 1}
+        />
+      )}
       <CardZoneRow zone="header" chips={chips.header} />
       <div className={c('item-title-wrapper')} {...ignoreAttr}>
         <ItemCheckbox
@@ -166,7 +187,13 @@ const ItemInner = memo(function ItemInner({
           editState={editState}
           isStatic={isStatic}
         />
-        <ItemMenuButton editState={editState} setEditState={setEditState} showMenu={showItemMenu} />
+        {!showPanel && (
+          <ItemMenuButton
+            editState={editState}
+            setEditState={setEditState}
+            showMenu={showItemMenu}
+          />
+        )}
       </div>
       <ItemMetadata searchQuery={isMatch ? searchQuery : undefined} item={item} />
       <CardZoneRow zone="footer" chips={chips.footer} />

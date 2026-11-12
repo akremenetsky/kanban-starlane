@@ -20,7 +20,11 @@ async function parts(index: number) {
   await card(0, 'Plain');
   const wrapper = await lane(0).$$(cls('item'))[index].$(cls('item-content-wrapper'));
   return browser.execute(
-    (el) => [...el.children].map((child) => child.className.replace('kanban-starlane__', '')),
+    (el) =>
+      [...el.children]
+        .map((child) => child.className.replace('kanban-starlane__', ''))
+        // The quick action panel floats over the card; it is not part of the layout.
+        .filter((name) => name !== 'item-actions'),
     wrapper
   );
 }

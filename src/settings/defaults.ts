@@ -1,7 +1,7 @@
 import { DEFAULT_HIGHLIGHT_TAGS } from 'src/constants';
 import { TagColor } from 'src/model/types';
 
-import { DatePosition, DateSyntax, KanbanSettings } from './types';
+import { DatePosition, DateSyntax, KanbanSettings, QUICK_ACTIONS, QuickAction } from './types';
 
 export const defaultDateTrigger = '@';
 
@@ -12,6 +12,20 @@ export const defaultTimeTrigger = '@@';
 export const defaultMetadataPosition = 'body';
 
 export const defaultDatePosition: DatePosition = 'footer';
+
+export const defaultQuickActions: QuickAction[] = ['done', 'date', 'next-lane'];
+
+/** The panel holds at most this many actions, plus the menu button. */
+export const MAX_QUICK_ACTIONS = 5;
+
+/**
+ * Known actions of a stored value, deduplicated, in panel order, at most the limit. Values come
+ * from hand-edited files or newer plugin versions with actions this one does not know.
+ */
+export function sanitizeQuickActions(value: unknown): QuickAction[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  return QUICK_ACTIONS.filter((action) => value.includes(action)).slice(0, MAX_QUICK_ACTIONS);
+}
 
 /** The date position set in one settings layer, reading the legacy `move-dates` toggle. */
 export function storedDatePosition(settings: KanbanSettings | undefined): DatePosition | undefined {

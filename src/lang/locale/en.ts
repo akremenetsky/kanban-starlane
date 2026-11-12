@@ -278,6 +278,15 @@ const en = {
   'Move to top': 'Move to top',
   'Move to bottom': 'Move to bottom',
   'Move to list': 'Move to list',
+  'Mark as done': 'Mark as done',
+  'Mark as not done': 'Mark as not done',
+  'Move to next list': 'Move to next list',
+  'Open note': 'Open note',
+  'Add or change date': 'Add or change date',
+  'Open or create note': 'Open or create note',
+  'Quick actions': 'Quick actions',
+  'Buttons shown on a card under the mouse pointer, up to 5. The card menu is always the last button. Phones and tablets keep only the menu button.':
+    'Buttons shown on a card under the mouse pointer, up to 5. The card menu is always the last button. Phones and tablets keep only the menu button.',
   'Move to board': 'Move to board',
   'Could not move the card: the list was not found in the other board':
     'Could not move the card: the list was not found in the other board',

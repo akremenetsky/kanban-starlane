@@ -146,6 +146,19 @@ a scroll. It is placed once, when it opens. Being outside the board root, popove
 gets no board/card CSS variables and no styles nested under `.kanban-starlane`: style it with
 top-level selectors. The table view renders its own cells and has no zones.
 
+## Quick action panel
+
+`components/Item/QuickActions.tsx`, setting `quick-actions` (fixed order `QUICK_ACTIONS` in
+`settings/types.ts`). Actions shared with the card menu and checkbox live in
+`components/Item/cardActions.ts`. The panel is the first child of the card's content wrapper
+(absolutely positioned, so the title stays the last child when nothing follows it) and is
+transparent until the card is hovered or focused; it stays clickable, which e2e tests rely
+on. Its `⋮` keeps the `item-postfix-button` class. On `Platform.isMobile`, in static (drag
+preview) cards and while editing, the card renders the old `ItemMenuButton` instead. For a
+linked card the action set comes from the viewed board (`viewStateManager` on `KanbanContext`,
+not overridden by `LinkedBoardProvider`). `laneCount` on the context re-renders the memoized
+cards when lists are added or removed.
+
 ## Settings
 
 Three layers, resolved per key in `state/compileSettings.ts`:

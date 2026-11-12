@@ -11,6 +11,12 @@ Turn on a checkbox next to each card's title with
 [Display card checkbox](../settings/general.md#display-card-checkbox); `Ctrl`/`Cmd`-clicking it
 archives the card.
 
+## Quick actions
+
+Hover a card to show its quick action panel in the top-right corner: by default **Mark as
+done**, **Add or change date**, **Move to next list** and `⋮`, which opens the card menu (as
+does a right-click). Choose the buttons in [Quick actions](../settings/quick-actions.md).
+
 ## Embedding images
 
 Images can be embedded in a card just like in any other Obsidian note:
@@ -23,7 +29,8 @@ A card can also *display* an image pulled from a linked note's metadata — see
 
 ## Creating a note from a card
 
-Right-click a card, or open its `⋮` menu, and choose **New note from card**.
+Right-click a card, or open its `⋮` menu (in the [quick action panel](#quick-actions)), and
+choose **New note from card**.
 
 ![New note from card menu](../assets/new-note-from-card-menu.png)
 
