@@ -54,6 +54,10 @@ function DraggableLaneRaw({
     [lane, linkedLanes]
   );
   const itemCount = entries?.length ?? lane.children.length;
+  const items = useMemo(
+    () => (entries ? entries.map((entry) => entry.item) : lane.children),
+    [entries, lane.children]
+  );
 
   const boardView = view.useViewState(FRONTMATTER_KEY);
   const path = useNestedEntityPath(laneIndex);
@@ -175,6 +179,7 @@ function DraggableLaneRaw({
               isCollapsed={isCollapsed}
               toggleIsCollapsed={toggleIsCollapsed}
               itemCount={itemCount}
+              items={items}
             />
 
             {!isCollapsed && missing.length > 0 && (

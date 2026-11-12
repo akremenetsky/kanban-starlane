@@ -9,12 +9,13 @@ import { KanbanContext } from 'src/components/context';
 import { c } from 'src/components/helpers';
 import { useNestedEntityPath } from 'src/dnd/components/Droppable';
 import { t } from 'src/lang/helpers';
-import { EditState, EditingState, Lane, isEditing } from 'src/model/types';
+import { EditState, EditingState, Item, Lane, isEditing } from 'src/model/types';
 import { parseLaneTitle } from 'src/parsers/helpers/strings';
 
 import { LaneDescription } from './LaneDescription';
 import { ConfirmAction, useSettingsMenu } from './LaneMenu';
 import { LaneSettings } from './LaneSettings';
+import { LaneSizeTotal } from './LaneSizeTotal';
 import { LaneLimitCounter, LaneTitle } from './LaneTitle';
 
 interface LaneHeaderProps {
@@ -26,6 +27,7 @@ interface LaneHeaderProps {
   toggleIsCollapsed: () => void;
   /** Cards shown in the lane, including those of linked lanes. */
   itemCount?: number;
+  items?: Item[];
 }
 
 interface LaneButtonProps {
@@ -91,6 +93,7 @@ export const LaneHeader = memo(function LaneHeader({
   isCollapsed,
   toggleIsCollapsed,
   itemCount,
+  items,
 }: LaneHeaderProps) {
   const [editState, setEditState] = useState<EditState>(EditingState.cancel);
   const [descriptionEditState, setDescriptionEditState] = useState<EditState>(EditingState.cancel);
@@ -168,6 +171,8 @@ export const LaneHeader = memo(function LaneHeader({
           itemCount={itemCount ?? lane.children.length}
           maxItems={lane.data.maxItems}
         />
+
+        {!isEditing(editState) && <LaneSizeTotal items={items ?? lane.children} />}
 
         <LaneButtons
           editState={editState}

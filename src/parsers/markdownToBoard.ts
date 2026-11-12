@@ -20,6 +20,7 @@ import { defaultSort } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 import { visit } from 'unist-util-visit';
 
+import { parseSizeTag } from './cardSize';
 import {
   ContentBoundary,
   getNextOfType,
@@ -65,6 +66,9 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
   const moveTags = stateManager.getSetting('move-tags');
   const moveDates = stateManager.getSetting('date-position') === 'footer';
   const tagDates = stateManager.getSetting('date-syntax') === 'tag';
+  const sizeWord = stateManager.getSetting('show-card-size')
+    ? stateManager.getSetting('size-tag')
+    : null;
 
   const startNode = item.children.first();
   const endNode = item.children.last();
@@ -80,6 +84,12 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
   const itemBoundary: ContentBoundary = { start, end };
 
   let itemContent = getStringFromBoundary(md, itemBoundary);
+  // `%% … %%` comments: a size tag there is not the card's size (writing a size cannot reach it).
+  const comments = [...itemContent.matchAll(/%%[\s\S]*?%%/g)].map((m) => ({
+    start: itemBoundary.start + m.index,
+    end: itemBoundary.start + m.index + m[0].length,
+  }));
+  const inComment = (offset: number) => comments.some((r) => offset >= r.start && offset < r.end);
 
   // Handle empty task
   if (itemContent === '[' + (item.checked ? item.checkChar : ' ') + ']') {
@@ -177,7 +187,15 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
 
         itemData.metadata.tags.push('#' + genericNode.value);
 
-        if (moveTags) {
+        // The first size tag is the card's size, shown as a footer chip instead of in the text.
+        // It stays among the tags, so the tag filter and search find it.
+        const size =
+          sizeWord && !itemData.metadata.size && !inComment(node.position.start.offset)
+            ? parseSizeTag('#' + genericNode.value, sizeWord)
+            : null;
+        if (size) itemData.metadata.size = size;
+
+        if (moveTags || size) {
           title = markRangeForDeletion(title, {
             start: node.position.start.offset - itemBoundary.start,
             end: node.position.end.offset - itemBoundary.start,

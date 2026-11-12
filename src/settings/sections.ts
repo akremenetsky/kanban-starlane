@@ -11,6 +11,7 @@ import { getParentWindow } from 'src/dnd/util/getWindow';
 import { getDefaultDateFormat, getDefaultTimeFormat } from 'src/integrations/dateFormats';
 import { t } from 'src/lang/helpers';
 import {
+  CARD_SIZES,
   DataKey,
   DateColor,
   DateColorSettingTemplate,
@@ -44,8 +45,10 @@ import {
   defaultDateTrigger,
   defaultMetadataPosition,
   defaultQuickActions,
+  defaultSizeTag,
   defaultTimeTrigger,
   sanitizeQuickActions,
+  sanitizeSizeWeights,
   storedDatePosition,
 } from './defaults';
 import { createSearchSelect, getListOptions } from './searchSelect';
@@ -65,6 +68,7 @@ export function renderSettings(ctx: SettingsContext, title: string) {
 
   renderGeneral(ctx);
   renderQuickActions(ctx);
+  renderCardSize(ctx);
   renderTags(ctx);
   renderDates(ctx);
   renderArchive(ctx);
@@ -185,6 +189,7 @@ function renderQuickActions(ctx: SettingsContext) {
   const names: Record<QuickAction, string> = {
     done: t('Mark as done'),
     date: t('Add or change date'),
+    size: t('Set size'),
     'next-lane': t('Move to next list'),
     'move-to-lane': t('Move to list'),
     note: t('Open or create note'),
@@ -240,6 +245,60 @@ function renderQuickActions(ctx: SettingsContext) {
     });
   }
   sync();
+}
+
+function renderCardSize(ctx: SettingsContext) {
+  const { manager, local, containerEl } = ctx;
+  heading(ctx, t('Card size'));
+
+  toggleSetting(ctx, 'show-card-size', {
+    name: t('Card sizes'),
+    desc: t(
+      'Read tags such as #size/M as card sizes: XS, S, M, L or XL. A card shows its size in the footer, and each list shows the total of its sizes.'
+    ),
+    defaultValue: true,
+  });
+
+  textSetting(ctx, 'size-tag', {
+    name: t('Size tag'),
+    desc: t(
+      'The word of size tags: with "size", a card of size M has the tag #size/M. Changing it does not change your files.'
+    ),
+    defaultValue: defaultSizeTag,
+  });
+
+  // One row of five number inputs; an empty input falls back to the global or default weight.
+  const setting = new Setting(containerEl)
+    .setName(t('Size weights'))
+    .setDesc(t('What each size counts for in list totals.'));
+  setting.controlEl.addClass(c('size-weights'));
+  for (const size of CARD_SIZES) {
+    const fallback = sanitizeSizeWeights(local ? manager.plugin.settings['size-weights'] : {})[
+      size
+    ];
+    setting.controlEl.createEl('label', { cls: c('size-weight') }, (label) => {
+      label.createSpan({ text: size });
+      const input = label.createEl('input', { type: 'number' });
+      input.min = '0';
+      input.placeholder = String(fallback);
+      const stored = manager.settings['size-weights']?.[size];
+      if (typeof stored === 'number') input.value = String(stored);
+      input.addEventListener('input', () => {
+        const value = input.value === '' ? undefined : Number(input.value);
+        const valid = value === undefined || (Number.isFinite(value) && value >= 0);
+        input.toggleClass('error', !valid);
+        if (!valid) return;
+        const next = { ...manager.settings['size-weights'] };
+        if (value === undefined) delete next[size];
+        else next[size] = value;
+        if (Object.keys(next).length) {
+          manager.applySettingsUpdate({ 'size-weights': { $set: next } });
+        } else {
+          manager.applySettingsUpdate({ $unset: ['size-weights'] });
+        }
+      });
+    });
+  }
 }
 
 function renderTags(ctx: SettingsContext) {

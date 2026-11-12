@@ -3,6 +3,26 @@
 Short records of decisions that shape the project. Newest first. Add an entry when a
 decision is not obvious from the code (format changes, dependencies, trade-offs).
 
+## 2026-11-13 — Card size as a tag
+
+Step 4 of [card-roadmap.md](card-roadmap.md). The product owner chose to store a size as a tag
+in the card text, `#size/M`, over a Dataview field (`[size:: M]`) or a hidden entry keyed by
+block id.
+
+- **A tag survives everything a card goes through**: copying the line, editing on a phone,
+  other tools, older plugin versions (they show an ordinary tag). It also works in the tag
+  filter, in Obsidian's search and in tag colours for free. A Dataview field shows as raw
+  text without Dataview and would collide with the inline metadata settings; a hidden entry
+  is lost when the line is copied and is not searchable.
+- **The word is a setting** (`size-tag`, default `size`) for vaults that already use
+  `#size/…`. Changing it does not rewrite cards.
+- **The tag stays in `metadata.tags`** (filter, search) but is cut from the shown title and
+  from the line of tags below the text; the footer chip shows it.
+- **Weights** default to XS 1, S 2, M 3, L 5, XL 8 (Fibonacci-like, as in story points) and
+  are editable; the list total is their sum. An epic will reuse them (step 6).
+- **Sanitized settings**: an odd tag word (`#`, `/`, spaces) or weight (negative, not a number)
+  falls back to the default, so a hand-edited file never breaks parsing.
+
 ## 2026-11-13 — Quick action panel
 
 Step 3 of [card-roadmap.md](card-roadmap.md); the action set and default were chosen by the

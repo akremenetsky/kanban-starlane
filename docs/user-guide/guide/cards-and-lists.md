@@ -17,6 +17,14 @@ Hover a card to show its quick action panel in the top-right corner: by default 
 done**, **Add or change date**, **Move to next list** and `⋮`, which opens the card menu (as
 does a right-click). Choose the buttons in [Quick actions](../settings/quick-actions.md).
 
+## Card size
+
+Set a card's size from its menu (**Size**), or click the size in the card footer to change it:
+**XS**, **S**, **M**, **L** or **XL**. Each list shows the total of its sizes next to the card
+count; hover it, or click it, to see how it adds up. The size is a tag in the card text
+(`#size/M`); see [Card size](../settings/card-size.md). To set sizes in one click, add **Set
+size** to the [quick actions](../settings/quick-actions.md).
+
 ## Embedding images
 
 Images can be embedded in a card just like in any other Obsidian note:

@@ -20,6 +20,7 @@ import { useNestedEntityPath } from 'src/dnd/components/Droppable';
 import { Path } from 'src/dnd/types';
 import { getTaskStatusDone, toggleTaskString } from 'src/integrations/tasks';
 import { EditState, EditingState, Item, isEditing } from 'src/model/types';
+import { sizeTag as sizeTagText } from 'src/parsers/cardSize';
 import { StateManager } from 'src/state/StateManager';
 
 import { RelativeDate } from './DateAndTime';
@@ -128,21 +129,27 @@ export function Tags({
   tags,
   searchQuery,
   alwaysShow,
+  sizeTag,
 }: {
   tags?: string[];
   searchQuery?: string;
   alwaysShow?: boolean;
+  /** The card's size tag, lower case, left out of the list. */
+  sizeTag?: string;
 }) {
   const { stateManager } = useContext(KanbanContext);
   const getTagColor = useGetTagColorFn(stateManager);
   const search = useContext(SearchContext);
   const shouldShow = stateManager.useSetting('move-tags') || alwaysShow;
+  // The card's size has its own chip in the footer; later size tags are ordinary tags.
+  const sizeIndex = sizeTag ? tags.findIndex((tag) => tag.toLowerCase() === sizeTag) : -1;
+  const shown = sizeIndex < 0 ? tags : tags.filter((_, i) => i !== sizeIndex);
 
-  if (!tags.length || !shouldShow) return null;
+  if (!shown.length || !shouldShow) return null;
 
   return (
     <div className={c('item-tags')}>
-      {tags.map((tag, i) => {
+      {shown.map((tag, i) => {
         const tagColor = getTagColor(tag);
 
         return (
@@ -191,6 +198,9 @@ export const ItemContent = memo(function ItemContent({
 }: ItemContentProps) {
   const { stateManager, boardModifiers } = useContext(KanbanContext);
   const datePosition = stateManager.useSetting('date-position');
+  const sizeWord = stateManager.useSetting('size-tag');
+  const size = item.data.metadata.size;
+  const sizeTag = size ? sizeTagText(size, sizeWord).toLowerCase() : undefined;
   const titleRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -304,7 +314,7 @@ export const ItemContent = memo(function ItemContent({
           {/* In the footer the date chip carries the relative date. */}
           {datePosition === 'body' && <RelativeDate item={item} stateManager={stateManager} />}
           <InlineMetadata item={item} stateManager={stateManager} />
-          <Tags tags={item.data.metadata.tags} searchQuery={searchQuery} />
+          <Tags tags={item.data.metadata.tags} searchQuery={searchQuery} sizeTag={sizeTag} />
         </div>
       )}
     </div>
