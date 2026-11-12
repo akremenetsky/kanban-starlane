@@ -7,8 +7,8 @@ they show up in Obsidian's tag search and pane too.
 
 By default, tags stay in the card's body and clicking one searches the whole vault. You can:
 
-- Move tags to the card's footer instead of the body —
-  [Move tags to card footer](../settings/tags.md#move-tags-to-card-footer).
+- Show tags on a line below the card text instead of inside it —
+  [Show tags below the card text](../settings/tags.md#show-tags-below-the-card-text).
 - Show only the cards with some tags — the
   [filter](cards-and-lists.md#filtering-by-tags-and-boards) in the board header.
 - Make clicking a tag filter the board instead of searching the vault —

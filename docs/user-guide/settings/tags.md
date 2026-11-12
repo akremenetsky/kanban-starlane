@@ -1,8 +1,8 @@
 # Tags
 
-## Move tags to card footer
+## Show tags below the card text
 
-When on, tags are shown in the card's footer instead of inline in its body text.
+When on, tags are shown on a line below the card text instead of inside it.
 
 ## Tag click action
 

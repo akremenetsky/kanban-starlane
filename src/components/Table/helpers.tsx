@@ -168,7 +168,7 @@ export function useTableColumns(boardData: Board, stateManager: StateManager) {
 
   const [sorting, setSortingRaw] = useState<SortingState>([]);
   const shouldShowRelativeDate = stateManager.useSetting('show-relative-date');
-  const moveDates = stateManager.useSetting('move-dates');
+  const moveDates = stateManager.useSetting('date-position') !== 'body';
   const moveTags = stateManager.useSetting('move-tags');
   const moveInlineMetadata = stateManager.useSetting('inline-metadata-position') !== 'body';
   const moveTaskMetadata = stateManager.useSetting('move-task-metadata');

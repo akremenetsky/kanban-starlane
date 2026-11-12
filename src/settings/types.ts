@@ -6,6 +6,9 @@ export type KanbanFormat = 'basic' | 'board' | 'table' | 'list';
 /** How card dates are written: `@{…}`/`@@{…}` triggers, or tags like `#26-10-14-13-25-20`. */
 export type DateSyntax = 'trigger' | 'tag';
 
+/** Where a card's date is shown: in its text, in the card footer, or both. */
+export type DatePosition = 'body' | 'both' | 'footer';
+
 export interface KanbanSettings {
   [FRONTMATTER_KEY]?: KanbanFormat;
   'append-archive-date'?: boolean;
@@ -17,6 +20,7 @@ export interface KanbanSettings {
   'date-colors'?: DateColor[];
   'date-display-format'?: string;
   'date-format'?: string;
+  'date-position'?: DatePosition;
   'date-picker-week-start'?: number;
   'date-syntax'?: DateSyntax;
   /** Tag syntax only: show the card's date tag as written instead of formatted. */
@@ -34,6 +38,7 @@ export interface KanbanSettings {
   'list-collapse'?: boolean[];
   'max-archive-size'?: number;
   'metadata-keys'?: DataKey[];
+  /** Legacy toggle, read as `date-position` (true → footer, false → body); never written. */
   'move-dates'?: boolean;
   'move-tags'?: boolean;
   'move-task-metadata'?: boolean;
@@ -73,6 +78,7 @@ export const settingKeyLookup: Set<keyof KanbanSettings> = new Set([
   'date-colors',
   'date-display-format',
   'date-format',
+  'date-position',
   'date-picker-week-start',
   'date-syntax',
   'date-tags-as-written',
@@ -135,6 +141,7 @@ export function shouldRefreshBoard(oldSettings: KanbanSettings, newSettings: Kan
     'link-date-to-daily-note',
     'date-format',
     'time-format',
+    'date-position',
     'move-dates',
     'move-tags',
     'inline-metadata-position',

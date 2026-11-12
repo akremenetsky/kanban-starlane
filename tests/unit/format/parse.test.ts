@@ -209,12 +209,32 @@ describe('cards', () => {
 describe('move-* settings', () => {
   const body = '## L\n\n- [ ] Task #tag @{2024-03-05}';
 
-  it('keeps tags and dates in the rendered title by default', async () => {
-    const { board: b } = await loadBoard(board('kanban-starlane: board', body));
-    const { title } = b.children[0].children[0].data;
+  const titleWith = async (settings: Record<string, unknown>) => {
+    const md = board(
+      'kanban-starlane: board',
+      body,
+      JSON.stringify({ 'kanban-starlane': 'board', ...settings })
+    );
+    return (await loadBoard(md)).board.children[0].children[0].data.title;
+  };
 
-    expect(title).toContain('#tag');
-    expect(title).toContain('data-date=');
+  it('keeps tags in the title and moves the date to the footer by default', async () => {
+    const { board: b } = await loadBoard(board('kanban-starlane: board', body));
+    const { title, metadata } = b.children[0].children[0].data;
+
+    expect(title).toBe('Task #tag');
+    expect(metadata.date?.format('YYYY-MM-DD')).toBe('2024-03-05');
+  });
+
+  it('keeps the date in the title when it is shown in the text or in both places', async () => {
+    expect(await titleWith({ 'date-position': 'body' })).toContain('data-date=');
+    expect(await titleWith({ 'date-position': 'both' })).toContain('data-date=');
+    expect(await titleWith({ 'date-position': 'footer' })).toBe('Task #tag');
+  });
+
+  it('reads the legacy move-dates toggle of a board', async () => {
+    expect(await titleWith({ 'move-dates': false })).toContain('data-date=');
+    expect(await titleWith({ 'move-dates': true })).toBe('Task #tag');
   });
 
   it('removes tags and dates from the rendered title when moved to the footer', async () => {
@@ -290,7 +310,8 @@ describe('tag dates', () => {
   });
 
   it('renders the tag date in the title when dates stay in the body', async () => {
-    const { title } = (await firstItem(tagBoard('- [ ] Task #26-10-14-13-25-20 #work'))).data;
+    const md = tagBoard('- [ ] Task #26-10-14-13-25-20 #work', { 'date-position': 'body' });
+    const { title } = (await firstItem(md)).data;
 
     expect(title).toContain('data-date="2026-10-14T13:25:20.000Z"');
     expect(title).toContain('kanban-starlane__item-metadata-date');
@@ -299,8 +320,19 @@ describe('tag dates', () => {
     expect(title).toContain('#work');
   });
 
+  it('keeps the tag date in the title when dates are shown in both places', async () => {
+    const md = tagBoard('- [ ] Task #26-10-14 #work', { 'date-position': 'both' });
+    const item = await firstItem(md);
+
+    expect(item.data.title).toContain('data-date="2026-10-14');
+    expect(item.data.metadata.date?.format('YYYY-MM-DD')).toBe('2026-10-14');
+  });
+
   it('keeps the tag date as written when date tags are shown as written', async () => {
-    const md = tagBoard('- [ ] Task #26-10-14-13-25-20 #work', { 'date-tags-as-written': true });
+    const md = tagBoard('- [ ] Task #26-10-14-13-25-20 #work', {
+      'date-position': 'body',
+      'date-tags-as-written': true,
+    });
     const { title } = (await firstItem(md)).data;
 
     // The tag text stays whole inside the date wrapper, so Obsidian renders it as a real tag.
@@ -312,6 +344,7 @@ describe('tag dates', () => {
 
   it('keeps the date colour on a tag date shown as written', async () => {
     const md = tagBoard('- [ ] Task #20-01-01', {
+      'date-position': 'body',
       'date-tags-as-written': true,
       'date-colors': [{ isBefore: true, color: 'red' }],
     });
@@ -331,7 +364,9 @@ describe('tag dates', () => {
   });
 
   it('ignores tag dates inside code', async () => {
-    const item = await firstItem(tagBoard('- [ ] Task `see #26-01-01` #26-10-14'));
+    const item = await firstItem(
+      tagBoard('- [ ] Task `see #26-01-01` #26-10-14', { 'date-position': 'body' })
+    );
 
     expect(item.data.metadata.date?.format('YYYY-MM-DD')).toBe('2026-10-14');
     expect(item.data.title).toContain('`see #26-01-01`');

@@ -5,6 +5,20 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
 
 ## Unreleased
 
+### Changed
+- **Dates now sit in a footer at the bottom of the card** by default: a calendar icon, the date,
+  the time and, with *Show relative date*, the relative date ("in 3 days"). Click the date or
+  the time to change it. Cards without a date look as before.
+- The *Move dates to card footer* switch is replaced by **Date position** (*Date & Time*):
+  *In the card footer* (default), *In the card text*, or *In the card text and footer*. Boards
+  and plugin settings where the switch was explicitly set keep their choice; where it was never
+  changed (it was off by default), dates now move to the footer. To get the old look
+  everywhere, set Date position to *In the card text* in the plugin settings.
+- Settings that put tags, task data and inline fields on the line below the card text are now
+  named *below the card text* instead of *card footer*: *Show tags below the card text*,
+  *Show task data below the card text*, and *Below the card text* in *Inline metadata
+  position*. They work as before.
+
 ## 0.1.9 — 2026-10-25
 
 ### Added

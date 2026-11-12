@@ -946,6 +946,12 @@ button.kanban-starlane__new-item-button {
   text-overflow: ellipsis;
 }
 
+// A secondary value after the chip's main one, e.g. the relative date after the date.
+.kanban-starlane__item-chip-note::before {
+  content: '·';
+  margin-inline-end: var(--size-2-2);
+}
+
 .kanban-starlane__item-chip-end {
   margin-inline-start: auto;
 }
@@ -1100,7 +1106,8 @@ button.kanban-starlane__item-chip-button {
   }
 }
 
-.kanban-starlane__item-metadata .is-button {
+.kanban-starlane__item-metadata .is-button,
+.kanban-starlane__item-footer .is-button {
   cursor: var(--cursor);
   &:hover {
     color: var(--text-normal);
@@ -1111,7 +1118,8 @@ button.kanban-starlane__item-chip-button {
   text-transform: uppercase;
 }
 
-.kanban-starlane__item-metadata a {
+.kanban-starlane__item-metadata a,
+.kanban-starlane__item-footer a {
   text-decoration: none;
 }
 

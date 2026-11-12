@@ -133,9 +133,11 @@ takes its history along. Parsing/serializing: `parsers/history.ts`. UI: card men
 Layout and order of features: [card-roadmap.md](card-roadmap.md). Code:
 `components/Item/zones/`. A card has an optional header (above the title) and footer (below
 the metadata table), each one line of **chips**. A feature adds a `ChipSource` to
-`chipSources` in `zones/chips.ts`; `useCardChips` calls every source during render (so a
-source may use hooks like `stateManager.useSetting`; the list is static, keeping hook order
-fixed) and `layoutChips` splits the chips by zone and sorts them by `order`. A zone without
+`chipSources` in `zones/sources.ts`; `useCardChips` calls every source during render (so a
+source may use hooks like `stateManager.useSetting`, and is named `use…` for the hook lint
+rule; the list is static, keeping hook order fixed) and `layoutChips` splits the chips by
+zone and sorts them by `order`. A chip shows an icon and a `label`, or `content` with its own
+click targets (the date chip renders `DateAndTime` with its date and time pickers). A zone without
 chips renders nothing, so a card without data has the same DOM as before. A chip with a
 `popover` is a button (`data-ignore-drag`, so clicking it never starts a drag) that opens
 `ChipPopover`: a portal into the body of the chip's own window (lanes do not clip it,

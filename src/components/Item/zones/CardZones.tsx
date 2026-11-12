@@ -22,13 +22,20 @@ function Chip({ chip }: { chip: CardChip }) {
   const content = (
     <>
       {chip.icon && <Icon name={chip.icon} />}
-      <span className={c('item-chip-label')}>{chip.label}</span>
+      {chip.content ?? <span className={c('item-chip-label')}>{chip.label}</span>}
     </>
   );
 
   if (!chip.popover) {
     return (
-      <span className={className} style={style} data-chip={chip.id} aria-label={chip.tooltip}>
+      <span
+        className={className}
+        style={style}
+        data-chip={chip.id}
+        aria-label={chip.tooltip}
+        // Content with its own click targets: a double click there is not a request to edit.
+        onDblClick={chip.content ? (e) => e.stopPropagation() : undefined}
+      >
         {content}
       </span>
     );

@@ -88,6 +88,10 @@ export function dropdownSetting(
     /** Convert the dropdown string to the stored value. '' always unsets. */
     parse?: (value: string) => KanbanSettings[Key];
     resettable?: boolean;
+    /** Read the value from a whole settings layer, e.g. to honour a legacy key. */
+    read?: (settings: KanbanSettings) => string | undefined;
+    /** Legacy keys this setting supersedes; they are removed when it is changed. */
+    replaces?: Key[];
   }
 ) {
   const setting = newSetting(ctx, opts);
@@ -95,17 +99,30 @@ export function dropdownSetting(
   setting.addDropdown((dropdown) => {
     for (const [value, label] of opts.options) dropdown.addOption(value, label);
 
-    const { value, globalValue } = values(ctx, key);
+    const current = () =>
+      opts.read
+        ? {
+            value: opts.read(ctx.manager.settings),
+            globalValue: ctx.local ? opts.read(ctx.manager.plugin.settings) : undefined,
+          }
+        : values(ctx, key);
+    const unsetReplaced = () => {
+      if (opts.replaces) ctx.manager.applySettingsUpdate({ $unset: opts.replaces });
+    };
+
+    const { value, globalValue } = current();
     dropdown.setValue(value?.toString() || globalValue?.toString() || opts.defaultValue);
     dropdown.onChange((next) => {
+      unsetReplaced();
       if (next === '') unset(ctx, key);
       else set(ctx, key, opts.parse ? opts.parse(next) : next);
     });
 
     if (opts.resettable) {
       addResetButton(setting, () => {
-        const { globalValue } = values(ctx, key);
-        dropdown.setValue(globalValue?.toString() || opts.defaultValue);
+        // setValue fires onChange ($set); the $unset queued after it wins.
+        dropdown.setValue(current().globalValue?.toString() || opts.defaultValue);
+        unsetReplaced();
         unset(ctx, key);
       });
     }

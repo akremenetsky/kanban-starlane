@@ -136,20 +136,22 @@ const en = {
   "When toggled, cards will display the distance between today and the card's date. eg. 'In 3 days', 'A month ago'. Relative dates will not be shown for dates from the Tasks and Dataview plugins.":
     "When toggled, cards will display the distance between today and the card's date. eg. 'In 3 days', 'A month ago'. Relative dates will not be shown for dates from the Tasks and Dataview plugins.",
 
-  'Move dates to card footer': 'Move dates to card footer',
-  "When toggled, dates will be displayed in the card's footer instead of the card's body.":
-    "When toggled, dates will be displayed in the card's footer instead of the card's body.",
-  'Move tags to card footer': 'Move tags to card footer',
-  "When toggled, tags will be displayed in the card's footer instead of the card's body.":
-    "When toggled, tags will be displayed in the card's footer instead of the card's body.",
-  'Move task data to card footer': 'Move task data to card footer',
-  "When toggled, task data (from the Tasks plugin) will be displayed in the card's footer instead of the card's body.":
-    "When toggled, task data (from the Tasks plugin) will be displayed in the card's footer instead of the card's body.",
+  'Date position': 'Date position',
+  "Where a card's date is shown: in the card text, in the card footer, or in both.":
+    "Where a card's date is shown: in the card text, in the card footer, or in both.",
+  'In the card text': 'In the card text',
+  'In the card text and footer': 'In the card text and footer',
+  'In the card footer': 'In the card footer',
+  'Show tags below the card text': 'Show tags below the card text',
+  'When toggled, tags are shown below the card text instead of inside it.':
+    'When toggled, tags are shown below the card text instead of inside it.',
+  'Show task data below the card text': 'Show task data below the card text',
+  'When toggled, task data (from the Tasks plugin) is shown below the card text instead of inside it.':
+    'When toggled, task data (from the Tasks plugin) is shown below the card text instead of inside it.',
   'Inline metadata position': 'Inline metadata position',
   'Controls where the inline metadata (from the Dataview plugin) will be displayed.':
     'Controls where the inline metadata (from the Dataview plugin) will be displayed.',
-  'Card body': 'Card body',
-  'Card footer': 'Card footer',
+  'Below the card text': 'Below the card text',
   'Merge with linked page metadata': 'Merge with linked page metadata',
 
   'Hide card counts in list titles': 'Hide card counts in list titles',

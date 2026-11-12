@@ -43,7 +43,7 @@ export function preprocessTitle(stateManager: StateManager, title: string) {
   if (stateManager.getSetting('date-syntax') === 'tag') {
     // With dates in the footer the parser has already cut the card's date out of the title;
     // any later tag date is an ordinary tag.
-    const found = stateManager.getSetting('move-dates') ? null : findTagDate(title);
+    const found = stateManager.getSetting('date-position') === 'footer' ? null : findTagDate(title);
     if (!found) return title;
 
     dateColor = getDateColor(found.date);

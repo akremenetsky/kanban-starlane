@@ -15,14 +15,14 @@ import {
   MarkdownRenderer,
 } from 'src/components/MarkdownRenderer/MarkdownRenderer';
 import { KanbanContext, SearchContext } from 'src/components/context';
-import { c, useGetDateColorFn, useGetTagColorFn } from 'src/components/helpers';
+import { c, useGetTagColorFn } from 'src/components/helpers';
 import { useNestedEntityPath } from 'src/dnd/components/Droppable';
 import { Path } from 'src/dnd/types';
 import { getTaskStatusDone, toggleTaskString } from 'src/integrations/tasks';
 import { EditState, EditingState, Item, isEditing } from 'src/model/types';
 import { StateManager } from 'src/state/StateManager';
 
-import { DateAndTime, RelativeDate } from './DateAndTime';
+import { RelativeDate } from './DateAndTime';
 import { InlineMetadata } from './InlineMetadata';
 import {
   constructDatePicker,
@@ -189,8 +189,8 @@ export const ItemContent = memo(function ItemContent({
   showMetadata = true,
   isStatic,
 }: ItemContentProps) {
-  const { stateManager, filePath, boardModifiers } = useContext(KanbanContext);
-  const getDateColor = useGetDateColorFn(stateManager);
+  const { stateManager, boardModifiers } = useContext(KanbanContext);
+  const datePosition = stateManager.useSetting('date-position');
   const titleRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -301,13 +301,8 @@ export const ItemContent = memo(function ItemContent({
       )}
       {showMetadata && (
         <div className={c('item-metadata')}>
-          <RelativeDate item={item} stateManager={stateManager} />
-          <DateAndTime
-            item={item}
-            stateManager={stateManager}
-            filePath={filePath}
-            getDateColor={getDateColor}
-          />
+          {/* In the footer the date chip carries the relative date. */}
+          {datePosition === 'body' && <RelativeDate item={item} stateManager={stateManager} />}
           <InlineMetadata item={item} stateManager={stateManager} />
           <Tags tags={item.data.metadata.tags} searchQuery={searchQuery} />
         </div>

@@ -7,7 +7,10 @@ import {
   expectEventually,
   lane,
   openBoard,
+  pickDay,
   resetWorkspace,
+  settingRow,
+  visible,
   waitForFile,
 } from '../helpers';
 
@@ -66,57 +69,6 @@ async function searchQuery(): Promise<string> {
       { getQuery?: () => string } | undefined;
     return view?.getQuery?.() ?? '';
   });
-}
-
-/**
- * The first element matching `selector` that has a layout box; hidden leftovers of earlier
- * popovers are skipped. Checked in the page: WebdriverIO's `isDisplayed` sometimes reports a
- * calendar or suggestion on screen as hidden.
- */
-async function visible(selector: string) {
-  let index = -1;
-  await browser.waitUntil(
-    async () => {
-      index = await browser.execute(
-        (sel) =>
-          [...document.querySelectorAll(sel)].findIndex(
-            (el) => el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden'
-          ),
-        selector
-      );
-      return index >= 0;
-    },
-    { timeoutMsg: `nothing visible matches ${selector}` }
-  );
-  return browser.$$(selector)[index];
-}
-
-/**
- * Clicks day `day` of the month the open calendar shows and returns it as `YY-MM-DD`. The
- * calendar opens on the card's date, so "today" is not always on screen.
- */
-async function pickDay(day = 20): Promise<string> {
-  const calendar = await visible('.flatpickr-calendar');
-  const cell = await calendar
-    .$$('.flatpickr-day:not(.prevMonthDay):not(.nextMonthDay)')
-    .find(async (el) => (await el.getText()).trim() === String(day));
-  const picked = await browser.executeObsidian(
-    ({ obsidian }, el) =>
-      obsidian.moment((el as unknown as { dateObj: Date }).dateObj).format('YY-MM-DD'),
-    cell
-  );
-  await cell.click();
-  return picked;
-}
-
-/** The settings row (in the open modal) whose name is `name`. */
-async function settingRow(name: string) {
-  const rows = await browser.$$('.modal .setting-item').getElements();
-  for (const row of rows) {
-    const label = await row.$('.setting-item-name');
-    if ((await label.isExisting()) && (await label.getText()) === name) return row;
-  }
-  throw new Error(`no setting named "${name}"`);
 }
 
 describe('tag dates', function () {
@@ -280,7 +232,8 @@ describe('tag dates', function () {
     await waitForFile(BOARD, (md) => md.includes('"date-tags-as-written":true'));
     await browser.keys('Escape');
 
-    const tag = lane(0).$(`${cls('item-title')} ${cls('date-tag')} a.tag`);
+    // Dates are in the card footer by default.
+    const tag = lane(0).$(`${cls('item-footer')} ${cls('date-tag')} a.tag`);
     await tag.waitForExist();
     expect(await tag.getText()).toBe('#26-10-14-09-30-00');
     expect(await tag.getAttribute('href')).toBe('#26-10-14-09-30-00');
@@ -305,7 +258,7 @@ describe('tag dates', function () {
     expect(await searchQuery()).not.toContain('26-10-14');
   });
 
-  it('shows the tag date as written in the card footer', async function () {
+  it('shows the tag date as written in the card footer of a legacy move-dates board', async function () {
     await createBoard(
       boardMd(
         '- [ ] Task #26-10-14 #work',
@@ -313,7 +266,7 @@ describe('tag dates', function () {
       )
     );
     await openBoard(BOARD);
-    const tag = lane(0).$(`${cls('item-metadata')} ${cls('date-tag')} a.tag`);
+    const tag = lane(0).$(`${cls('item-footer')} ${cls('date-tag')} a.tag`);
     await tag.waitForExist();
     expect(await tag.getText()).toBe('#26-10-14');
 
@@ -326,7 +279,8 @@ describe('tag dates', function () {
     await createBoard(
       boardMd(
         '- [ ] Task #26-10-14 #work',
-        '{"kanban-starlane":"board","date-syntax":"tag","date-tags-as-written":true}'
+        // The search marks text rendered from the card's markdown, so the date stays in the text.
+        '{"kanban-starlane":"board","date-syntax":"tag","date-tags-as-written":true,"date-position":"body"}'
       )
     );
     await openBoard(BOARD);

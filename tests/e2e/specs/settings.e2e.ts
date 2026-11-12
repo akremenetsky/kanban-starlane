@@ -33,7 +33,7 @@ describe('board settings modal', function () {
     await browser.$('.modal').waitForExist();
 
     await clickIn('Hide card counts in list titles', '.checkbox-container');
-    await clickIn('Move tags to card footer', '.checkbox-container');
+    await clickIn('Show tags below the card text', '.checkbox-container');
 
     const md = await waitForFile(
       'Boards/Basic.md',

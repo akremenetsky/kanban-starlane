@@ -2,7 +2,7 @@ import { render } from 'preact';
 import { act } from 'preact/test-utils';
 import { CardZoneRow } from 'src/components/Item/zones/CardZones';
 import { placePopover } from 'src/components/Item/zones/ChipPopover';
-import { CardChip, chipSources, layoutChips, useCardChips } from 'src/components/Item/zones/chips';
+import { CardChip, layoutChips, useCardChips } from 'src/components/Item/zones/chips';
 import { Item } from 'src/model/types';
 import { StateManager } from 'src/state/StateManager';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -24,10 +24,14 @@ describe('layoutChips', () => {
     expect(footer.map((c) => c.id)).toEqual(['date', 'size', 'size-2', 'timer']);
   });
 
-  it('gives every card empty zones until a feature registers a chip source', () => {
-    expect(chipSources).toEqual([]);
-    const zones = useCardChips({} as Item, {} as StateManager);
-    expect(zones).toEqual({ header: [], footer: [] });
+  it('collects the chips of every source into their zones', () => {
+    const zones = useCardChips({} as Item, {} as StateManager, [
+      () => [chip('size', 'footer', 20)],
+      () => [],
+      () => [chip('date', 'footer', 10), chip('epic', 'header', 10)],
+    ]);
+    expect(zones.header.map((c) => c.id)).toEqual(['epic']);
+    expect(zones.footer.map((c) => c.id)).toEqual(['date', 'size']);
   });
 });
 

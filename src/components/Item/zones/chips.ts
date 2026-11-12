@@ -2,6 +2,8 @@ import { ComponentChildren } from 'preact';
 import { Item } from 'src/model/types';
 import { StateManager } from 'src/state/StateManager';
 
+import { chipSources } from './sources';
+
 /** Header: what the card belongs to (epic, blocked). Footer: measurable signals. */
 export type CardZone = 'header' | 'footer';
 
@@ -12,7 +14,9 @@ export interface CardChip {
   /** Position inside the zone; the same for every card so values line up across a lane. */
   order: number;
   icon?: string;
-  label: string;
+  label?: string;
+  /** Interactive content (its own click targets) shown instead of `label`. */
+  content?: ComponentChildren;
   tooltip?: string;
   /** Semantic colour: `danger` for blocked/overdue, `accent` for live states. */
   tone?: 'danger' | 'accent';
@@ -30,9 +34,6 @@ export interface CardChip {
  * runs its hooks and returns `[]`; it is never added to or removed from the list at runtime.
  */
 export type ChipSource = (item: Item, stateManager: StateManager) => CardChip[];
-
-/** Every feature that shows something in the card header or footer registers here. */
-export const chipSources: readonly ChipSource[] = Object.freeze<ChipSource[]>([]);
 
 export interface ZoneChips {
   header: CardChip[];

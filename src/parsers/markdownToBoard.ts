@@ -63,7 +63,7 @@ function startsWithCodeFence(node: object | undefined): boolean {
 
 export function listItemToItemData(stateManager: StateManager, md: string, item: TaskItem) {
   const moveTags = stateManager.getSetting('move-tags');
-  const moveDates = stateManager.getSetting('move-dates');
+  const moveDates = stateManager.getSetting('date-position') === 'footer';
   const tagDates = stateManager.getSetting('date-syntax') === 'tag';
 
   const startNode = item.children.first();
