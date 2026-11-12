@@ -18,6 +18,7 @@ describe('compileSettings', () => {
       'time-trigger': '@@',
       'inline-metadata-position': 'body',
       'date-position': 'footer',
+      'quick-actions': ['done', 'date', 'next-lane'],
       'show-add-list': true,
       'show-filter': true,
       'tag-action': 'obsidian',
@@ -63,5 +64,17 @@ describe('compileSettings', () => {
     expect(position([{ 'move-dates': false }], { 'date-position': 'footer' })).toBe('body');
     expect(position([], { 'move-dates': false })).toBe('body');
     expect(position([{}], { 'date-position': 'both' })).toBe('both');
+  });
+
+  it('keeps only known quick actions, once each, in panel order, at most five', () => {
+    const actions = (value: unknown) =>
+      compileSettings([{ 'quick-actions': value as never }], {}, defaults)['quick-actions'];
+
+    expect(actions(['timer', 'date', 'done', 'date'])).toEqual(['done', 'date']);
+    expect(
+      actions(['duplicate', 'archive', 'note', 'move-to-lane', 'next-lane', 'date', 'done'])
+    ).toEqual(['done', 'date', 'next-lane', 'move-to-lane', 'note']);
+    expect(actions('done')).toEqual(['done', 'date', 'next-lane']);
+    expect(actions([])).toEqual([]);
   });
 });

@@ -3,6 +3,30 @@
 Short records of decisions that shape the project. Newest first. Add an entry when a
 decision is not obvious from the code (format changes, dependencies, trade-offs).
 
+## 2026-11-13 — Quick action panel
+
+Step 3 of [card-roadmap.md](card-roadmap.md); the action set and default were chosen by the
+product owner.
+
+- **Inside the card, over the top-right corner.** The mock-up had it sticking out above the
+  card, but cards clip overflow (`overflow: hidden`, needed for rounded corners and stripes).
+  It covers the end of the first line while hovered, like the edit button of other boards.
+- **Transparent, not hidden.** It is always in the DOM and clickable; a pointer must hover the
+  card to reach it, which reveals it. Keyboard focus reveals it too. This keeps `⋮` reachable
+  for e2e tests and users' snippets (`item-postfix-button` stays on it).
+- **Mark as done toggles the checkbox**, through the Tasks plugin when it handles the line —
+  the same as clicking the checkbox; it does not move the card to a *Complete* list.
+- **Move to next list** puts the card at the top of the next list, like *Move to list*, and is
+  disabled in the last list rather than hidden, so buttons never shift.
+- **Mobile keeps the old `⋮` button**: `Platform.isMobile` (phones and tablets) has no hover.
+- **Linked cards**: the set comes from the viewed board (`viewStateManager` on `KanbanContext`,
+  which linked lanes do not override); *Move to next list* is disabled, as the next list of the
+  card's own board may not be on screen.
+- **Stored values are sanitized** (`sanitizeQuickActions`): unknown ids (from a newer version
+  synced to another device), duplicates and anything past five are dropped, so a bad value can
+  never break rendering. Its enabled state follows `laneCount` on `KanbanContext`, since cards
+  are memoized and would not notice a new list.
+
 ## 2026-11-12 — Date position replaces "Move dates to card footer"
 
 Step 2 of [card-roadmap.md](card-roadmap.md). The product owner wanted a choice of three and

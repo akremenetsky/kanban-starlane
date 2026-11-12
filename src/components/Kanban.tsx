@@ -223,14 +223,17 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
     return getBoardModifiers(view, stateManager);
   }, [stateManager, view]);
 
+  const laneCount = boardData?.children.length ?? 0;
   const kanbanContext = useMemo(() => {
     return {
       view,
       stateManager,
+      viewStateManager: stateManager,
+      laneCount,
       boardModifiers,
       filePath,
     };
-  }, [view, stateManager, boardModifiers, filePath, dateColors, tagColors]);
+  }, [view, stateManager, boardModifiers, filePath, dateColors, tagColors, laneCount]);
 
   // Tags of the cards the view shows: the table has no linked cards.
   const filterTags = useMemo(() => {

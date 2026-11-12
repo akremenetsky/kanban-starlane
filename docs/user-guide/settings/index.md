@@ -16,6 +16,7 @@ overrides the global value for that board only.
 ## Sections
 
 - [General](general.md) — cards, lists, notes created from cards
+- [Quick actions](quick-actions.md) — the buttons shown on a card under the pointer
 - [Tags](tags.md)
 - [Date & time](dates-and-time.md)
 - [Archive](archive.md)

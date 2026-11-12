@@ -69,12 +69,14 @@ Each step is a separate PR from `main`. Steps 1–3 need no new syntax in board 
       The first chip: date, time and relative date in the footer (`zones/dateChip.tsx`).
       The "line below the text" (tags, task data, inline fields) stays part of the body; its
       settings are now labelled *below the card text*.
-- [ ] **3. Quick action panel.** Hover panel, `⋯` button removed on desktop (kept on mobile
+- [x] **3. Quick action panel.** Hover panel, `⋯` button removed on desktop (kept on mobile
       and while editing). The set is a setting: up to 5 actions picked from the existing card
       menu actions — Done, Date, Next lane, Move to lane…, Open/create note, Archive,
       Duplicate — in a fixed order; `⋯` is always last and not counted. Default:
       Done · Date · Next lane · `⋯`. Delete is never offered. New features (timer, size,
       relations) add their actions to the list in their own PRs.
+      Built as `components/Item/QuickActions.tsx`; the panel sits *inside* the card (the card
+      clips overflow), over the top-right corner, unlike the mock-up where it stuck out above.
 - [ ] **4. Card size (estimation).** XS / S / M / L / XL, picker popover, footer chip.
       Format change → `change-board-format` skill. Every size has a weight (default
       XS 1, S 2, M 3, L 5, XL 8, editable in settings). The lane header shows the sum of weights
