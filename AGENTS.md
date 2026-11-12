@@ -72,7 +72,7 @@ tests/
   fixtures/boards/   canonical board files (byte-exact, never hand-format)
   e2e/               WebdriverIO specs + deterministic vault
 test-vault/          vault for manual testing by the product owner
-docs/dev/            architecture, board format, testing, decisions, known issues
+docs/dev/            architecture, board format, testing, decisions, known issues, card roadmap
 docs/user-guide/     end-user docs, built as a Zensical site and published to GitHub Pages
 scripts/             build helpers and refactoring tools
 zensical.toml        Zensical config for docs/user-guide (site_url, nav, theme)

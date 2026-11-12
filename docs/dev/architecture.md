@@ -128,6 +128,22 @@ board). Cross-board drags call `carryCardHistory` in `view/DragDropApp.tsx` so t
 takes its history along. Parsing/serializing: `parsers/history.ts`. UI: card menu →
 *History* (`components/Item/CardHistoryModal.ts`).
 
+## Card zones
+
+Layout and order of features: [card-roadmap.md](card-roadmap.md). Code:
+`components/Item/zones/`. A card has an optional header (above the title) and footer (below
+the metadata table), each one line of **chips**. A feature adds a `ChipSource` to
+`chipSources` in `zones/chips.ts`; `useCardChips` calls every source during render (so a
+source may use hooks like `stateManager.useSetting`; the list is static, keeping hook order
+fixed) and `layoutChips` splits the chips by zone and sorts them by `order`. A zone without
+chips renders nothing, so a card without data has the same DOM as before. A chip with a
+`popover` is a button (`data-ignore-drag`, so clicking it never starts a drag) that opens
+`ChipPopover`: a portal into the body of the chip's own window (lanes do not clip it,
+pop-outs work), positioned by `placePopover`, closed by Escape, an outside pointer down or
+a scroll. It is placed once, when it opens. Being outside the board root, popover content
+gets no board/card CSS variables and no styles nested under `.kanban-starlane`: style it with
+top-level selectors. The table view renders its own cells and has no zones.
+
 ## Settings
 
 Three layers, resolved per key in `state/compileSettings.ts`:
