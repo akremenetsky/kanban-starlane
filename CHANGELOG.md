@@ -3,7 +3,7 @@
 All notable changes to Kanban Starlane. Kanban Starlane is a modified version of the
 [Kanban plugin](https://github.com/mgmeyers/obsidian-kanban) by Matthew Meyers (2.0.51).
 
-## Unreleased
+## 0.2.0 — 2026-11-13
 
 ### Added
 - **Card size**: give a card a size — XS, S, M, L or XL — from its menu (*Size*), the new *Set
