@@ -16,7 +16,16 @@ export async function openBoard(path: string) {
   await browser.executeObsidian(async ({ app }, p) => {
     await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath(p));
   }, path);
-  await browser.$(cls('board')).waitForExist({ timeout: 10000 });
+  try {
+    await browser.$(cls('board')).waitForExist({ timeout: 10000 });
+  } catch (e) {
+    // Say what opened instead, so a rare CI failure can be told apart from a slow render.
+    const state = await browser.executeObsidian(({ app }) => {
+      const view = app.workspace.getLeaf(false)?.view;
+      return JSON.stringify({ type: view?.getViewType(), state: view?.getState() });
+    });
+    throw new Error(`${path} did not open as a board: ${state}`, { cause: e });
+  }
 }
 
 export async function openFile(path: string) {
