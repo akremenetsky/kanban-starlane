@@ -11,6 +11,7 @@ export const QUICK_ACTIONS = [
   'done',
   'date',
   'size',
+  'relate',
   'next-lane',
   'move-to-lane',
   'note',
@@ -64,6 +65,8 @@ export interface KanbanSettings {
   'show-archive-all'?: boolean;
   'show-board-settings'?: boolean;
   'show-checkboxes'?: boolean;
+  /** Show card relations (blocked state, relations chip) and the actions that add them. */
+  'show-card-relations'?: boolean;
   /** Read `#<size-tag>/XS` … `/XL` tags as card sizes. */
   'show-card-size'?: boolean;
   /** The word of size tags: `size` → `#size/M`. */
@@ -123,6 +126,7 @@ export const settingKeyLookup: Set<keyof KanbanSettings> = new Set([
   'show-archive-all',
   'show-board-settings',
   'show-checkboxes',
+  'show-card-relations',
   'show-card-size',
   'size-tag',
   'size-weights',

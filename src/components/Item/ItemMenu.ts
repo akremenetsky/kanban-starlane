@@ -21,6 +21,7 @@ import {
   constructMenuTimePickerOnChange,
   constructTimePicker,
 } from './pickers';
+import { addRelationItems } from './relationActions';
 
 interface UseItemMenuParams {
   setEditState: Dispatch<StateUpdater<EditState>>;
@@ -311,6 +312,18 @@ export function useItemMenu({
           menu.addItem((i) => {
             const submenu = i.setTitle(t('Size')).setIcon('lucide-gauge').setSubmenu();
             addSizeItems(submenu, stateManager, boardModifiers, item, path);
+          });
+        }
+        menu.addSeparator();
+      }
+
+      if (stateManager.getSetting('show-card-relations')) {
+        if (Platform.isPhone) {
+          addRelationItems(menu, stateManager, boardModifiers, item);
+        } else {
+          menu.addItem((i) => {
+            const submenu = i.setTitle(t('Add relation')).setIcon('lucide-link-2').setSubmenu();
+            addRelationItems(submenu, stateManager, boardModifiers, item);
           });
         }
         menu.addSeparator();

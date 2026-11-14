@@ -145,6 +145,8 @@ export class Plugin extends Component {
   }
 }
 export class Modal extends Stub {}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export class FuzzySuggestModal<T> extends Stub {}
 export class PluginSettingTab extends Stub {}
 export class Setting extends Stub {}
 export class Menu extends Stub {}

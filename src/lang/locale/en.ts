@@ -364,6 +364,27 @@ const en = {
   'Filter by tag...': 'Filter by tag...',
   'Filter by board...': 'Filter by board...',
   'Clear filter': 'Clear filter',
+  'Card relations': 'Card relations',
+  'Show relations between cards: a blocked card is marked in its header, and the footer shows how many relations a card has. Turning it off does not change your files.':
+    'Show relations between cards: a blocked card is marked in its header, and the footer shows how many relations a card has. Turning it off does not change your files.',
+  Relations: 'Relations',
+  'Add relation': 'Add relation',
+  'Remove relation': 'Remove relation',
+  Blocked: 'Blocked',
+  Blocks: 'Blocks',
+  'Blocked by': 'Blocked by',
+  'Relates to': 'Relates to',
+  Duplicates: 'Duplicates',
+  'Duplicated by': 'Duplicated by',
+  Causes: 'Causes',
+  'Caused by': 'Caused by',
+  'Required for': 'Required for',
+  'in archive': 'in archive',
+  'Choose a card': 'Choose a card',
+  'No other cards on this board': 'No other cards on this board',
+  'The card is not shown on the board right now': 'The card is not shown on the board right now',
+  'The relations of this board cannot be read. Fix the relations block in the file.':
+    'The relations of this board cannot be read. Fix the relations block in the file.',
   'This board': 'This board',
 };
 

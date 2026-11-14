@@ -69,6 +69,7 @@ export function renderSettings(ctx: SettingsContext, title: string) {
   renderGeneral(ctx);
   renderQuickActions(ctx);
   renderCardSize(ctx);
+  renderCardRelations(ctx);
   renderTags(ctx);
   renderDates(ctx);
   renderArchive(ctx);
@@ -190,6 +191,7 @@ function renderQuickActions(ctx: SettingsContext) {
     done: t('Mark as done'),
     date: t('Add or change date'),
     size: t('Set size'),
+    relate: t('Add relation'),
     'next-lane': t('Move to next list'),
     'move-to-lane': t('Move to list'),
     note: t('Open or create note'),
@@ -299,6 +301,18 @@ function renderCardSize(ctx: SettingsContext) {
       });
     });
   }
+}
+
+function renderCardRelations(ctx: SettingsContext) {
+  heading(ctx, t('Card relations'));
+
+  toggleSetting(ctx, 'show-card-relations', {
+    name: t('Card relations'),
+    desc: t(
+      'Show relations between cards: a blocked card is marked in its header, and the footer shows how many relations a card has. Turning it off does not change your files.'
+    ),
+    defaultValue: true,
+  });
 }
 
 function renderTags(ctx: SettingsContext) {

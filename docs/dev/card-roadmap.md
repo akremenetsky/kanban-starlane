@@ -85,11 +85,17 @@ Each step is a separate PR from `main`. Steps 1–3 need no new syntax in board 
       Stored as a tag `#size/M` (product owner's choice; word set by `size-tag`). Also: a
       *Size* submenu in the card menu, a *Set size* quick action, and *Card sizes* to switch
       the feature off. A click on the total opens the breakdown (no tooltips on phones).
-- [ ] **5. Relations within one board.** Card picker, relation types, blocked state in the
+- [x] **5. Relations within one board.** Card picker, relation types, blocked state in the
       header, relations popover (click → scroll to the card). Card identity = hidden block id
       `^id` (as linked lanes). Types, each shown from both sides:
       blocks / blocked by (the only one that sets the blocked state), relates to,
       duplicates / duplicated by, causes / caused by, depends on / required for.
+      Stored in a hidden `%% kanban-starlane:relations` block (product owner's choice; format in
+      [board-format.md](board-format.md#card-relations)). Added from the card menu (*Add
+      relation*), the new *Add relation* quick action and the relations popover; the card
+      picker is an Obsidian fuzzy search over the board's cards (`components/Item/relationActions.ts`).
+      Header chip *Blocked* (order 20), footer chip with the number of relations (order 30);
+      a blocked card's checkbox is dashed. *Card relations* switches it all off.
 - [ ] **6. Epics within one board.** Mark a card as epic, assign cards (reuses the card picker
       from step 5), epic chip in the header, epic card with progress in its footer: bar,
       cards done of total, weight done of total; hover shows the breakdown by size. An epic card
@@ -113,6 +119,9 @@ Each step is a separate PR from `main`. Steps 1–3 need no new syntax in board 
   progress in the epic card footer (steps 4, 6).
 - 2026-11-12 — `move-dates` is replaced by `date-position` (three options); the line below the
   card text is no longer called "card footer" in settings (step 2).
+- 2026-11-14 — Relations are stored in a hidden block keyed by block id, once on the active
+  side; a blocker that is done or archived no longer blocks; relations to archived cards stay
+  listed; the blocked state is only a signal, nothing is forbidden (step 5).
 - 2026-11-12 — Timers and epics start with the simplest version (independent timers, epics on
   the same board); cross-board epics come later.
 

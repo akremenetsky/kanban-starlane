@@ -155,7 +155,10 @@ const ItemInner = memo(function ItemInner({
     <div
       onDblClick={onDoubleClick}
       onContextMenu={onContextMenu}
-      className={c('item-content-wrapper')}
+      className={classcat([
+        c('item-content-wrapper'),
+        { [c('item-blocked')]: chips.header.some((chip) => chip.id === 'blocked') },
+      ])}
       {...ignoreAttr}
     >
       {/* First, so the title keeps being the last child when nothing follows it. */}
@@ -237,6 +240,8 @@ export const DraggableItem = memo(function DraggableItem(props: DraggableItemPro
           ...classModifiers,
         ])}
         style={linkedColor || highlightColor ? style : undefined}
+        // Lets other cards scroll to this one (relations popover).
+        data-card-id={props.item.id}
       >
         {props.isStatic ? (
           <ItemInner

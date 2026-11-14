@@ -143,6 +143,29 @@ export interface CardEvent {
 /** Card events by the card's block id, oldest first. */
 export type CardHistory = Record<string, CardEvent[]>;
 
+/**
+ * Relation types as stored, each written once on its active side: `blocks` on the card that
+ * blocks. The other side (blocked by, duplicated by, ...) is derived when reading.
+ */
+export const RELATION_TYPES = [
+  'blocks',
+  'relates-to',
+  'duplicates',
+  'causes',
+  'depends-on',
+] as const;
+export type RelationType = (typeof RELATION_TYPES)[number];
+
+export interface CardRelation {
+  /** A `RelationType`; unknown types are kept but not shown. */
+  type: string;
+  /** Block id of the other card. */
+  card: string;
+}
+
+/** Relations by the block id of the card that owns them (the active side). */
+export type CardRelations = Record<string, CardRelation[]>;
+
 export interface BoardData {
   isSearching: boolean;
   settings: KanbanSettings;
@@ -153,6 +176,10 @@ export interface BoardData {
   history?: CardHistory;
   /** The history block as found in the file when it could not be read; written back as is. */
   historyRaw?: string;
+  /** Card relations (`%% kanban-starlane:relations` block); absent when the file has none. */
+  relations?: CardRelations;
+  /** The relations block as found in the file when it could not be read; written back as is. */
+  relationsRaw?: string;
 }
 
 export type Item = Nestable<ItemData>;

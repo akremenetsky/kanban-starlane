@@ -146,6 +146,18 @@ a scroll. It is placed once, when it opens. Being outside the board root, popove
 gets no board/card CSS variables and no styles nested under `.kanban-starlane`: style it with
 top-level selectors. The table view renders its own cells and has no zones.
 
+## Card relations
+
+Logic in `state/cardRelations.ts` (add, remove, resolve both sides, `pruneRelations`), format
+in `parsers/relations.ts` (shares `parsers/helpers/jsonBlock.ts` with the history block).
+`StateManager.setState` calls `pruneRelations` for saved changes, after `recordCardHistory`:
+relations of block ids that were on the previous board and are gone are dropped.
+`resolveRelations` reads from an index built once per board state (a `WeakMap` cache).
+UI: `zones/relationsChip.tsx`. A card's chips depend on other cards (a blocker checked, a
+relation added from the other side), so the chip source subscribes to the board's state
+(`stateReceivers`) and re-renders only when the card's resolved relations change. Every card
+has `data-card-id` (its instance id), used to scroll to a related card.
+
 ## Quick action panel
 
 `components/Item/QuickActions.tsx`, setting `quick-actions` (fixed order `QUICK_ACTIONS` in
