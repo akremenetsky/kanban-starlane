@@ -11,6 +11,7 @@ import { extractHistory } from './history';
 import { hydrateBoard, hydratePostOp } from './hydrate';
 import { astToUnhydratedBoard, newItem, reparseBoard, updateItemContent } from './markdownToBoard';
 import { parseMarkdown } from './parseMarkdown';
+import { extractRelations } from './relations';
 
 const generatedKeys: Array<string | number> = [
   'id',
@@ -46,6 +47,9 @@ export class ListFormat implements BaseFormat {
     const { history, raw } = extractHistory(md);
     if (history) newBoard.data.history = history;
     if (raw !== undefined) newBoard.data.historyRaw = raw;
+    const relations = extractRelations(md);
+    if (relations.relations) newBoard.data.relations = relations.relations;
+    if (relations.raw !== undefined) newBoard.data.relationsRaw = relations.raw;
     const { state } = this.stateManager;
     const dv = getDataviewApi(this.stateManager.app);
 

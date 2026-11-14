@@ -1121,6 +1121,117 @@ button.kanban-starlane__item-chip-button {
   font-size: var(--font-ui-small);
 }
 
+// Card relations (docs/dev/card-roadmap.md, step 5). The popover is outside the board root:
+// top-level selectors only.
+.kanban-starlane__item-blocked .kanban-starlane__item-prefix-button-wrapper input[type='checkbox'] {
+  border-style: dashed;
+  border-color: var(--text-error);
+}
+
+.kanban-starlane__item.kanban-starlane__item-flash {
+  animation: kanban-starlane-flash 1.5s ease-out;
+}
+
+@keyframes kanban-starlane-flash {
+  0%,
+  40% {
+    box-shadow: 0 0 0 2px var(--interactive-accent);
+  }
+  100% {
+    box-shadow: 0 0 0 2px transparent;
+  }
+}
+
+.kanban-starlane__relations {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+  min-width: 220px;
+}
+
+.kanban-starlane__relations-label {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  margin-block-end: var(--size-2-1);
+}
+
+.kanban-starlane__relation {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2-2);
+  min-width: 0;
+
+  &[data-blocking] .kanban-starlane__relation-card {
+    color: var(--text-error);
+  }
+}
+
+button.kanban-starlane__relation-card {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: auto;
+  padding: var(--size-2-1) var(--size-2-2);
+  border: 0;
+  background: none;
+  box-shadow: none;
+  font: inherit;
+  text-align: start;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: var(--cursor);
+
+  &:hover:not(:disabled) {
+    background: var(--background-modifier-hover);
+  }
+
+  &:disabled {
+    color: var(--text-faint);
+    cursor: default;
+  }
+}
+
+.kanban-starlane__relation-note {
+  flex: none;
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+}
+
+.kanban-starlane__relation-remove {
+  flex: none;
+  --icon-size: 14px;
+}
+
+button.kanban-starlane__relations-add {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2-2);
+  align-self: flex-start;
+  height: auto;
+  padding: var(--size-2-1) var(--size-2-2);
+  border: 0;
+  background: none;
+  box-shadow: none;
+  font: inherit;
+  color: var(--text-muted);
+  cursor: var(--cursor);
+
+  &:hover {
+    background: var(--background-modifier-hover);
+    color: var(--text-normal);
+  }
+
+  .kanban-starlane__icon {
+    display: flex;
+    --icon-size: 14px;
+  }
+}
+
+.kanban-starlane__card-picker-lane {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+
 .kanban-starlane__item-title {
   width: 100%;
   line-height: var(--line-height-tight);

@@ -1,5 +1,6 @@
 import type { ChipSource } from './chips';
 import { useDateChip } from './dateChip';
+import { useRelationChips } from './relationsChip';
 import { useSizeChip } from './sizeChip';
 
 /**
@@ -10,4 +11,5 @@ import { useSizeChip } from './sizeChip';
 export const chipSources: readonly ChipSource[] = Object.freeze<ChipSource[]>([
   useDateChip,
   useSizeChip,
+  useRelationChips,
 ]);

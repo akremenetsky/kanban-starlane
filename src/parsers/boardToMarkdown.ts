@@ -11,6 +11,7 @@ import {
 } from './helpers/strings';
 import { historyToCodeblock } from './history';
 import { ARCHIVE_HEADING, archiveString, completeString } from './markers';
+import { relationsToCodeblock } from './relations';
 
 export interface BoardSerializeOptions {
   /** Indent multi-line card bodies with tabs instead of 4 spaces. */
@@ -76,6 +77,7 @@ export function boardToMd(board: Board, opts: BoardSerializeOptions) {
     lanes +
     archiveToMd(board.data.archive, opts) +
     historyToCodeblock(board) +
+    relationsToCodeblock(board) +
     settingsToCodeblock(board)
   );
 }

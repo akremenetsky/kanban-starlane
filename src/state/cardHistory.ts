@@ -18,7 +18,7 @@ export function historyTimestamp(now = moment()) {
   return now.format(TIME_FORMAT);
 }
 
-interface Placement {
+export interface Placement {
   item: Item;
   /** Lane index, or -1 for the archive. */
   laneIndex: number;
@@ -26,7 +26,8 @@ interface Placement {
   laneTitle?: string;
 }
 
-function placements(board: Board): Placement[] {
+/** Every card of the board with where it is, lanes first, then the archive. */
+export function placements(board: Board): Placement[] {
   const result: Placement[] = [];
   board.children.forEach((lane, laneIndex) =>
     lane.children.forEach((item) =>
@@ -37,7 +38,8 @@ function placements(board: Board): Placement[] {
   return result;
 }
 
-function usedBlockIds(board: Board) {
+/** Block ids of all cards of the board. */
+export function usedBlockIds(board: Board) {
   return new Set(
     placements(board)
       .map((p) => p.item.data.blockId)
@@ -70,7 +72,8 @@ function addEvent(history: CardHistory, id: string, event: CardEvent) {
   }
 }
 
-function withBlockId(board: Board, p: Placement, id: string): Board {
+/** The board with the card at `p` given block id `id`. */
+export function withBlockId(board: Board, p: Placement, id: string): Board {
   if (p.laneIndex < 0) {
     const index = board.data.archive.indexOf(p.item);
     return update(board, { data: { archive: { [index]: { data: { blockId: { $set: id } } } } } });

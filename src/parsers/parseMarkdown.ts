@@ -16,6 +16,7 @@ import { DateNode, FileNode, TimeNode } from './extensions/types';
 import { FileAccessor } from './helpers/strings';
 import { withoutHistoryBlock } from './history';
 import { getLinkedPageMetadata } from './linkedMetadata';
+import { withoutRelationsBlock } from './relations';
 
 function extractFrontmatter(md: string) {
   let frontmatterStart = -1;
@@ -180,7 +181,7 @@ function getMdastExtensions(stateManager: StateManager) {
 
 export function parseMarkdown(stateManager: StateManager, md: string) {
   const mdFrontmatter = extractFrontmatter(md);
-  const mdSettings = extractSettingsFooter(withoutHistoryBlock(md));
+  const mdSettings = extractSettingsFooter(withoutRelationsBlock(withoutHistoryBlock(md)));
   const settings: Record<string, unknown> = { ...mdSettings };
   const fileFrontmatter: Record<string, unknown> = {};
 

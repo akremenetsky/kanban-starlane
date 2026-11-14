@@ -25,6 +25,32 @@ count; hover it, or click it, to see how it adds up. The size is a tag in the ca
 (`#size/M`); see [Card size](../settings/card-size.md). To set sizes in one click, add **Set
 size** to the [quick actions](../settings/quick-actions.md).
 
+## Card relations
+
+Link two cards of the same board: right-click a card → **Add relation**, pick the kind of
+relation, then pick the other card. The kinds read from both sides:
+
+| On this card | On the other card |
+|---|---|
+| Blocks | Blocked by |
+| Relates to | Relates to |
+| Duplicates | Duplicated by |
+| Causes | Caused by |
+| Depends on | Required for |
+
+A card blocked by a card that is not done yet shows a red **Blocked** mark above its text and a
+dashed checkbox; once the blocking card is done or archived, the mark goes away. It is only a
+signal: a blocked card can still be moved and checked.
+
+The footer shows how many relations a card has. Click the number (or **Blocked**) to see them:
+click a card there to scroll the board to it, `×` to remove the relation, **Add relation** to add
+another. Relations to archived cards stay in the list, marked *in archive*. Deleting a card
+removes its relations; a duplicated card has none.
+
+Relations are kept in a hidden block at the end of the board file, so the card text does not
+change. See [Card relations](../settings/card-relations.md) to switch them off, and add **Add
+relation** to the [quick actions](../settings/quick-actions.md) to relate cards in one click.
+
 ## Embedding images
 
 Images can be embedded in a card just like in any other Obsidian note:

@@ -322,6 +322,28 @@ const lang: Partial<Lang> = {
   'Filter by tag...': 'Фильтр по тегу...',
   'Filter by board...': 'Фильтр по доске...',
   'Clear filter': 'Сбросить фильтр',
+  'Card relations': 'Связи карточек',
+  'Show relations between cards: a blocked card is marked in its header, and the footer shows how many relations a card has. Turning it off does not change your files.':
+    'Показывать связи между карточками: у заблокированной карточки появляется метка в шапке, а в подвале — число её связей. Отключение не меняет ваши файлы.',
+  Relations: 'Связи',
+  'Add relation': 'Добавить связь',
+  'Remove relation': 'Удалить связь',
+  Blocked: 'Заблокирована',
+  Blocks: 'Блокирует',
+  'Blocked by': 'Заблокирована',
+  'Relates to': 'Связана с',
+  Duplicates: 'Дублирует',
+  'Duplicated by': 'Дублируется',
+  Causes: 'Вызывает',
+  'Caused by': 'Вызвана',
+  'Depends on': 'Зависит от',
+  'Required for': 'Нужна для',
+  'in archive': 'в архиве',
+  'Choose a card': 'Выберите карточку',
+  'No other cards on this board': 'На этой доске нет других карточек',
+  'The card is not shown on the board right now': 'Сейчас эта карточка не показана на доске',
+  'The relations of this board cannot be read. Fix the relations block in the file.':
+    'Не удаётся прочитать связи этой доски. Исправьте блок связей в файле.',
   'This board': 'Эта доска',
 };
 

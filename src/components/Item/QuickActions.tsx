@@ -17,6 +17,7 @@ import {
   toggleCardDone,
 } from './cardActions';
 import { constructDatePicker, constructMenuDatePickerOnChange } from './pickers';
+import { addRelationItems } from './relationActions';
 
 interface QuickActionsProps {
   item: Item;
@@ -72,6 +73,17 @@ function actionButton(
         run: (e) => {
           const menu = new Menu();
           addSizeItems(menu, stateManager, boardModifiers, item, path);
+          menu.showAtMouseEvent(e);
+        },
+      };
+    case 'relate':
+      if (!stateManager.getSetting('show-card-relations')) return null;
+      return {
+        icon: 'lucide-link-2',
+        label: t('Add relation'),
+        run: (e) => {
+          const menu = new Menu();
+          addRelationItems(menu, stateManager, boardModifiers, item);
           menu.showAtMouseEvent(e);
         },
       };

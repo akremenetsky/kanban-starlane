@@ -10,12 +10,13 @@ import {
   updateEntity,
   updateParentEntity,
 } from 'src/dnd/util/data';
-import { Board, DataTypes, Item, Lane } from 'src/model/types';
+import { Board, CardRelation, DataTypes, Item, Lane } from 'src/model/types';
 import { generateInstanceId } from 'src/shared/ids';
 import { moment } from 'src/shared/moment';
 import { KanbanView } from 'src/view/KanbanView';
 
 import { StateManager } from './StateManager';
+import { RelationKind, addRelation, removeRelation } from './cardRelations';
 import { followLaneRename } from './linkedLanes';
 
 export interface BoardModifiers {
@@ -35,6 +36,10 @@ export interface BoardModifiers {
   updateItem: (path: Path, item: Item) => void;
   archiveItem: (path: Path) => void;
   duplicateEntity: (path: Path) => void;
+  /** Relates `from` to `to` as `kind` (seen from `from`). */
+  addRelation: (from: Item, kind: RelationKind, to: Item) => void;
+  /** Removes a stored relation; `owner` is the block id of the card that stores it. */
+  removeRelation: (owner: string, relation: CardRelation) => void;
 }
 
 export function getBoardModifiers(view: KanbanView, stateManager: StateManager): BoardModifiers {
@@ -256,6 +261,14 @@ export function getBoardModifiers(view: KanbanView, stateManager: StateManager):
           return boardData;
         }
       });
+    },
+
+    addRelation: (from: Item, kind: RelationKind, to: Item) => {
+      stateManager.setState((boardData) => addRelation(boardData, from, kind, to));
+    },
+
+    removeRelation: (owner: string, relation: CardRelation) => {
+      stateManager.setState((boardData) => removeRelation(boardData, owner, relation));
     },
 
     duplicateEntity: (path: Path) => {

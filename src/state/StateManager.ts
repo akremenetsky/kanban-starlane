@@ -13,6 +13,7 @@ import { toError } from 'src/shared/util';
 import { KanbanView } from 'src/view/KanbanView';
 
 import { recordCardHistory } from './cardHistory';
+import { pruneRelations } from './cardRelations';
 import { compileSettings } from './compileSettings';
 
 export class StateManager {
@@ -239,6 +240,7 @@ export class StateManager {
         if (this.getSetting('card-history') !== false) {
           newState = recordCardHistory(this.state, newState);
         }
+        newState = pruneRelations(this.state, newState);
       }
       const newSettings = newState?.data.settings;
 

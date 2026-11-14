@@ -43,6 +43,7 @@ import { isHistoryBlockStart } from './history';
 import { hydrateItem, preprocessTitle } from './hydrate';
 import { isArchiveHeadingText, isCompleteMarkerText, isSettingsBlockStart } from './markers';
 import { parseFragment } from './parseMarkdown';
+import { isRelationsBlockStart } from './relations';
 import { parseTagDate } from './tagDate';
 
 interface TaskItem extends ListItem {
@@ -340,7 +341,11 @@ export function astToUnhydratedBoard(
         if (child.type === 'paragraph') {
           const childStr = toString(child);
 
-          if (isSettingsBlockStart(childStr) || isHistoryBlockStart(childStr)) {
+          if (
+            isSettingsBlockStart(childStr) ||
+            isHistoryBlockStart(childStr) ||
+            isRelationsBlockStart(childStr)
+          ) {
             return false;
           }
 

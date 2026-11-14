@@ -3,6 +3,30 @@
 Short records of decisions that shape the project. Newest first. Add an entry when a
 decision is not obvious from the code (format changes, dependencies, trade-offs).
 
+## 2026-11-14 — Card relations in a hidden block
+
+Step 5 of [card-roadmap.md](card-roadmap.md). The product owner compared three ways to store a
+relation — a Dataview field with a block link in the card line (`[blocks:: [[#^id]]]`), an
+inline `%%…%%` comment, and a separate hidden block — and chose the block
+(`%% kanban-starlane:relations`), written after the history block.
+
+- **Card text stays clean** in the file, in the editor and in older versions (an inline
+  field would show on cards there). It reuses the history block's reading and writing
+  (`parsers/helpers/jsonBlock.ts`): unreadable JSON is kept verbatim, one card per line.
+- **Stored once, on the active side** (`blocks` on the blocking card; picking *Blocked by*
+  stores `blocks` on the other card). The passive side is derived, so the two sides cannot
+  disagree. `relates-to` is symmetric and offered once.
+- **Trade-offs accepted**: without the plugin relations are not visible or clickable, and
+  Dataview does not see them; a card line moved to another file by hand leaves its relations
+  behind. Plugin versions up to 0.2.0 do not know the block and drop it when they save the
+  board (only matters when downgrading).
+- **Cleanup only for changes made in the plugin**: deleting a card (or moving it to another
+  board) removes its relations; a card removed by editing the markdown only makes its
+  relations dangling, they are skipped when reading and stay in the file.
+- **Blocked state** (product owner): a card is blocked while a card that blocks it is open —
+  not checked and not archived. It is only a signal: blocked cards can be moved and checked.
+  Relations to archived cards stay listed, marked "in archive".
+
 ## 2026-11-13 — Card size as a tag
 
 Step 4 of [card-roadmap.md](card-roadmap.md). The product owner chose to store a size as a tag

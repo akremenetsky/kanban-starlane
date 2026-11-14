@@ -81,6 +81,7 @@ export function compileSettings(
     'tag-sort': raw('tag-sort') ?? [],
     'date-colors': raw('date-colors') ?? [],
     'quick-actions': sanitizeQuickActions(raw('quick-actions')) ?? defaultQuickActions,
+    'show-card-relations': raw('show-card-relations') ?? true,
     'show-card-size': raw('show-card-size') ?? true,
     'size-tag': sanitizeSizeTag(raw('size-tag')),
     // Per size: a board that sets only M keeps the global (or default) weights of the others.
