@@ -87,6 +87,27 @@ export function withBlockId(board: Board, p: Placement, id: string): Board {
 }
 
 /**
+ * Gives each card (found by id, so the passed object may predate a block id) a block id if it
+ * has none. Returns the board and the cards' block ids; undefined for a card not on the board.
+ */
+export function withBlockIds(
+  board: Board,
+  items: Item[]
+): { board: Board; ids: (string | undefined)[] } {
+  const used = usedBlockIds(board);
+  let next = board;
+  const ids = items.map((item) => {
+    const p = placements(next).find((p) => p.item.id === item.id);
+    if (!p) return undefined;
+    if (p.item.data.blockId) return p.item.data.blockId;
+    const id = newBlockId(used);
+    next = withBlockId(next, p, id);
+    return id;
+  });
+  return { board: next, ids };
+}
+
+/**
  * Record what happened to cards between `prev` and `next` in `next`'s history.
  * Returns `next` itself when nothing was recorded.
  */

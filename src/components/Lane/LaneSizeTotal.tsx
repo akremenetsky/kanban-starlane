@@ -6,6 +6,7 @@ import { c } from 'src/components/helpers';
 import { t } from 'src/lang/helpers';
 import { CARD_SIZES, Item } from 'src/model/types';
 import { sanitizeSizeWeights } from 'src/settings/defaults';
+import { isEpic } from 'src/state/cardEpics';
 import { sizeTotal } from 'src/state/cardSize';
 
 /** The sum of the lane's card sizes; the tooltip says how it adds up. */
@@ -16,7 +17,14 @@ export function LaneSizeTotal({ items }: { items: Item[] }) {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const close = useCallback(() => setAnchor(null), []);
 
-  const summary = show ? sizeTotal(items, weights) : null;
+  // An epic's size would count its cards twice.
+  const board = stateManager.state;
+  const summary = show
+    ? sizeTotal(
+        items.filter((item) => !isEpic(board, item)),
+        weights
+      )
+    : null;
   if (!summary) return null;
 
   const lines = CARD_SIZES.filter((size) => summary.counts[size]).map(

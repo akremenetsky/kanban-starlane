@@ -10,12 +10,14 @@ import {
   updateEntity,
   updateParentEntity,
 } from 'src/dnd/util/data';
-import { Board, CardRelation, DataTypes, Item, Lane } from 'src/model/types';
+import { Board, CardRelation, DataTypes, EpicColor, Item, Lane } from 'src/model/types';
+import { setCardSize } from 'src/parsers/cardSize';
 import { generateInstanceId } from 'src/shared/ids';
 import { moment } from 'src/shared/moment';
 import { KanbanView } from 'src/view/KanbanView';
 
 import { StateManager } from './StateManager';
+import { addToEpic, markEpic, removeFromEpic, setEpicColor, unmarkEpic } from './cardEpics';
 import { RelationKind, addRelation, removeRelation } from './cardRelations';
 import { followLaneRename } from './linkedLanes';
 
@@ -40,6 +42,13 @@ export interface BoardModifiers {
   addRelation: (from: Item, kind: RelationKind, to: Item) => void;
   /** Removes a stored relation; `owner` is the block id of the card that stores it. */
   removeRelation: (owner: string, relation: CardRelation) => void;
+  /** Makes the card at `path` an epic; an epic has no size, so its size tag is removed. */
+  markEpic: (path: Path, item: Item) => void;
+  unmarkEpic: (epic: Item) => void;
+  /** Adds `member` to `epic`, taking it out of its current epic. */
+  addToEpic: (epic: Item, member: Item) => void;
+  removeFromEpic: (member: Item) => void;
+  setEpicColor: (epic: Item, color: EpicColor) => void;
 }
 
 export function getBoardModifiers(view: KanbanView, stateManager: StateManager): BoardModifiers {
@@ -269,6 +278,41 @@ export function getBoardModifiers(view: KanbanView, stateManager: StateManager):
 
     removeRelation: (owner: string, relation: CardRelation) => {
       stateManager.setState((boardData) => removeRelation(boardData, owner, relation));
+    },
+
+    markEpic: (path: Path, item: Item) => {
+      stateManager.setState((boardData) => {
+        let board = boardData;
+        let card = item;
+        if (item.data.metadata.size) {
+          const titleRaw = setCardSize(
+            item.data.titleRaw,
+            null,
+            stateManager.getSetting('size-tag')
+          );
+          card = stateManager.updateItemContent(item, titleRaw);
+          board = updateParentEntity(board, path, {
+            children: { [path[path.length - 1]]: { $set: card } },
+          });
+        }
+        return markEpic(board, card);
+      });
+    },
+
+    unmarkEpic: (epic: Item) => {
+      stateManager.setState((boardData) => unmarkEpic(boardData, epic));
+    },
+
+    addToEpic: (epic: Item, member: Item) => {
+      stateManager.setState((boardData) => addToEpic(boardData, epic, member));
+    },
+
+    removeFromEpic: (member: Item) => {
+      stateManager.setState((boardData) => removeFromEpic(boardData, member));
+    },
+
+    setEpicColor: (epic: Item, color: EpicColor) => {
+      stateManager.setState((boardData) => setEpicColor(boardData, epic, color));
     },
 
     duplicateEntity: (path: Path) => {

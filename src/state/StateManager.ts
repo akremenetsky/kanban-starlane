@@ -12,6 +12,7 @@ import { moment } from 'src/shared/moment';
 import { toError } from 'src/shared/util';
 import { KanbanView } from 'src/view/KanbanView';
 
+import { pruneEpics } from './cardEpics';
 import { recordCardHistory } from './cardHistory';
 import { pruneRelations } from './cardRelations';
 import { compileSettings } from './compileSettings';
@@ -241,6 +242,7 @@ export class StateManager {
           newState = recordCardHistory(this.state, newState);
         }
         newState = pruneRelations(this.state, newState);
+        newState = pruneEpics(this.state, newState);
       }
       const newSettings = newState?.data.settings;
 

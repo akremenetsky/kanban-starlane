@@ -13,7 +13,7 @@ import {
   RelationType,
 } from 'src/model/types';
 
-import { Placement, newBlockId, placements, usedBlockIds, withBlockId } from './cardHistory';
+import { Placement, placements, usedBlockIds, withBlockIds } from './cardHistory';
 
 /** A relation as seen from one card: `outgoing` when this card is the active side. */
 export interface RelationKind {
@@ -48,10 +48,6 @@ export interface ResolvedRelation extends RelationKind {
   /** Block id of the card that stores the relation, and the stored entry. */
   owner: string;
   relation: CardRelation;
-}
-
-function placementOf(board: Board, item: Item): Placement | undefined {
-  return placements(board).find((p) => p.item.id === item.id);
 }
 
 const indexCache = new WeakMap<Board, Map<string, ResolvedRelation[]>>();
@@ -130,20 +126,10 @@ export function activeBlockers(board: Board, item: Item): Item[] {
 export function addRelation(board: Board, from: Item, kind: RelationKind, to: Item): Board {
   if (board.data.relationsRaw !== undefined || from.id === to.id) return board;
 
-  const used = usedBlockIds(board);
-  let next = board;
-  // The card as it is on the board now: the passed object may predate its block id.
-  const ensureId = (item: Item) => {
-    const p = placementOf(next, item);
-    if (!p) return undefined;
-    if (p.item.data.blockId) return p.item.data.blockId;
-    const id = newBlockId(used);
-    next = withBlockId(next, p, id);
-    return id;
-  };
-
-  const fromId = ensureId(from);
-  const toId = ensureId(to);
+  const {
+    board: next,
+    ids: [fromId, toId],
+  } = withBlockIds(board, [from, to]);
   if (!fromId || !toId || fromId === toId) return board;
 
   const [owner, card] = kind.outgoing ? [fromId, toId] : [toId, fromId];

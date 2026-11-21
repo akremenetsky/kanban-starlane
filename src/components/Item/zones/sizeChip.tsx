@@ -5,9 +5,11 @@ import { c } from 'src/components/helpers';
 import { useNestedEntityPath } from 'src/dnd/components/Droppable';
 import { t } from 'src/lang/helpers';
 import { CARD_SIZES, CardSize } from 'src/model/types';
+import { isEpic } from 'src/state/cardEpics';
 
 import { setItemSize } from '../cardActions';
 import { ChipSource } from './chips';
+import { useBoardSelector } from './useBoardSelector';
 
 function SizePicker({
   current,
@@ -46,9 +48,15 @@ export const useSizeChip: ChipSource = (item, stateManager) => {
   const show = stateManager.useSetting('show-card-size');
   const { boardModifiers } = useContext(KanbanContext);
   const path = useNestedEntityPath();
+  // An epic has no size of its own: its cards' sizes make its total.
+  const epic = useBoardSelector(
+    stateManager,
+    (board) => isEpic(board, item),
+    (a: boolean, b: boolean) => a === b
+  );
 
   const size = item.data.metadata.size;
-  if (!show || !size) return [];
+  if (!show || !size || epic) return [];
 
   return [
     {

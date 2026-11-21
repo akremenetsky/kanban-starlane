@@ -21,6 +21,7 @@ import { StateManager } from 'src/state/StateManager';
 import { visit } from 'unist-util-visit';
 
 import { parseSizeTag } from './cardSize';
+import { isEpicsBlockStart } from './epics';
 import {
   ContentBoundary,
   getNextOfType,
@@ -344,7 +345,8 @@ export function astToUnhydratedBoard(
           if (
             isSettingsBlockStart(childStr) ||
             isHistoryBlockStart(childStr) ||
-            isRelationsBlockStart(childStr)
+            isRelationsBlockStart(childStr) ||
+            isEpicsBlockStart(childStr)
           ) {
             return false;
           }

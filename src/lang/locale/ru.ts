@@ -345,6 +345,31 @@ const lang: Partial<Lang> = {
   'The relations of this board cannot be read. Fix the relations block in the file.':
     'Не удаётся прочитать связи этой доски. Исправьте блок связей в файле.',
   'This board': 'Эта доска',
+  Epics: 'Эпики',
+  "Group cards into epics: a card of an epic shows the epic's name in its header, and the epic card shows the progress of its cards. Turning it off does not change your files.":
+    'Объединять карточки в эпики: карточка эпика показывает название эпика в шапке, а сама карточка-эпик — прогресс своих карточек. Выключение не меняет ваши файлы.',
+  Epic: 'Эпик',
+  'Make epic': 'Сделать эпиком',
+  'Remove epic': 'Убрать эпик',
+  'Add to epic': 'Добавить в эпик',
+  'Add cards to epic': 'Добавить карточки в эпик',
+  'Remove from epic': 'Убрать из эпика',
+  'Move to another epic': 'Перенести в другой эпик',
+  'Choose an epic': 'Выберите эпик',
+  'No other epics on this board': 'На этой доске нет других эпиков',
+  'Cards done': 'Готово карточек',
+  'Weight done': 'Готово по весу',
+  'Epic colour': 'Цвет эпика',
+  Blue: 'Синий',
+  Green: 'Зелёный',
+  Orange: 'Оранжевый',
+  Purple: 'Фиолетовый',
+  Red: 'Красный',
+  Cyan: 'Бирюзовый',
+  Yellow: 'Жёлтый',
+  Pink: 'Розовый',
+  'The epics of this board cannot be read. Fix the epics block in the file.':
+    'Эпики этой доски не читаются. Исправьте блок эпиков в файле.',
 };
 
 export default lang;

@@ -1227,6 +1227,95 @@ button.kanban-starlane__relations-add {
   }
 }
 
+// Epics (docs/dev/card-roadmap.md, step 6). The epic colour is the chip text and dot on
+// members and the top band of the epic card, never an edge or tint of member cards.
+.kanban-starlane__item-content-wrapper.kanban-starlane__item-epic {
+  box-shadow: inset 0 3px 0 var(--kanban-starlane__epic-color);
+}
+
+.kanban-starlane__epic-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--kanban-starlane__chip-color, currentColor);
+}
+
+.kanban-starlane__epic-bar {
+  flex: none;
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+  background-color: var(--background-modifier-border);
+}
+
+.kanban-starlane__epic-bar-fill {
+  display: block;
+  height: 100%;
+  width: var(--kanban-starlane__epic-progress, 0%);
+  background-color: var(--interactive-accent);
+}
+
+.kanban-starlane__epic {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+  min-width: 220px;
+}
+
+.kanban-starlane__epic-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.kanban-starlane__epic-members {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2-1);
+
+  .kanban-starlane__relation > .kanban-starlane__icon {
+    display: flex;
+    flex: none;
+    color: var(--text-muted);
+    --icon-size: 14px;
+  }
+
+  .kanban-starlane__relation[data-done] .kanban-starlane__relation-card {
+    color: var(--text-muted);
+    text-decoration: line-through;
+  }
+}
+
+button.kanban-starlane__epic-title {
+  flex: none;
+  color: var(--kanban-starlane__chip-color, inherit);
+  font-weight: var(--font-semibold);
+}
+
+.kanban-starlane__epic-colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-2-3);
+}
+
+button.kanban-starlane__epic-color {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background-color: var(--kanban-starlane__chip-color);
+  box-shadow: none;
+  cursor: var(--cursor);
+
+  &.is-active {
+    border-color: var(--text-normal);
+  }
+}
+
 .kanban-starlane__card-picker-lane {
   color: var(--text-muted);
   font-size: var(--font-ui-smaller);

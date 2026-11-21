@@ -12,6 +12,7 @@ export const QUICK_ACTIONS = [
   'date',
   'size',
   'relate',
+  'epic',
   'next-lane',
   'move-to-lane',
   'note',
@@ -67,6 +68,8 @@ export interface KanbanSettings {
   'show-checkboxes'?: boolean;
   /** Show card relations (blocked state, relations chip) and the actions that add them. */
   'show-card-relations'?: boolean;
+  /** Show epics (epic chips, epic progress) and the actions that edit them. */
+  'show-card-epics'?: boolean;
   /** Read `#<size-tag>/XS` … `/XL` tags as card sizes. */
   'show-card-size'?: boolean;
   /** The word of size tags: `size` → `#size/M`. */
@@ -127,6 +130,7 @@ export const settingKeyLookup: Set<keyof KanbanSettings> = new Set([
   'show-board-settings',
   'show-checkboxes',
   'show-card-relations',
+  'show-card-epics',
   'show-card-size',
   'size-tag',
   'size-weights',

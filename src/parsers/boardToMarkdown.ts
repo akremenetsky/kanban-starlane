@@ -2,6 +2,7 @@ import { stringifyYaml } from 'obsidian';
 import { SETTINGS_BLOCK_MARKER } from 'src/constants';
 import { Board, Item, Lane } from 'src/model/types';
 
+import { epicsToCodeblock } from './epics';
 import {
   addBlockId,
   escapeLaneDescription,
@@ -78,6 +79,7 @@ export function boardToMd(board: Board, opts: BoardSerializeOptions) {
     archiveToMd(board.data.archive, opts) +
     historyToCodeblock(board) +
     relationsToCodeblock(board) +
+    epicsToCodeblock(board) +
     settingsToCodeblock(board)
   );
 }

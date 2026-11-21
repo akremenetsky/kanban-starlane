@@ -7,6 +7,7 @@ import { KanbanSettings, settingKeyLookup } from 'src/settings/types';
 import { getNormalizedPath } from 'src/shared/links';
 import { StateManager } from 'src/state/StateManager';
 
+import { withoutEpicsBlock } from './epics';
 import { blockidExtension, blockidFromMarkdown } from './extensions/blockid';
 import { genericWrappedExtension, genericWrappedFromMarkdown } from './extensions/genericWrapped';
 import { internalMarkdownLinks } from './extensions/internalMarkdownLink';
@@ -181,7 +182,9 @@ function getMdastExtensions(stateManager: StateManager) {
 
 export function parseMarkdown(stateManager: StateManager, md: string) {
   const mdFrontmatter = extractFrontmatter(md);
-  const mdSettings = extractSettingsFooter(withoutRelationsBlock(withoutHistoryBlock(md)));
+  const mdSettings = extractSettingsFooter(
+    withoutEpicsBlock(withoutRelationsBlock(withoutHistoryBlock(md)))
+  );
   const settings: Record<string, unknown> = { ...mdSettings };
   const fileFrontmatter: Record<string, unknown> = {};
 

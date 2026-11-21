@@ -11,10 +11,12 @@ import { generateInstanceId } from 'src/shared/ids';
 import { escapeRegExpStr } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 import { BoardModifiers } from 'src/state/boardModifiers';
+import { isEpic } from 'src/state/cardEpics';
 import { LinkedMoveTarget, linkedMoveLabel } from 'src/state/linkedMove';
 
 import { CardHistoryModal } from './CardHistoryModal';
 import { addMoveToLaneItems, addSizeItems, createNoteFromCard } from './cardActions';
+import { addEpicItems } from './epicActions';
 import {
   constructDatePicker,
   constructMenuDatePickerOnChange,
@@ -305,7 +307,7 @@ export function useItemMenu({
         menu.addSeparator();
       }
 
-      if (stateManager.getSetting('show-card-size')) {
+      if (stateManager.getSetting('show-card-size') && !isEpic(stateManager.state, item)) {
         if (Platform.isPhone) {
           addSizeItems(menu, stateManager, boardModifiers, item, path);
         } else {
@@ -324,6 +326,18 @@ export function useItemMenu({
           menu.addItem((i) => {
             const submenu = i.setTitle(t('Add relation')).setIcon('lucide-link-2').setSubmenu();
             addRelationItems(submenu, stateManager, boardModifiers, item);
+          });
+        }
+        menu.addSeparator();
+      }
+
+      if (stateManager.getSetting('show-card-epics')) {
+        if (Platform.isPhone) {
+          addEpicItems(menu, stateManager, boardModifiers, item, path);
+        } else {
+          menu.addItem((i) => {
+            const submenu = i.setTitle(t('Epic')).setIcon('lucide-layers').setSubmenu();
+            addEpicItems(submenu, stateManager, boardModifiers, item, path);
           });
         }
         menu.addSeparator();

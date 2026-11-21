@@ -36,6 +36,9 @@ export const HISTORY_BLOCK_MARKER = '%% kanban-starlane:history';
 /** First line of the `%% ... %%` comment block that stores relations between cards. */
 export const RELATIONS_BLOCK_MARKER = '%% kanban-starlane:relations';
 
+/** First line of the `%% ... %%` comment block that stores epics and their cards. */
+export const EPICS_BLOCK_MARKER = '%% kanban-starlane:epics';
+
 /** Settings block marker written by the original obsidian-kanban plugin. */
 export const LEGACY_SETTINGS_BLOCK_MARKER = '%% kanban:settings';
 

@@ -386,6 +386,31 @@ const en = {
   'The relations of this board cannot be read. Fix the relations block in the file.':
     'The relations of this board cannot be read. Fix the relations block in the file.',
   'This board': 'This board',
+  Epics: 'Epics',
+  "Group cards into epics: a card of an epic shows the epic's name in its header, and the epic card shows the progress of its cards. Turning it off does not change your files.":
+    "Group cards into epics: a card of an epic shows the epic's name in its header, and the epic card shows the progress of its cards. Turning it off does not change your files.",
+  Epic: 'Epic',
+  'Make epic': 'Make epic',
+  'Remove epic': 'Remove epic',
+  'Add to epic': 'Add to epic',
+  'Add cards to epic': 'Add cards to epic',
+  'Remove from epic': 'Remove from epic',
+  'Move to another epic': 'Move to another epic',
+  'Choose an epic': 'Choose an epic',
+  'No other epics on this board': 'No other epics on this board',
+  'Cards done': 'Cards done',
+  'Weight done': 'Weight done',
+  'Epic colour': 'Epic colour',
+  Blue: 'Blue',
+  Green: 'Green',
+  Orange: 'Orange',
+  Purple: 'Purple',
+  Red: 'Red',
+  Cyan: 'Cyan',
+  Yellow: 'Yellow',
+  Pink: 'Pink',
+  'The epics of this board cannot be read. Fix the epics block in the file.':
+    'The epics of this board cannot be read. Fix the epics block in the file.',
 };
 
 export type Lang = typeof en;

@@ -7,6 +7,7 @@ import { isPlainObject } from 'src/shared/util';
 import { StateManager } from 'src/state/StateManager';
 
 import { boardToMd } from './boardToMarkdown';
+import { extractEpics } from './epics';
 import { extractHistory } from './history';
 import { hydrateBoard, hydratePostOp } from './hydrate';
 import { astToUnhydratedBoard, newItem, reparseBoard, updateItemContent } from './markdownToBoard';
@@ -50,6 +51,9 @@ export class ListFormat implements BaseFormat {
     const relations = extractRelations(md);
     if (relations.relations) newBoard.data.relations = relations.relations;
     if (relations.raw !== undefined) newBoard.data.relationsRaw = relations.raw;
+    const epics = extractEpics(md);
+    if (epics.epics) newBoard.data.epics = epics.epics;
+    if (epics.raw !== undefined) newBoard.data.epicsRaw = epics.raw;
     const { state } = this.stateManager;
     const dv = getDataviewApi(this.stateManager.app);
 
