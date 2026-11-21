@@ -47,7 +47,27 @@ export function usedBlockIds(board: Board) {
   );
 }
 
-/** A block id not used by any card of the board. */
+/**
+ * Block ids a new id must not take: those of the board's cards, and those its history,
+ * relations and epics name. A card that leaves by a hand edit leaves its id in those blocks;
+ * a new card with that id would inherit its history, relations or epic.
+ */
+export function reservedBlockIds(board: Board): Set<string> {
+  const ids = usedBlockIds(board);
+  const { history, relations, epics } = board.data;
+  for (const id of Object.keys(history ?? {})) ids.add(id);
+  for (const [id, list] of Object.entries(relations ?? {})) {
+    ids.add(id);
+    for (const r of list) ids.add(r.card);
+  }
+  for (const [id, epic] of Object.entries(epics ?? {})) {
+    ids.add(id);
+    for (const card of epic.cards) ids.add(card);
+  }
+  return ids;
+}
+
+/** A block id not in `used` (see `reservedBlockIds`); it is added to `used`. */
 export function newBlockId(used: Set<string>) {
   let id: string;
   do {
@@ -87,6 +107,27 @@ export function withBlockId(board: Board, p: Placement, id: string): Board {
 }
 
 /**
+ * Gives each card (found by id, so the passed object may predate a block id) a block id if it
+ * has none. Returns the board and the cards' block ids; undefined for a card not on the board.
+ */
+export function withBlockIds(
+  board: Board,
+  items: Item[]
+): { board: Board; ids: (string | undefined)[] } {
+  const used = reservedBlockIds(board);
+  let next = board;
+  const ids = items.map((item) => {
+    const p = placements(next).find((p) => p.item.id === item.id);
+    if (!p) return undefined;
+    if (p.item.data.blockId) return p.item.data.blockId;
+    const id = newBlockId(used);
+    next = withBlockId(next, p, id);
+    return id;
+  });
+  return { board: next, ids };
+}
+
+/**
  * Record what happened to cards between `prev` and `next` in `next`'s history.
  * Returns `next` itself when nothing was recorded.
  */
@@ -120,7 +161,7 @@ export function recordCardHistory(prev: Board, next: Board, at = historyTimestam
 
   const prevHistory = prev.data.history ?? {};
   const history: CardHistory = { ...(next.data.history ?? {}) };
-  const blockIds = usedBlockIds(next);
+  const blockIds = reservedBlockIds(next);
   const seenBlockIds = new Set<string>();
   let board = next;
   let changed = false;
@@ -192,6 +233,20 @@ export function recordCardHistory(prev: Board, next: Board, at = historyTimestam
 }
 
 /**
+ * A card moved to `destination` with a block id it may keep there: its own unless the
+ * destination's cards or blocks already use it (the card would take over another card's
+ * relations or epic), a new one otherwise. A card without an id gets one only with `always`.
+ */
+export function withFreeBlockId(destination: Board, item: Item, always = false): Item {
+  const used = reservedBlockIds(destination);
+  let blockId = item.data.blockId;
+  if (blockId ? used.has(blockId) : always) blockId = newBlockId(used);
+  return blockId === item.data.blockId
+    ? item
+    : update(item, { data: { blockId: { $set: blockId } } });
+}
+
+/**
  * Prepare a card that is moved to another board: give it a block id free on `destination`
  * and copy its history there, with the move. The destination's `recordCardHistory` then
  * treats it as arrived, not created; the source drops the history as the card leaves.
@@ -203,11 +258,9 @@ export function carryCardHistory(
   move: { from?: string; to?: string },
   at = historyTimestamp()
 ): { item: Item; destination: Board } {
-  if (destination.data.historyRaw !== undefined) return { item, destination };
-
-  const used = usedBlockIds(destination);
-  let blockId = item.data.blockId;
-  if (!blockId || used.has(blockId)) blockId = newBlockId(used);
+  const moved = withFreeBlockId(destination, item, true);
+  const blockId = moved.data.blockId;
+  if (!blockId || destination.data.historyRaw !== undefined) return { item: moved, destination };
 
   const events: CardEvent[] = [
     ...((item.data.blockId && source.data.history?.[item.data.blockId]) || []),
@@ -215,8 +268,7 @@ export function carryCardHistory(
   ];
 
   return {
-    item:
-      blockId === item.data.blockId ? item : update(item, { data: { blockId: { $set: blockId } } }),
+    item: moved,
     destination: update(destination, {
       data: { history: { $set: { ...(destination.data.history ?? {}), [blockId]: events } } },
     }),

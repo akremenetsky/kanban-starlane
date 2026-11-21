@@ -1,6 +1,7 @@
 import { Menu } from 'obsidian';
 import { useContext, useEffect, useState } from 'preact/compat';
 import { Icon } from 'src/components/Icon/Icon';
+import { plainCardTitle, revealCard } from 'src/components/Item/cardPicker';
 import { KanbanContext } from 'src/components/context';
 import { c } from 'src/components/helpers';
 import { t } from 'src/lang/helpers';
@@ -9,7 +10,7 @@ import { StateManager } from 'src/state/StateManager';
 import { BoardModifiers } from 'src/state/boardModifiers';
 import { ResolvedRelation, isActiveBlocker, resolveRelations } from 'src/state/cardRelations';
 
-import { addRelationItems, plainCardTitle, relationLabel, revealCard } from '../relationActions';
+import { addRelationItems, relationLabel } from '../relationActions';
 import { ChipSource } from './chips';
 
 function sameRelations(a: ResolvedRelation[], b: ResolvedRelation[]) {

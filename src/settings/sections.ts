@@ -70,6 +70,7 @@ export function renderSettings(ctx: SettingsContext, title: string) {
   renderQuickActions(ctx);
   renderCardSize(ctx);
   renderCardRelations(ctx);
+  renderCardEpics(ctx);
   renderTags(ctx);
   renderDates(ctx);
   renderArchive(ctx);
@@ -192,6 +193,7 @@ function renderQuickActions(ctx: SettingsContext) {
     date: t('Add or change date'),
     size: t('Set size'),
     relate: t('Add relation'),
+    epic: t('Epic'),
     'next-lane': t('Move to next list'),
     'move-to-lane': t('Move to list'),
     note: t('Open or create note'),
@@ -310,6 +312,18 @@ function renderCardRelations(ctx: SettingsContext) {
     name: t('Card relations'),
     desc: t(
       'Show relations between cards: a blocked card is marked in its header, and the footer shows how many relations a card has. Turning it off does not change your files.'
+    ),
+    defaultValue: true,
+  });
+}
+
+function renderCardEpics(ctx: SettingsContext) {
+  heading(ctx, t('Epics'));
+
+  toggleSetting(ctx, 'show-card-epics', {
+    name: t('Epics'),
+    desc: t(
+      "Group cards into epics: a card of an epic shows the epic's name in its header, and the epic card shows the progress of its cards. Turning it off does not change your files."
     ),
     defaultValue: true,
   });

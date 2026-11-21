@@ -70,7 +70,16 @@ Work for this week
 | Archive | `***` then `## Archive` then a list | Must be preceded by a thematic break. |
 | Card history | `%% kanban-starlane:history` + fenced JSON + `%%` before the settings block | Only written when some card has history. See *Card history* below. |
 | Card relations | `%% kanban-starlane:relations` + fenced JSON + `%%` after the history block | Only written when some card has a relation. See *Card relations* below. |
+| Epics | `%% kanban-starlane:epics` + fenced JSON + `%%` after the relations block | Only written when the board has an epic. See *Epics* below. |
 | Settings | `%% kanban-starlane:settings` + fenced JSON + `%%` at the end of the file | Board-level overrides. Frontmatter value of the view key wins over the JSON. |
+
+A hidden block starts with a paragraph whose first line is exactly its marker
+(`%% kanban-starlane:settings`, `…:history`, `…:relations`, `…:epics`). A paragraph that only
+begins like one (`%% kanban-starlane:epics notes`) is ordinary text, e.g. a lane description.
+
+When a card gets a new block id, or is moved in from another board, the id must not be one that
+the board's history, relations or epics still name (a card removed by editing the file leaves
+its id there): such an id is replaced by a fresh one.
 
 ### Linked lanes
 
@@ -155,6 +164,30 @@ them. Each relation is written once, on its active side; the other side is deriv
   sides; a duplicate gets no relations. Editing the markdown by hand never removes any.
 - Backticks are written as `\u0060`, as in the history block. Setting
   `show-card-relations: false` hides relations; the block stays.
+
+### Epics
+
+Epics of the board, keyed by the block id of the epic card. One epic per line:
+
+```json
+{
+"ep1mpt":{"color":"green","cards":["k3f9a2","m7p2q1"]}
+}
+```
+
+- `color` is one of `blue`, `green`, `orange`, `purple`, `red`, `cyan`, `yellow`, `pink`,
+  shown with the theme's `--color-<name>`. An unknown value is kept and shown as `blue`.
+- `cards` are the block ids of the epic's cards, in the order they were added. Both the epic and
+  its cards get a block id (`^id`) when needed.
+- A card belongs to at most one epic: if it is listed in several, the first epic in the file
+  wins. An epic listed among the cards of another epic is not its member. Ids of cards that are
+  not on the board are kept but not shown. If the JSON cannot be read or is not
+  `{ id: {color?, cards: [id]} }`, the block is kept verbatim and epics cannot be edited.
+- Making a card an epic removes its size tag (an epic has no size); nothing else in the card
+  text changes.
+- Deleting a card in the plugin (or moving it to another board) removes it from its epic, and
+  an epic card's entry; a duplicate is in no epic. Editing the markdown by hand never removes any.
+- Setting `show-card-epics: false` hides epics; the block stays.
 
 ### Markers and languages
 

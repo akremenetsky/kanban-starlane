@@ -3,6 +3,21 @@
 Short records of decisions that shape the project. Newest first. Add an entry when a
 decision is not obvious from the code (format changes, dependencies, trade-offs).
 
+## 2026-11-21 — Epics in a hidden block
+
+Step 6 of [card-roadmap.md](card-roadmap.md). Same choice as for relations (product owner):
+a hidden block `%% kanban-starlane:epics` after the relations block, keyed by the epic card's
+block id: `{"color": …, "cards": [member ids]}`. Product decisions:
+
+- **One epic per card.** Adding a card to another epic moves it; an epic cannot be a member.
+- **Colour**: from an 8-colour palette of theme colours, the least used one for a new epic,
+  changeable in the epic popover. Stored as a name, so themes decide the shade.
+- **Archived cards count as done**, and stay listed, marked "in archive".
+- **An epic has no size**: making a sized card an epic removes its size tag, the size picker is
+  not offered on an epic, and the lane size total leaves epics out (their cards are counted).
+- Trade-offs as for relations: invisible without the plugin; versions up to 0.3.0 drop the
+  block when they save the board (accepted by the product owner).
+
 ## 2026-11-14 — Card relations in a hidden block
 
 Step 5 of [card-roadmap.md](card-roadmap.md). The product owner compared three ways to store a

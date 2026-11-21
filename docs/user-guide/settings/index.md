@@ -19,6 +19,7 @@ overrides the global value for that board only.
 - [Quick actions](quick-actions.md) — the buttons shown on a card under the pointer
 - [Card size](card-size.md) — XS to XL estimates and list totals
 - [Card relations](card-relations.md) — blocks, relates to, duplicates and more
+- [Epics](epics.md) — group cards under an epic card and follow its progress
 - [Tags](tags.md)
 - [Date & time](dates-and-time.md)
 - [Archive](archive.md)

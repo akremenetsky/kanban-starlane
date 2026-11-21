@@ -151,14 +151,21 @@ const ItemInner = memo(function ItemInner({
     return {};
   }, [editState]);
 
+  // The epic card's colour band (docs/dev/card-roadmap.md: epic colour channels).
+  const epicChip = chips.header.find((chip) => chip.id === 'epic-card');
+
   return (
     <div
       onDblClick={onDoubleClick}
       onContextMenu={onContextMenu}
       className={classcat([
         c('item-content-wrapper'),
-        { [c('item-blocked')]: chips.header.some((chip) => chip.id === 'blocked') },
+        {
+          [c('item-blocked')]: chips.header.some((chip) => chip.id === 'blocked'),
+          [c('item-epic')]: !!epicChip,
+        },
       ])}
+      style={epicChip?.color ? { [`--${c('epic-color')}`]: epicChip.color } : undefined}
       {...ignoreAttr}
     >
       {/* First, so the title keeps being the last child when nothing follows it. */}

@@ -158,6 +158,18 @@ relation added from the other side), so the chip source subscribes to the board'
 (`stateReceivers`) and re-renders only when the card's resolved relations change. Every card
 has `data-card-id` (its instance id), used to scroll to a related card.
 
+## Epics
+
+Logic in `state/cardEpics.ts` (mark/unmark, add/remove members, colour, progress,
+`pruneEpics`), format in `parsers/epics.ts` (on `parsers/helpers/jsonBlock.ts`).
+`StateManager.setState` calls `pruneEpics` after `pruneRelations`. The epic index (epic by
+id, member → epic) is built once per board state. UI: `zones/epicChip.tsx` (member chip
+`epic`, epic card chips `epic-card` and `epic-progress`), menu items in
+`components/Item/epicActions.ts`; the card picker shared with relations is
+`components/Item/cardPicker.ts`. Chips that depend on other cards subscribe to the board with
+`zones/useBoardSelector.ts`. The epic card's content wrapper gets `item-epic` and the
+`--kanban-starlane__epic-color` variable (top band). `LaneSizeTotal` and the size chip skip epics.
+
 ## Quick action panel
 
 `components/Item/QuickActions.tsx`, setting `quick-actions` (fixed order `QUICK_ACTIONS` in

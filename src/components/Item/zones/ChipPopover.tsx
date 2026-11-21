@@ -11,21 +11,34 @@ interface Rect {
   bottom: number;
 }
 
+export interface PopoverPlacement {
+  left: number;
+  top: number;
+  /** Set when the popover fits on neither side: it scrolls inside this height. */
+  maxHeight?: number;
+}
+
 /**
  * Where a popover of `size` goes: under the anchor, above it when there is no room below,
- * shifted to stay inside the viewport.
+ * shifted to stay inside the viewport. When it fits on neither side it goes where there is
+ * more room and scrolls, so nothing at its end (actions of a long list) is cut off.
  */
 export function placePopover(
   anchor: Rect,
   size: { width: number; height: number },
   viewport: { width: number; height: number }
-) {
-  const below = anchor.bottom + GAP;
-  const above = anchor.top - GAP - size.height;
-  const top = below + size.height <= viewport.height - MARGIN || above < MARGIN ? below : above;
+): PopoverPlacement {
   const maxLeft = viewport.width - MARGIN - size.width;
   const left = Math.max(MARGIN, Math.min(anchor.left, maxLeft));
-  return { left, top };
+  const below = anchor.bottom + GAP;
+  const roomBelow = viewport.height - MARGIN - below;
+  const roomAbove = anchor.top - GAP - MARGIN;
+
+  if (size.height <= roomBelow) return { left, top: below };
+  if (size.height <= roomAbove) return { left, top: anchor.top - GAP - size.height };
+  return roomBelow >= roomAbove
+    ? { left, top: below, maxHeight: roomBelow }
+    : { left, top: MARGIN, maxHeight: roomAbove };
 }
 
 interface ChipPopoverProps {
@@ -41,7 +54,7 @@ interface ChipPopoverProps {
  */
 export function ChipPopover({ anchor, onClose, children }: ChipPopoverProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState<{ left: number; top: number } | null>(null);
+  const [position, setPosition] = useState<PopoverPlacement | null>(null);
   const doc = anchor.ownerDocument;
   const win = doc.defaultView;
 
@@ -88,7 +101,11 @@ export function ChipPopover({ anchor, onClose, children }: ChipPopoverProps) {
       className={`${c('item-chip-popover')} ${c('ignore-click-outside')}`}
       style={
         position
-          ? { left: `${position.left}px`, top: `${position.top}px` }
+          ? {
+              left: `${position.left}px`,
+              top: `${position.top}px`,
+              ...(position.maxHeight !== undefined && { maxHeight: `${position.maxHeight}px` }),
+            }
           : { left: '0px', top: '0px', visibility: 'hidden' }
       }
     >

@@ -42,7 +42,7 @@ export function jsonBlock<T>(
     },
 
     isStart(text) {
-      return text.startsWith(marker);
+      return isMarkerLine(text, marker);
     },
 
     toCodeblock(value, raw) {
@@ -68,6 +68,16 @@ export function jsonBlock<T>(
       return ['', '', marker, '```', body, '```', '%%'].join('\n');
     },
   };
+}
+
+/**
+ * `text` (a paragraph) starts with the line `marker` and nothing else on it. Text that only
+ * begins like a marker (`%% kanban-starlane:epics notes`) is ordinary text: taking it for a
+ * block would end the lane there and lose the cards after it.
+ */
+export function isMarkerLine(text: string, marker: string): boolean {
+  const firstLine = text.split(/\r?\n/, 1)[0];
+  return firstLine.trimEnd() === marker;
 }
 
 /** `{ id: [entry, ...] }` where every entry passes `isEntry`. */

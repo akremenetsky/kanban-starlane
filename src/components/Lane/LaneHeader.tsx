@@ -11,6 +11,7 @@ import { useNestedEntityPath } from 'src/dnd/components/Droppable';
 import { t } from 'src/lang/helpers';
 import { EditState, EditingState, Item, Lane, isEditing } from 'src/model/types';
 import { parseLaneTitle } from 'src/parsers/helpers/strings';
+import { LaneEntry } from 'src/state/linkedLanes';
 
 import { LaneDescription } from './LaneDescription';
 import { ConfirmAction, useSettingsMenu } from './LaneMenu';
@@ -28,6 +29,8 @@ interface LaneHeaderProps {
   /** Cards shown in the lane, including those of linked lanes. */
   itemCount?: number;
   items?: Item[];
+  /** The lane's cards with the board each comes from, when it shows linked lanes. */
+  entries?: LaneEntry[] | null;
 }
 
 interface LaneButtonProps {
@@ -94,6 +97,7 @@ export const LaneHeader = memo(function LaneHeader({
   toggleIsCollapsed,
   itemCount,
   items,
+  entries,
 }: LaneHeaderProps) {
   const [editState, setEditState] = useState<EditState>(EditingState.cancel);
   const [descriptionEditState, setDescriptionEditState] = useState<EditState>(EditingState.cancel);
@@ -172,7 +176,9 @@ export const LaneHeader = memo(function LaneHeader({
           maxItems={lane.data.maxItems}
         />
 
-        {!isEditing(editState) && <LaneSizeTotal items={items ?? lane.children} />}
+        {!isEditing(editState) && (
+          <LaneSizeTotal items={items ?? lane.children} entries={entries} />
+        )}
 
         <LaneButtons
           editState={editState}

@@ -166,6 +166,29 @@ export interface CardRelation {
 /** Relations by the block id of the card that owns them (the active side). */
 export type CardRelations = Record<string, CardRelation[]>;
 
+/** Epic colours, as stored; each maps to the theme's `--color-<name>`. */
+export const EPIC_COLORS = [
+  'blue',
+  'green',
+  'orange',
+  'purple',
+  'red',
+  'cyan',
+  'yellow',
+  'pink',
+] as const;
+export type EpicColor = (typeof EPIC_COLORS)[number];
+
+export interface CardEpic {
+  /** An `EpicColor`; an unknown value is kept and shown as the first colour. */
+  color?: string;
+  /** Block ids of the member cards, in the order they were added. */
+  cards: string[];
+}
+
+/** Epics by the block id of the epic card. */
+export type CardEpics = Record<string, CardEpic>;
+
 export interface BoardData {
   isSearching: boolean;
   settings: KanbanSettings;
@@ -180,6 +203,10 @@ export interface BoardData {
   relations?: CardRelations;
   /** The relations block as found in the file when it could not be read; written back as is. */
   relationsRaw?: string;
+  /** Epics (`%% kanban-starlane:epics` block); absent when the file has none. */
+  epics?: CardEpics;
+  /** The epics block as found in the file when it could not be read; written back as is. */
+  epicsRaw?: string;
 }
 
 export type Item = Nestable<ItemData>;

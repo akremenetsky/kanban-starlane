@@ -8,6 +8,7 @@ import { Item } from 'src/model/types';
 import { QuickAction } from 'src/settings/types';
 import { StateManager } from 'src/state/StateManager';
 import { BoardModifiers } from 'src/state/boardModifiers';
+import { isEpic } from 'src/state/cardEpics';
 
 import {
   addMoveToLaneItems,
@@ -16,6 +17,7 @@ import {
   moveCardToLane,
   toggleCardDone,
 } from './cardActions';
+import { addEpicItems } from './epicActions';
 import { constructDatePicker, constructMenuDatePickerOnChange } from './pickers';
 import { addRelationItems } from './relationActions';
 
@@ -66,7 +68,12 @@ function actionButton(
       };
     }
     case 'size':
-      if (!stateManager.getSetting('show-card-size')) return null;
+      if (
+        !stateManager.getSetting('show-card-size') ||
+        (stateManager.getSetting('show-card-epics') && isEpic(stateManager.state, item))
+      ) {
+        return null;
+      }
       return {
         icon: 'lucide-gauge',
         label: t('Set size'),
@@ -84,6 +91,17 @@ function actionButton(
         run: (e) => {
           const menu = new Menu();
           addRelationItems(menu, stateManager, boardModifiers, item);
+          menu.showAtMouseEvent(e);
+        },
+      };
+    case 'epic':
+      if (!stateManager.getSetting('show-card-epics')) return null;
+      return {
+        icon: 'lucide-layers',
+        label: t('Epic'),
+        run: (e) => {
+          const menu = new Menu();
+          addEpicItems(menu, stateManager, boardModifiers, item, path);
           menu.showAtMouseEvent(e);
         },
       };

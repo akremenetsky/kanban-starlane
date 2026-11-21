@@ -51,6 +51,33 @@ Relations are kept in a hidden block at the end of the board file, so the card t
 change. See [Card relations](../settings/card-relations.md) to switch them off, and add **Add
 relation** to the [quick actions](../settings/quick-actions.md) to relate cards in one click.
 
+## Epics
+
+An epic is a card that groups other cards of the board, for example a feature and its tasks.
+Right-click a card → **Epic** → **Make epic**. To add a card to it, right-click that card →
+**Epic** → **Add to epic** and pick the epic, or right-click the epic → **Epic** → **Add cards
+to epic** and pick the card.
+
+Each card of an epic shows the epic's name and colour above its text. The epic card has a band
+of its colour at the top, **Epic** above its text, and its progress at the bottom: a bar, how
+many of its cards are done (`3 / 5`) and, for cards with a [size](../settings/card-size.md), how
+much of the total weight is done (`8 / 13`). A card counts as done when it is checked or in the
+archive. Hover the progress for the breakdown by size.
+
+Click the progress (or **Epic**) to see the epic's cards: click one to scroll the board to it,
+`×` to take it out of the epic, **Add cards to epic** to add more. There you also pick the
+epic's colour and **Remove epic** (its cards stay, they just belong to no epic). Click the epic's
+name on one of its cards to jump to the epic, move the card to another epic or take it out.
+
+A card belongs to one epic at most: adding it to another epic moves it. An epic has no size of
+its own — making a card with a size an epic removes its size — and the list's size total does not
+count epics, only their cards. Deleting an epic card removes the epic; a duplicated card is in
+no epic.
+
+Epics are kept in a hidden block at the end of the board file, so the card text does not change.
+See [Epics](../settings/epics.md) to switch them off, and add **Epic** to the
+[quick actions](../settings/quick-actions.md) to reach these actions in one click.
+
 ## Embedding images
 
 Images can be embedded in a card just like in any other Obsidian note:
