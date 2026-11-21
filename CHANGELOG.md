@@ -18,6 +18,18 @@ All notable changes to Kanban Starlane. Kanban Starlane is a modified version of
   file, so card text does not change. New *Epic* quick action; switch epics off in the new
   *Epics* settings.
 
+### Fixed
+- A list description starting with the first line of one of the plugin's hidden blocks (for
+  example `%% kanban-starlane:settings` followed by other text) no longer hides the cards after
+  it, which were then lost when the board was saved. Only a line that is exactly the block's
+  first line is taken for a block now.
+- A card moved to another board no longer keeps a block id that blocks of that board still
+  name (the history, relations or epic of a card that was removed by editing the file): it gets
+  a new one, so it does not take over another card's data. This also applies with card history
+  switched off.
+- A long popover (the list of an epic's cards) that fits neither above nor below its chip now
+  scrolls instead of being cut off by the window edge.
+
 ## 0.3.0 — 2026-11-14
 
 ### Added

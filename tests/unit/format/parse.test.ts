@@ -451,6 +451,28 @@ describe('serialization', () => {
   });
 });
 
+describe('service block markers in lane text', () => {
+  // Only a real block ends a lane: text that merely starts like a marker is a description.
+  for (const marker of [
+    '%% kanban-starlane:epics',
+    '%% kanban-starlane:relations',
+    '%% kanban-starlane:history',
+    '%% kanban-starlane:settings',
+  ]) {
+    it(`keeps the cards after a description starting with "${marker}"`, async () => {
+      const md = board(
+        'kanban-starlane: board',
+        `## Todo\n\n${marker} notes for later\n\n- [ ] Keep me`
+      );
+      const { board: b, toMarkdown } = await loadBoard(md);
+
+      expect(summarize(b).lanes[0].items).toEqual(['Keep me']);
+      expect(b.children[0].data.description).toBe(`${marker} notes for later`);
+      expect(toMarkdown()).toContain(`${marker} notes for later\n\n- [ ] Keep me\n`);
+    });
+  }
+});
+
 describe('card history block', () => {
   it('reads the history by block id and keeps lanes and archive intact', async () => {
     const { board: b } = await loadBoard(readFixture('boards/card-history.md'));

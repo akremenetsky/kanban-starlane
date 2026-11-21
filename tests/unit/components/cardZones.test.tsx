@@ -55,7 +55,25 @@ describe('placePopover', () => {
 
   it('stays under the anchor when there is no room above either', () => {
     const tall = { width: 200, height: 580 };
-    expect(placePopover({ left: 50, top: 20, bottom: 40 }, tall, viewport).top).toBe(44);
+    expect(placePopover({ left: 50, top: 20, bottom: 40 }, tall, viewport)).toEqual({
+      left: 50,
+      top: 44,
+      maxHeight: 548,
+    });
+  });
+
+  it('opens on the roomier side and limits its height when it fits on neither', () => {
+    const tall = { width: 200, height: 900 };
+    expect(placePopover({ left: 50, top: 400, bottom: 420 }, tall, viewport)).toEqual({
+      left: 50,
+      top: 8,
+      maxHeight: 388,
+    });
+    expect(placePopover({ left: 50, top: 100, bottom: 120 }, tall, viewport)).toEqual({
+      left: 50,
+      top: 124,
+      maxHeight: 468,
+    });
   });
 
   it('shifts left to stay inside the viewport', () => {

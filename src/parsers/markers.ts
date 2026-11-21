@@ -6,6 +6,8 @@ import {
 } from 'src/constants';
 import { allTranslations } from 'src/lang/helpers';
 
+import { isMarkerLine } from './helpers/jsonBlock';
+
 /**
  * Markers written into board files. They are always English so a board does not change
  * meaning when the UI language changes. When reading, the localized variants written by
@@ -28,7 +30,9 @@ export function isCompleteMarkerText(text: string) {
 }
 
 export function isSettingsBlockStart(text: string) {
-  return text.startsWith(SETTINGS_BLOCK_MARKER) || text.startsWith(LEGACY_SETTINGS_BLOCK_MARKER);
+  return (
+    isMarkerLine(text, SETTINGS_BLOCK_MARKER) || isMarkerLine(text, LEGACY_SETTINGS_BLOCK_MARKER)
+  );
 }
 export const basicFrontmatter = ['---', '', `${FRONTMATTER_KEY}: board`, '', '---', '', ''].join(
   '\n'

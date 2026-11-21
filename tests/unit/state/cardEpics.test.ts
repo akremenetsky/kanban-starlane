@@ -1,3 +1,4 @@
+import update from 'immutability-helper';
 import { removeEntity } from 'src/dnd/util/data';
 import { Board, Item } from 'src/model/types';
 import { StateManager } from 'src/state/StateManager';
@@ -12,8 +13,10 @@ import {
   nextEpicColor,
   removeFromEpic,
   setEpicColor,
+  sizedCards,
   unmarkEpic,
 } from 'src/state/cardEpics';
+import { carryCardHistory, withFreeBlockId } from 'src/state/cardHistory';
 import { addRelation } from 'src/state/cardRelations';
 import { describe, expect, it } from 'vitest';
 
@@ -290,5 +293,102 @@ describe('epics: cards leaving the board', () => {
       false
     );
     expect(stateManager.state.data.epics?.ep1mpt.cards).toHaveLength(4);
+  });
+});
+
+describe('epics: stale cards and other boards', () => {
+  it('never nests an epic through a card object from before it got its block id', async () => {
+    const { board: b } = await loadBoard(md);
+    const stale = card(b, 0, 1);
+    let next = markEpic(b, card(b, 0, 0));
+    // Meanwhile (another window, a sync) the picked card became an epic itself.
+    next = markEpic(next, stale);
+
+    expect(addToEpic(next, card(next, 0, 0), stale)).toBe(next);
+    expect(addToEpic(next, stale, card(next, 0, 0))).toBe(next);
+  });
+
+  it('a stale "make epic" keeps the members of an epic', async () => {
+    const { board: b } = await loadBoard(md);
+    const stale = card(b, 0, 0);
+    let next = markEpic(b, stale);
+    next = addToEpic(next, card(next, 0, 0), card(next, 0, 2));
+
+    expect(markEpic(next, stale)).toBe(next);
+    expect(members(next, card(next, 0, 0))).toEqual(['three']);
+  });
+
+  it('a card moved in gets a new block id when the epics of the board name its id', async () => {
+    const source = await loadBoard(
+      board('kanban-starlane: board', '## Todo\n\n- [ ] moving ^shared')
+    );
+    const destination = await loadBoard(
+      board(
+        'kanban-starlane: board',
+        '## Todo\n\n- [ ] Epic ^epic01',
+        '{"kanban-starlane":"board"}'
+      ).replace(
+        '\n\n%% kanban-starlane:settings',
+        '\n\n%% kanban-starlane:epics\n```\n{\n"epic01":{"color":"blue","cards":["shared"]}\n}\n```\n%%\n\n%% kanban-starlane:settings'
+      )
+    );
+    const item = card(source.board, 0, 0);
+
+    const carried = carryCardHistory(source.board, destination.board, item, {});
+    const next = update(carried.destination, {
+      children: { 0: { children: { $push: [carried.item] } } },
+    });
+
+    expect(carried.item.data.blockId).not.toBe('shared');
+    expect(members(next, card(next, 0, 0))).toEqual([]);
+  });
+
+  it('with card history off a moved card also gets a free block id', async () => {
+    const { board: destination } = await loadBoard(
+      board('kanban-starlane: board', '## Todo\n\n- [ ] Epic ^epic01\n- [ ] Taken ^taken1')
+    );
+    const withEpic = update(destination, {
+      data: { epics: { $set: { epic01: { color: 'blue', cards: ['shared'] } } } },
+    });
+    const { board: source } = await loadBoard(
+      board(
+        'kanban-starlane: board',
+        '## Todo\n\n- [ ] a ^shared\n- [ ] b ^taken1\n- [ ] c ^free01\n- [ ] d'
+      )
+    );
+
+    const ids = source.children[0].children.map((i) => withFreeBlockId(withEpic, i).data.blockId);
+    expect(ids[0]).not.toBe('shared');
+    expect(ids[1]).not.toBe('taken1');
+    expect(ids.slice(2)).toEqual(['free01', undefined]);
+  });
+
+  it('leaves epics out of a size total by their own board', async () => {
+    const local = await loadBoard(
+      board('kanban-starlane: board', '## Todo\n\n- [ ] Local #size/M ^same01')
+    );
+    const linked = await loadBoard(
+      board('kanban-starlane: board', '## Doing\n\n- [ ] Linked epic #size/L ^same01')
+    );
+    const localEpic = markEpic(local.board, card(local.board, 0, 0));
+    const linkedEpic = markEpic(linked.board, card(linked.board, 0, 0));
+    const localCard = card(local.board, 0, 0);
+    const linkedCard = card(linked.board, 0, 0);
+
+    // The same block id is an epic on one board only: each card is checked on its own board.
+    expect(
+      sizedCards([
+        { item: localCard, board: local.board },
+        { item: linkedCard, board: linkedEpic },
+      ]).map((i) => i.data.title)
+    ).toEqual(['Local']);
+    expect(
+      sizedCards([
+        { item: localCard, board: localEpic },
+        { item: linkedCard, board: linked.board },
+      ]).map((i) => i.data.title)
+    ).toEqual(['Linked epic']);
+    // Epics switched off on a board: its epics count like other cards.
+    expect(sizedCards([{ item: localCard, board: undefined }])).toHaveLength(1);
   });
 });

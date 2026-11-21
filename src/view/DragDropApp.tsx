@@ -20,7 +20,7 @@ import { getTaskStatusDone, getTaskStatusPreDone, toggleTask } from 'src/integra
 import { Board, DataTypes, Item, Lane } from 'src/model/types';
 import KanbanPlugin from 'src/plugin/KanbanPlugin';
 import { getBoardModifiers } from 'src/state/boardModifiers';
-import { carryCardHistory } from 'src/state/cardHistory';
+import { carryCardHistory, withFreeBlockId } from 'src/state/cardHistory';
 import { maybeCompleteForMove } from 'src/state/completion';
 
 import { KanbanView } from './KanbanView';
@@ -241,7 +241,7 @@ export function DragDropApp({ win, plugin }: { win: Window; plugin: KanbanPlugin
               destinationBoard = carried.destination;
               toInsert.push(carried.item);
             } else {
-              toInsert.push(next);
+              toInsert.push(withFreeBlockId(destinationBoard, next));
             }
           } else if (entity.type === DataTypes.Lane && recordHistory) {
             const lane = entity as Lane;
@@ -253,6 +253,10 @@ export function DragDropApp({ win, plugin }: { win: Window; plugin: KanbanPlugin
               destinationBoard = carried.destination;
               return carried.item;
             });
+            toInsert.push(update(lane, { children: { $set: children } }));
+          } else if (entity.type === DataTypes.Lane) {
+            const lane = entity as Lane;
+            const children = lane.children.map((item) => withFreeBlockId(destinationBoard, item));
             toInsert.push(update(lane, { children: { $set: children } }));
           } else {
             toInsert.push(entity);

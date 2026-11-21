@@ -180,6 +180,7 @@ function DraggableLaneRaw({
               toggleIsCollapsed={toggleIsCollapsed}
               itemCount={itemCount}
               items={items}
+              entries={entries}
             />
 
             {!isCollapsed && missing.length > 0 && (

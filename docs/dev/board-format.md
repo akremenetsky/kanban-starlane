@@ -73,6 +73,14 @@ Work for this week
 | Epics | `%% kanban-starlane:epics` + fenced JSON + `%%` after the relations block | Only written when the board has an epic. See *Epics* below. |
 | Settings | `%% kanban-starlane:settings` + fenced JSON + `%%` at the end of the file | Board-level overrides. Frontmatter value of the view key wins over the JSON. |
 
+A hidden block starts with a paragraph whose first line is exactly its marker
+(`%% kanban-starlane:settings`, `…:history`, `…:relations`, `…:epics`). A paragraph that only
+begins like one (`%% kanban-starlane:epics notes`) is ordinary text, e.g. a lane description.
+
+When a card gets a new block id, or is moved in from another board, the id must not be one that
+the board's history, relations or epics still name (a card removed by editing the file leaves
+its id there): such an id is replaced by a fresh one.
+
 ### Linked lanes
 
 A lane can also show the cards of lanes on other boards. This is stored only in the

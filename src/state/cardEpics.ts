@@ -117,6 +117,15 @@ export function boardEpics(board: Board): ResolvedEpic[] {
     .filter((e): e is ResolvedEpic => !!e);
 }
 
+/**
+ * The cards whose size counts in a total: epics are left out (their cards are counted). Each
+ * card is checked on its own board (a linked lane mixes boards; block ids are only unique per
+ * board); `board` is undefined when that board has epics switched off.
+ */
+export function sizedCards(cards: { item: Item; board: Board | undefined }[]): Item[] {
+  return cards.filter(({ item, board }) => !board || !isEpic(board, item)).map((c) => c.item);
+}
+
 /** A member is done when it is checked or in the archive. */
 export function isMemberDone(m: EpicMember): boolean {
   return m.archived || m.item.data.checked;
@@ -189,11 +198,21 @@ function withoutMember(epics: Record<string, CardEpic>, card: string) {
 }
 
 /**
+ * The card as it is on the board now. Callers may hold an object from before a change made
+ * elsewhere (another window, a sync) gave the card a block id or made it an epic; every check
+ * must look at the current card. Undefined when it is no longer on the board.
+ */
+function current(board: Board, item: Item): Item | undefined {
+  return placements(board).find((p) => p.item.id === item.id)?.item;
+}
+
+/**
  * Makes the card an epic with the next free colour; it leaves the epic it was in. The card
  * keeps its text: removing its size tag is up to the caller.
  */
-export function markEpic(board: Board, item: Item): Board {
-  if (!canEdit(board) || isEpic(board, item)) return board;
+export function markEpic(board: Board, card: Item): Board {
+  const item = current(board, card);
+  if (!canEdit(board) || !item || isEpic(board, item)) return board;
   const {
     board: next,
     ids: [id],
@@ -205,8 +224,8 @@ export function markEpic(board: Board, item: Item): Board {
 }
 
 /** Turns an epic back into an ordinary card; its members belong to no epic. */
-export function unmarkEpic(board: Board, item: Item): Board {
-  const id = item.data.blockId;
+export function unmarkEpic(board: Board, card: Item): Board {
+  const id = current(board, card)?.data.blockId;
   if (!canEdit(board) || !id || !board.data.epics?.[id]) return board;
   const epics = { ...board.data.epics };
   delete epics[id];
@@ -214,9 +233,13 @@ export function unmarkEpic(board: Board, item: Item): Board {
 }
 
 /** Adds `member` to the epic `epicItem`, moving it out of its current epic. */
-export function addToEpic(board: Board, epicItem: Item, member: Item): Board {
-  const epicId = epicItem.data.blockId;
-  if (!canEdit(board) || !epicId || !board.data.epics?.[epicId]) return board;
+export function addToEpic(board: Board, epicCard: Item, card: Item): Board {
+  const epicItem = current(board, epicCard);
+  const member = current(board, card);
+  const epicId = epicItem?.data.blockId;
+  if (!canEdit(board) || !epicItem || !member || !epicId || !board.data.epics?.[epicId]) {
+    return board;
+  }
   if (member.id === epicItem.id || isEpic(board, member)) return board;
   if (epicOfMember(board, member)?.id === epicId) return board;
 
@@ -232,14 +255,15 @@ export function addToEpic(board: Board, epicItem: Item, member: Item): Board {
 }
 
 /** Removes the card from whatever epic it is in. */
-export function removeFromEpic(board: Board, member: Item): Board {
-  const id = member.data.blockId;
-  if (!canEdit(board) || !id || !epicOfMember(board, member)) return board;
+export function removeFromEpic(board: Board, card: Item): Board {
+  const member = current(board, card);
+  const id = member?.data.blockId;
+  if (!canEdit(board) || !member || !id || !epicOfMember(board, member)) return board;
   return setEpics(board, withoutMember(board.data.epics ?? {}, id));
 }
 
-export function setEpicColor(board: Board, epicItem: Item, color: EpicColor): Board {
-  const id = epicItem.data.blockId;
+export function setEpicColor(board: Board, epicCard: Item, color: EpicColor): Board {
+  const id = current(board, epicCard)?.data.blockId;
   const epic = id ? board.data.epics?.[id] : undefined;
   if (!canEdit(board) || !id || !epic || epic.color === color) return board;
   return setEpics(board, { ...board.data.epics, [id]: { ...epic, color } });

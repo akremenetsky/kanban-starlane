@@ -11,7 +11,7 @@ import { t } from 'src/lang/helpers';
 import { Board, DataTypes, Item } from 'src/model/types';
 
 import { StateManager } from './StateManager';
-import { carryCardHistory } from './cardHistory';
+import { carryCardHistory, withFreeBlockId } from './cardHistory';
 import { maybeCompleteForMove } from './completion';
 import { resolveDisplayPath } from './linkedDrop';
 import { GetBoard, SELF_TOKEN, readLinkedLanes, resolveLaneSources } from './linkedLanes';
@@ -137,6 +137,8 @@ export function sendCardToLinkedBoard(
       });
       next = carried.destination;
       moved = carried.item;
+    } else {
+      moved = withFreeBlockId(board, moved);
     }
     return insertEntity(next, dropPath, [moved]);
   });
