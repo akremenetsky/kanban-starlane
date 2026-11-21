@@ -284,12 +284,9 @@ export function getBoardModifiers(view: KanbanView, stateManager: StateManager):
       stateManager.setState((boardData) => {
         let board = boardData;
         let card = item;
-        if (item.data.metadata.size) {
-          const titleRaw = setCardSize(
-            item.data.titleRaw,
-            null,
-            stateManager.getSetting('size-tag')
-          );
+        // Also with sizes switched off: switching them on later must not give the epic a size.
+        const titleRaw = setCardSize(item.data.titleRaw, null, stateManager.getSetting('size-tag'));
+        if (titleRaw !== item.data.titleRaw) {
           card = stateManager.updateItemContent(item, titleRaw);
           board = updateParentEntity(board, path, {
             children: { [path[path.length - 1]]: { $set: card } },

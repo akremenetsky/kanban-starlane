@@ -1,6 +1,7 @@
 import { useCallback, useContext, useState } from 'preact/compat';
 import { Icon } from 'src/components/Icon/Icon';
 import { ChipPopover } from 'src/components/Item/zones/ChipPopover';
+import { useBoardSelector } from 'src/components/Item/zones/useBoardSelector';
 import { KanbanContext } from 'src/components/context';
 import { c } from 'src/components/helpers';
 import { t } from 'src/lang/helpers';
@@ -17,14 +18,14 @@ export function LaneSizeTotal({ items }: { items: Item[] }) {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const close = useCallback(() => setAnchor(null), []);
 
-  // An epic's size would count its cards twice.
-  const board = stateManager.state;
-  const summary = show
-    ? sizeTotal(
-        items.filter((item) => !isEpic(board, item)),
-        weights
-      )
-    : null;
+  const epics = stateManager.useSetting('show-card-epics');
+  // An epic's size would count its cards twice. Epics change without the lane's cards changing.
+  const counted = useBoardSelector(
+    stateManager,
+    (board) => (epics === false ? items : items.filter((item) => !isEpic(board, item))),
+    (a: Item[], b: Item[]) => a.length === b.length && a.every((item, i) => item === b[i])
+  );
+  const summary = show ? sizeTotal(counted, weights) : null;
   if (!summary) return null;
 
   const lines = CARD_SIZES.filter((size) => summary.counts[size]).map(

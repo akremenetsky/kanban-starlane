@@ -307,7 +307,9 @@ export function useItemMenu({
         menu.addSeparator();
       }
 
-      if (stateManager.getSetting('show-card-size') && !isEpic(stateManager.state, item)) {
+      const epicHasNoSize =
+        stateManager.getSetting('show-card-epics') && isEpic(stateManager.state, item);
+      if (stateManager.getSetting('show-card-size') && !epicHasNoSize) {
         if (Platform.isPhone) {
           addSizeItems(menu, stateManager, boardModifiers, item, path);
         } else {

@@ -10,6 +10,7 @@ five actions to show before it:
 | **Add or change date** (on by default) | Opens the calendar |
 | **Set size** | Opens the list of [card sizes](card-size.md) |
 | **Add relation** | Opens the kinds of [card relations](../guide/cards-and-lists.md#card-relations), then the card picker |
+| **Epic** | Opens the [epic](../guide/cards-and-lists.md#epics) actions of the card: make it an epic, add it to one, or add cards to it |
 | **Move to next list** (on by default) | Moves the card to the top of the list on the right; unavailable in the last list |
 | **Move to list** | Opens the list of lists to move the card to |
 | **Open or create note** | Opens the note the card links to, or creates one from the card, like [New note from card](../guide/cards-and-lists.md#creating-a-note-from-a-card) |

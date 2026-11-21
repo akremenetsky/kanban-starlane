@@ -161,9 +161,7 @@ export function epicSizes(progress: EpicProgress): CardSize[] {
 /** The palette colour used by the fewest epics, the earliest one on a tie. */
 export function nextEpicColor(board: Board): EpicColor {
   const counts = new Map<string, number>();
-  for (const epic of Object.values(board.data.epics ?? {})) {
-    if (epic.color) counts.set(epic.color, (counts.get(epic.color) ?? 0) + 1);
-  }
+  for (const { color } of boardEpics(board)) counts.set(color, (counts.get(color) ?? 0) + 1);
   let best: EpicColor = EPIC_COLORS[0];
   for (const color of EPIC_COLORS) {
     if ((counts.get(color) ?? 0) < (counts.get(best) ?? 0)) best = color;

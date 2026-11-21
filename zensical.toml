@@ -28,6 +28,7 @@ nav = [
     { "Quick actions" = "settings/quick-actions.md" },
     { "Card size" = "settings/card-size.md" },
     { "Card relations" = "settings/card-relations.md" },
+    { "Epics" = "settings/epics.md" },
     { "Tags" = "settings/tags.md" },
     { "Date & time" = "settings/dates-and-time.md" },
     { "Archive" = "settings/archive.md" },

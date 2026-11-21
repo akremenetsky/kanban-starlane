@@ -68,7 +68,10 @@ function actionButton(
       };
     }
     case 'size':
-      if (!stateManager.getSetting('show-card-size') || isEpic(stateManager.state, item)) {
+      if (
+        !stateManager.getSetting('show-card-size') ||
+        (stateManager.getSetting('show-card-epics') && isEpic(stateManager.state, item))
+      ) {
         return null;
       }
       return {

@@ -96,10 +96,18 @@ Each step is a separate PR from `main`. Steps 1–3 need no new syntax in board 
       picker is an Obsidian fuzzy search over the board's cards (`components/Item/relationActions.ts`).
       Header chip *Blocked* (order 20), footer chip with the number of relations (order 30);
       a blocked card's checkbox is dashed. *Card relations* switches it all off.
-- [ ] **6. Epics within one board.** Mark a card as epic, assign cards (reuses the card picker
+- [x] **6. Epics within one board.** Mark a card as epic, assign cards (reuses the card picker
       from step 5), epic chip in the header, epic card with progress in its footer: bar,
       cards done of total, weight done of total; hover shows the breakdown by size. An epic card
       has no size of its own — its total is computed from its cards.
+      Stored in a hidden `%% kanban-starlane:epics` block (product owner's choice; format in
+      [board-format.md](board-format.md#epics)). One epic per card; checked and archived cards
+      count as done; colours from an 8-colour theme palette, auto-assigned and changeable.
+      Member chip `epic` and epic chip `epic-card` in the header (order 10), progress chip
+      `epic-progress` in the footer (order 40); the epic card has a colour band at the top.
+      Added from the card menu (*Epic* submenu), the *Epic* quick action and the epic popovers.
+      Making a sized card an epic removes its size tag; lane totals skip epics. *Epics*
+      switches it all off.
 - [ ] **7. Timers.** Per-card start/stop from the panel and the footer chip. Several timers may
       run at once (independent cards need no coordination, so this is also the simplest).
       Finished intervals go to card history.
@@ -122,6 +130,8 @@ Each step is a separate PR from `main`. Steps 1–3 need no new syntax in board 
 - 2026-11-14 — Relations are stored in a hidden block keyed by block id, once on the active
   side; a blocker that is done or archived no longer blocks; relations to archived cards stay
   listed; the blocked state is only a signal, nothing is forbidden (step 5).
+- 2026-11-21 — Epics: hidden block, one epic per card, archived cards count as done, auto colour
+  from a palette that can be changed, an epic has no size and is left out of lane totals (step 6).
 - 2026-11-12 — Timers and epics start with the simplest version (independent timers, epics on
   the same board); cross-board epics come later.
 

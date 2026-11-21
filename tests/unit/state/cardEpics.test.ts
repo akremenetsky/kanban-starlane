@@ -188,6 +188,41 @@ describe('epics: editing', () => {
     expect(epicOfMember(plain, card(plain, 0, 2))).toBeUndefined();
   });
 
+  it('making a card an epic removes its size tag, also with sizes off', async () => {
+    const { stateManager, view } = await loadBoard(
+      board(
+        'kanban-starlane: board',
+        '## Todo\n\n- [ ] two #size/M',
+        '{"kanban-starlane":"board","show-card-size":false}'
+      )
+    );
+    modifiers(stateManager).markEpic([0, 0], card(stateManager.state, 0, 0));
+
+    const epic = card(stateManager.state, 0, 0);
+    expect(view.data).toContain(`- [ ] two ^${epic.data.blockId}\n`);
+  });
+
+  it('picks the colour by the epics on the board, an unknown one counting as blue', async () => {
+    const { board: b } = await loadBoard(
+      board(
+        'kanban-starlane: board',
+        '## Todo\n\n- [ ] one ^aaaaaa\n- [ ] two',
+        '{"kanban-starlane":"board"}'
+      )
+    );
+    const withStored = {
+      ...b,
+      data: {
+        ...b.data,
+        epics: {
+          aaaaaa: { color: 'nope', cards: [] as string[] },
+          gone00: { color: 'green', cards: [] as string[] },
+        },
+      },
+    };
+    expect(nextEpicColor(withStored)).toBe('green');
+  });
+
   it('making a sized card an epic removes its size tag', async () => {
     const { stateManager, view } = await loadBoard(md);
     modifiers(stateManager).markEpic([0, 1], card(stateManager.state, 0, 1));

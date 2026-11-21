@@ -49,9 +49,10 @@ export const useSizeChip: ChipSource = (item, stateManager) => {
   const { boardModifiers } = useContext(KanbanContext);
   const path = useNestedEntityPath();
   // An epic has no size of its own: its cards' sizes make its total.
+  const epics = stateManager.useSetting('show-card-epics');
   const epic = useBoardSelector(
     stateManager,
-    (board) => isEpic(board, item),
+    (board) => epics !== false && isEpic(board, item),
     (a: boolean, b: boolean) => a === b
   );
 
